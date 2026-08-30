@@ -11,7 +11,7 @@ const props = defineProps({
 const expandedId = ref(null)
 
 const sorted = computed(() => {
-  const t = [...props.targets]
+  const t = [...props.targets].filter((x) => x.score != null && x.score > 0)
   switch (props.sortKey) {
     case 'bestTime': return t.sort((a, b) => new Date(a.bestTime) - new Date(b.bestTime))
     case 'maxAlt': return t.sort((a, b) => b.maxAlt - a.maxAlt)

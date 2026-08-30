@@ -43,4 +43,23 @@ describe('TargetTable', () => {
     expect(ssCygRow.text()).toContain('2°')   // azimuth value, not direction
     expect(ssCygRow.text()).toContain('N')    // direction in its own column
   })
+
+  it('hides targets with zero or negative scores', () => {
+    const withJunk = [
+      ...targets,
+      { id: 'zero', name: 'Zero Score Target', targetClass: 'planet', score: 0, maxAlt: 30,
+        bestTime: '2026-08-30T22:00:00-04:00',
+        window: { start: night.startLocal, end: night.endLocal },
+        altAtBest: 30, azAtBest: 90, moonInterference: 0, notes: 'hide me' },
+      { id: 'neg', name: 'Negative Score Target', targetClass: 'planet', score: -5, maxAlt: 20,
+        bestTime: '2026-08-30T22:00:00-04:00',
+        window: { start: night.startLocal, end: night.endLocal },
+        altAtBest: 20, azAtBest: 270, moonInterference: 0, notes: 'hide me too' },
+    ]
+    const w = mount(TargetTable, { props: { targets: withJunk, night, sortKey: 'score' } })
+    const rows = w.findAll('tbody tr.data-row')
+    expect(rows).toHaveLength(2) // only the positive-score targets
+    expect(w.text()).not.toContain('Zero Score Target')
+    expect(w.text()).not.toContain('Negative Score Target')
+  })
 })
