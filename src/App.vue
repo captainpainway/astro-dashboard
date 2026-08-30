@@ -10,13 +10,22 @@ import ControlsBar from './components/ControlsBar.vue'
 import TargetTable from './components/TargetTable.vue'
 import ForecastView from './components/ForecastView.vue'
 import DiscoverView from './components/DiscoverView.vue'
+import OverviewView from './components/OverviewView.vue'
 import { isDisplayable } from './format'
 
 const { data, loading, error, load } = useTonight()
 const forecast = useForecast()
 const discover = useDiscover()
 
-const view = ref('tonight') // 'tonight' | 'forecast' | 'discover'
+const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'discover'
+
+async function loadAll() {
+  await Promise.all([
+    load(requestParams.value),
+    forecast.load(),
+    discover.load({ limit: 20 }),
+  ])
+}
 watch(view, (v) => {
   if (v === 'forecast' && !forecast.loaded.value && !forecast.loading.value) forecast.load()
   if (v === 'discover' && !discover.loaded.value && !discover.loading.value) discover.load({ limit: 20 })
@@ -49,23 +58,37 @@ const instrumentLabels = {
 }
 
 async function refresh() {
-  if (view.value === 'forecast') await forecast.load()
+  if (view.value === 'home') await loadAll()
+  else if (view.value === 'forecast') await forecast.load()
   else if (view.value === 'discover') await discover.load({ limit: 20 })
   else await load(requestParams.value)
 }
-onMounted(refresh)
+onMounted(loadAll)
 watch(requestParams, refresh)
 </script>
 
 <template>
   <main class="page">
     <nav class="view-switch">
+      <button :class="{ active: view === 'home' }" @click="view = 'home'">home</button>
       <button :class="{ active: view === 'tonight' }" @click="view = 'tonight'">tonight</button>
       <button :class="{ active: view === 'forecast' }" @click="view = 'forecast'">forecast</button>
       <button :class="{ active: view === 'discover' }" @click="view = 'discover'">discover</button>
     </nav>
 
-    <template v-if="view === 'tonight'">
+    <template v-if="view === 'home'">
+      <AppHeader :night="night" :at-local="null"
+                 :generated-at="data?.generatedAt ?? ''"
+                 :loading="loading || forecast.loading.value || discover.loading.value" @refresh="refresh" />
+      <p v-if="error" class="error">failed to load: {{ error }}</p>
+      <p v-if="forecast.error.value" class="error">forecast failed: {{ forecast.error.value }}</p>
+      <p v-if="discover.error.value" class="error">discover failed: {{ discover.error.value }}</p>
+      <OverviewView :tonight="data" :forecast="forecast.data.value" :discover="discover.data.value"
+                   :tonight-loading="loading" :forecast-loading="forecast.loading.value"
+                   :discover-loading="discover.loading.value" />
+    </template>
+
+    <template v-else-if="view === 'tonight'">
     <AppHeader :night="night" :at-local="atLocal" :generated-at="data?.generatedAt ?? ''"
                :loading="loading" @refresh="refresh" />
     <p v-if="error" class="error">failed to load: {{ error }}</p>

@@ -47,16 +47,71 @@ const instantFixture = {
   errors: [],
 }
 
+const forecastFixture = {
+  generatedAt: '2026-08-31T02:41:03+00:00',
+  night: { startLocal: '2026-08-30T19:00:00-04:00', endLocal: '2026-08-31T07:00:00-04:00',
+           startUtc: '2026-08-30T23:00:00+00:00', endUtc: '2026-08-31T11:00:00+00:00',
+           timezone: 'America/New_York' },
+  hours: [
+    { time: '2026-08-31T02:00:00-04:00', tempF: 76, dewpointF: 75, skyCover: 5, windMph: 0,
+      windDir: '', humidity: 90, precipProb: 0, shortForecast: 'Clear', sunAlt: -52,
+      moonAlt: 47.6, moonIllum: 0.9, twilightPhase: 'dark', moonUp: true, isDark: true,
+      rating: 'ideal', reasons: ['clear (5%)'], score: 80 },
+  ],
+  errors: [],
+}
+
+const discoverFixture = {
+  generatedAt: '2026-08-31T02:41:03+00:00',
+  night: windowFixture.night,
+  targets: [
+    { star: { name: 'V1452 Tau', auid: '000-BQP-885', constellation: 'Tau', varType: 'N',
+              periodDays: null, maxMag: 8.7, minMag: 23.4, magBand: 'V',
+              raHours: 5.35, decDegrees: 23.64 },
+      score: 55.8, maxAlt: 47.1, bestTime: '2026-08-31T05:00:00-04:00',
+      window: { start: '2026-08-31T02:45:00-04:00', end: '2026-08-31T05:00:00-04:00' },
+      azAtBest: 85, chartId: null, chartUrl: null },
+  ],
+  errors: [],
+}
+
 function mockFetchJson(fixture) {
   return vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(fixture) })
+}
+
+async function mountOnTonightView(fixture = windowFixture) {
+  vi.stubGlobal('fetch', mockFetchJson(fixture))
+  const w = mount(App)
+  await flushPromises()
+  await w.findAll('.view-switch button').find(b => b.text() === 'tonight').trigger('click')
+  await flushPromises()
+  return w
 }
 
 beforeEach(() => { vi.stubGlobal('fetch', mockFetchJson(windowFixture)) })
 
 describe('App integration', () => {
-  it('renders header, weather, tabs, and table from live-shaped data', async () => {
+  it('home view renders overview cards from all three endpoints', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
+      if (String(url).includes('/api/forecast')) return { ok: true, json: () => Promise.resolve(forecastFixture) }
+      if (String(url).includes('/api/discover')) return { ok: true, json: () => Promise.resolve(discoverFixture) }
+      return { ok: true, json: () => Promise.resolve(windowFixture) }
+    }))
     const w = mount(App)
     await flushPromises()
+    expect(w.find('.card-conditions').exists()).toBe(true)
+    expect(w.find('.card-window').exists()).toBe(true)
+    expect(w.find('.card-discoveries').exists()).toBe(true)
+    expect(w.find('.card-picks').text()).toContain('SS Cyg')
+    // all three endpoints fetched on mount
+    const urls = fetch.mock.calls.map(c => String(c[0]))
+    expect(urls.some(u => u.includes('/api/tonight'))).toBe(true)
+    expect(urls.some(u => u.includes('/api/forecast'))).toBe(true)
+    expect(urls.some(u => u.includes('/api/discover'))).toBe(true)
+  })
+
+  it('renders header, weather, tabs, and table from live-shaped data', async () => {
+    const w = await mountOnTonightView()
     expect(w.text()).toContain('astro dashboard')
     expect(w.text()).toContain('9:00 PM – 5:00 AM (America/New_York)')
     expect(w.text()).toContain('Good night')
@@ -71,8 +126,7 @@ describe('App integration', () => {
   })
 
   it('switching to the Dwarf Mini tab shows its targets', async () => {
-    const w = mount(App)
-    await flushPromises()
+    const w = await mountOnTonightView()
     await w.findAll('.tabs button')[1].trigger('click')
     expect(w.text()).toContain('Veil Nebula (Western)')
     expect(w.text()).not.toContain('SS Cyg')
@@ -80,8 +134,7 @@ describe('App integration', () => {
 
   it('instant mode: refetches with at=, shows atTime weather, no night window', async () => {
     vi.stubGlobal('fetch', mockFetchJson(instantFixture))
-    const w = mount(App)
-    await flushPromises()
+    const w = await mountOnTonightView(instantFixture)
     // switch mode -> new fetch with at param
     const instantBtn = w.findAll('.mode button').find(b => b.text() === 'at time')
     await instantBtn.trigger('click')
@@ -94,24 +147,13 @@ describe('App integration', () => {
   })
 
   it('shows the degraded-data banner when errors[] is non-empty', async () => {
-    vi.stubGlobal('fetch', mockFetchJson({ ...windowFixture, errors: ['weather: NWS timeout'] }))
-    const w = mount(App)
-    await flushPromises()
+    const w = await mountOnTonightView({ ...windowFixture, errors: ['weather: NWS timeout'] })
     expect(w.find('.errors-banner').exists()).toBe(true)
     expect(w.text()).toContain('NWS timeout')
   })
 
-  it('shows an inline error, not a blank page, when fetch fails', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')))
-    const w = mount(App)
-    await flushPromises()
-    expect(w.text()).toContain('failed to load:')
-    expect(w.text()).not.toContain('SS Cyg')
-  })
-
   it('deselecting a class chip refetches with include=; last chip is protected', async () => {
-    const w = mount(App)
-    await flushPromises()
+    const w = await mountOnTonightView()
     const chipFor = (label) => w.findAll('.chips button').find(b => b.text() === label)
     await chipFor('moon').trigger('click')
     await flushPromises()
@@ -132,6 +174,14 @@ describe('App integration', () => {
     expect(afterUrl).toContain('include=cluster')
   })
 
+  it('home view: fetch failures show inline errors, not a blank page', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')))
+    const w = mount(App)
+    await flushPromises()
+    expect(w.text()).toContain('failed to load:')
+    expect(w.find('.overview').exists()).toBe(true) // card grid renders (empty of cards)
+  })
+
   it('tab counts match displayed rows — zero/negative scores excluded', async () => {
     const fixture = structuredClone(windowFixture)
     fixture.instruments.dob_8inch.push({
@@ -140,9 +190,7 @@ describe('App integration', () => {
       window: { start: '2026-08-30T21:00:00-04:00', end: '2026-08-31T05:00:00-04:00' },
       altAtBest: 30, azAtBest: 90, moonInterference: 0, notes: '',
     })
-    vi.stubGlobal('fetch', mockFetchJson(fixture))
-    const w = mount(App)
-    await flushPromises()
+    const w = await mountOnTonightView(fixture)
     const tabs = w.findAll('.tabs button')
     expect(tabs[0].text()).toContain('(1)') // 2 targets from API, 1 hidden by score filter
     expect(w.findAll('tbody tr.data-row')).toHaveLength(1)
