@@ -5,6 +5,7 @@ import AppHeader from './components/AppHeader.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
 import ControlsBar from './components/ControlsBar.vue'
+import TargetTable from './components/TargetTable.vue'
 
 const { data, loading, error, load } = useTonight()
 
@@ -21,6 +22,18 @@ const requestParams = computed(() => ({
 const night = computed(() => data.value?.mode === 'window' ? data.value.night : null)
 const atLocal = computed(() => data.value?.mode === 'instant' ? data.value.at?.local : null)
 
+const instrument = ref(null) // first key once data loads
+const instruments = computed(() => Object.keys(data.value?.instruments ?? {}))
+const activeInstrument = computed(() =>
+  instrument.value && instruments.value.includes(instrument.value)
+    ? instrument.value
+    : instruments.value[0])
+const activeTargets = computed(() => data.value?.instruments?.[activeInstrument.value] ?? [])
+const instrumentLabels = {
+  dob_8inch: '8" Dobsonian',
+  dwarf_mini: 'Dwarf Mini',
+}
+
 async function refresh() { await load(requestParams.value) }
 onMounted(refresh)
 watch(requestParams, refresh)
@@ -35,6 +48,15 @@ watch(requestParams, refresh)
     <ControlsBar v-if="data" v-model:mode="mode" v-model:at-time="atTime"
                  v-model:active-classes="activeClasses" v-model:sort-key="sortKey" />
     <WeatherPanel v-if="data" :weather="data.weather" :mode="data.mode" />
+    <nav v-if="data && instruments.length > 1" class="tabs">
+      <button v-for="ins in instruments" :key="ins" :class="{ active: ins === activeInstrument }"
+              @click="instrument = ins">
+        {{ instrumentLabels[ins] ?? ins }}
+        ({{ data.instruments[ins].length }})
+      </button>
+    </nav>
+    <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :sort-key="sortKey" />
+    <p v-else-if="data && !loading" class="muted">no targets match the current filters</p>
     <p v-if="loading && !data" class="muted">loading tonight's plan…</p>
   </main>
 </template>
