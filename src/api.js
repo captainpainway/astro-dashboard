@@ -1,11 +1,12 @@
 const BASE = '/api'
 
 export function buildTonightQuery({ at, include } = {}) {
-  const params = new URLSearchParams()
-  if (at) params.set('at', at)
-  if (include?.length) for (const c of include) params.append('include', c)
-  const qs = params.toString()
-  return qs ? `?${qs}` : ''
+  // `:` is a legal unencoded query char and FastAPI decodes either form,
+  // but keep it literal for readable URLs / test expectations.
+  const parts = []
+  if (at) parts.push(`at=${at}`)
+  if (include?.length) for (const c of include) parts.push(`include=${c}`)
+  return parts.length ? `?${parts.join('&')}` : ''
 }
 
 export async function fetchTonight(opts = {}) {
