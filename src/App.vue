@@ -1,14 +1,20 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useTonight } from './composables/useTonight'
+import { useForecast } from './composables/useForecast'
 import AppHeader from './components/AppHeader.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
 import ControlsBar from './components/ControlsBar.vue'
 import TargetTable from './components/TargetTable.vue'
+import ForecastView from './components/ForecastView.vue'
 import { isDisplayable } from './format'
 
 const { data, loading, error, load } = useTonight()
+const forecast = useForecast()
+
+const view = ref('tonight') // 'tonight' | 'forecast'
+watch(view, (v) => { if (v === 'forecast' && !forecast.loaded.value && !forecast.loading.value) forecast.load() })
 
 const mode = ref('window') // 'window' | 'instant'
 const atTime = ref('22:30')
@@ -36,13 +42,22 @@ const instrumentLabels = {
   dwarf_mini: 'Dwarf Mini',
 }
 
-async function refresh() { await load(requestParams.value) }
+async function refresh() {
+  if (view.value === 'forecast') await forecast.load()
+  else await load(requestParams.value)
+}
 onMounted(refresh)
 watch(requestParams, refresh)
 </script>
 
 <template>
   <main class="page">
+    <nav class="view-switch">
+      <button :class="{ active: view === 'tonight' }" @click="view = 'tonight'">tonight</button>
+      <button :class="{ active: view === 'forecast' }" @click="view = 'forecast'">forecast</button>
+    </nav>
+
+    <template v-if="view === 'tonight'">
     <AppHeader :night="night" :at-local="atLocal" :generated-at="data?.generatedAt ?? ''"
                :loading="loading" @refresh="refresh" />
     <p v-if="error" class="error">failed to load: {{ error }}</p>
@@ -60,5 +75,17 @@ watch(requestParams, refresh)
     <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :sort-key="sortKey" />
     <p v-else-if="data && !loading" class="muted">no targets match the current filters</p>
     <p v-if="loading && !data" class="muted">loading tonight's plan…</p>
+    </template>
+
+    <template v-else>
+      <AppHeader :night="forecast.data.value?.night ?? null" :at-local="null"
+                 :generated-at="forecast.data.value?.generatedAt ?? ''"
+                 :loading="forecast.loading.value" @refresh="refresh" />
+      <p v-if="forecast.error.value" class="error">failed to load: {{ forecast.error.value }}</p>
+      <ErrorsBanner v-if="forecast.data.value" :errors="forecast.data.value.errors" />
+      <ForecastView :hours="forecast.data.value?.hours ?? []"
+                    :night="forecast.data.value?.night ?? null"
+                    :loading="forecast.loading.value" />
+    </template>
   </main>
 </template>
