@@ -20,6 +20,18 @@ export function compass(az) {
   return COMPASS[Math.round(az / 22.5) % 16]
 }
 
+export function fmtRa(raHours) {
+  if (raHours == null) return '—'
+  const h = Math.floor(raHours)
+  const m = Math.round((raHours - h) * 60)
+  return `${h}h ${m}m`
+}
+
+export function fmtDec(dec) {
+  if (dec == null) return '—'
+  return `${dec >= 0 ? '+' : ''}${dec.toFixed(1)}°`
+}
+
 export function timeline(night, target) {
   const start = new Date(night.startLocal).getTime()
   const end = new Date(night.endLocal).getTime()

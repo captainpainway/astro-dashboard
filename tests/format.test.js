@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fmtTime, pct, compass, timeline } from '../src/format'
+import { fmtTime, pct, compass, timeline, fmtRa, fmtDec } from '../src/format'
 
 describe('fmtTime', () => {
   it('formats ISO local times as h:mm AM/PM', () => {
@@ -24,6 +24,21 @@ describe('compass', () => {
     expect(compass(46)).toBe('NE')
   })
   it('handles null', () => expect(compass(null)).toBe('—'))
+})
+
+describe('fmtRa / fmtDec (discover coordinates)', () => {
+  it('formats decimal RA hours as h m', () => {
+    expect(fmtRa(5.35)).toBe('5h 21m')
+    expect(fmtRa(18.42)).toBe('18h 25m')
+  })
+  it('formats declination with sign and one decimal', () => {
+    expect(fmtDec(23.64)).toBe('+23.6°')
+    expect(fmtDec(-22.42)).toBe('-22.4°')
+  })
+  it('handles null', () => {
+    expect(fmtRa(null)).toBe('—')
+    expect(fmtDec(null)).toBe('—')
+  })
 })
 
 describe('timeline', () => {

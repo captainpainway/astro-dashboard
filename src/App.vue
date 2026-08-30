@@ -2,19 +2,25 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
+import { useDiscover } from './composables/useDiscover'
 import AppHeader from './components/AppHeader.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
 import ControlsBar from './components/ControlsBar.vue'
 import TargetTable from './components/TargetTable.vue'
 import ForecastView from './components/ForecastView.vue'
+import DiscoverView from './components/DiscoverView.vue'
 import { isDisplayable } from './format'
 
 const { data, loading, error, load } = useTonight()
 const forecast = useForecast()
+const discover = useDiscover()
 
-const view = ref('tonight') // 'tonight' | 'forecast'
-watch(view, (v) => { if (v === 'forecast' && !forecast.loaded.value && !forecast.loading.value) forecast.load() })
+const view = ref('tonight') // 'tonight' | 'forecast' | 'discover'
+watch(view, (v) => {
+  if (v === 'forecast' && !forecast.loaded.value && !forecast.loading.value) forecast.load()
+  if (v === 'discover' && !discover.loaded.value && !discover.loading.value) discover.load({ limit: 20 })
+})
 
 const mode = ref('window') // 'window' | 'instant'
 const atTime = ref('22:30')
@@ -44,6 +50,7 @@ const instrumentLabels = {
 
 async function refresh() {
   if (view.value === 'forecast') await forecast.load()
+  else if (view.value === 'discover') await discover.load({ limit: 20 })
   else await load(requestParams.value)
 }
 onMounted(refresh)
@@ -55,6 +62,7 @@ watch(requestParams, refresh)
     <nav class="view-switch">
       <button :class="{ active: view === 'tonight' }" @click="view = 'tonight'">tonight</button>
       <button :class="{ active: view === 'forecast' }" @click="view = 'forecast'">forecast</button>
+      <button :class="{ active: view === 'discover' }" @click="view = 'discover'">discover</button>
     </nav>
 
     <template v-if="view === 'tonight'">
@@ -75,6 +83,17 @@ watch(requestParams, refresh)
     <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :sort-key="sortKey" />
     <p v-else-if="data && !loading" class="muted">no targets match the current filters</p>
     <p v-if="loading && !data" class="muted">loading tonight's plan…</p>
+    </template>
+
+    <template v-else-if="view === 'discover'">
+      <AppHeader :night="discover.data.value?.night ?? null" :at-local="null"
+                 :generated-at="discover.data.value?.generatedAt ?? ''"
+                 :loading="discover.loading.value" @refresh="refresh" />
+      <p v-if="discover.error.value" class="error">failed to load: {{ discover.error.value }}</p>
+      <ErrorsBanner v-if="discover.data.value" :errors="discover.data.value.errors" />
+      <DiscoverView :targets="discover.data.value?.targets ?? []"
+                    :night="discover.data.value?.night ?? null"
+                    :loading="discover.loading.value" />
     </template>
 
     <template v-else>
