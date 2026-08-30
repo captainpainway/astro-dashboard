@@ -1,5 +1,10 @@
 const COMPASS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
+/** True when a target should be displayed: score must be positive. */
+export function isDisplayable(t) {
+  return t.score != null && t.score > 0
+}
+
 export function fmtTime(iso) {
   if (!iso) return '—'
   return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })

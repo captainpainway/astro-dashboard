@@ -6,6 +6,7 @@ import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
 import ControlsBar from './components/ControlsBar.vue'
 import TargetTable from './components/TargetTable.vue'
+import { isDisplayable } from './format'
 
 const { data, loading, error, load } = useTonight()
 
@@ -29,6 +30,7 @@ const activeInstrument = computed(() =>
     ? instrument.value
     : instruments.value[0])
 const activeTargets = computed(() => data.value?.instruments?.[activeInstrument.value] ?? [])
+const visibleCount = (ins) => (data.value?.instruments?.[ins] ?? []).filter(isDisplayable).length
 const instrumentLabels = {
   dob_8inch: '8" Dobsonian',
   dwarf_mini: 'Dwarf Mini',
@@ -52,7 +54,7 @@ watch(requestParams, refresh)
       <button v-for="ins in instruments" :key="ins" :class="{ active: ins === activeInstrument }"
               @click="instrument = ins">
         {{ instrumentLabels[ins] ?? ins }}
-        ({{ data.instruments[ins].length }})
+        ({{ visibleCount(ins) }})
       </button>
     </nav>
     <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :sort-key="sortKey" />

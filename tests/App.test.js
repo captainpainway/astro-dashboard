@@ -131,4 +131,20 @@ describe('App integration', () => {
     const afterUrl = fetch.mock.calls.at(-1)[0]
     expect(afterUrl).toContain('include=cluster')
   })
+
+  it('tab counts match displayed rows — zero/negative scores excluded', async () => {
+    const fixture = structuredClone(windowFixture)
+    fixture.instruments.dob_8inch.push({
+      id: 'junk', name: 'Junk Target', targetClass: 'messier', score: 0, maxAlt: 30,
+      bestTime: '2026-08-30T22:00:00-04:00',
+      window: { start: '2026-08-30T21:00:00-04:00', end: '2026-08-31T05:00:00-04:00' },
+      altAtBest: 30, azAtBest: 90, moonInterference: 0, notes: '',
+    })
+    vi.stubGlobal('fetch', mockFetchJson(fixture))
+    const w = mount(App)
+    await flushPromises()
+    const tabs = w.findAll('.tabs button')
+    expect(tabs[0].text()).toContain('(1)') // 2 targets from API, 1 hidden by score filter
+    expect(w.findAll('tbody tr.data-row')).toHaveLength(1)
+  })
 })

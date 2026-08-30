@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { compass, fmtTime, pct, timeline } from '../format'
+import { compass, fmtTime, isDisplayable, pct, timeline } from '../format'
 
 const props = defineProps({
   targets: { type: Array, required: true },
@@ -11,7 +11,7 @@ const props = defineProps({
 const expandedId = ref(null)
 
 const sorted = computed(() => {
-  const t = [...props.targets].filter((x) => x.score != null && x.score > 0)
+  const t = [...props.targets].filter(isDisplayable)
   switch (props.sortKey) {
     case 'bestTime': return t.sort((a, b) => new Date(a.bestTime) - new Date(b.bestTime))
     case 'maxAlt': return t.sort((a, b) => b.maxAlt - a.maxAlt)
