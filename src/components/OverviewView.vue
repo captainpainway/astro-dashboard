@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { fmtTime } from '../format'
+import { fmtTime, weatherEmoji } from '../format'
 import { ratingStyle } from '../ratings'
 
 const props = defineProps({
@@ -56,7 +56,7 @@ const fmtMagRange = (star) => {
         <dl>
           <div><dt>cloud avg</dt><dd>{{ Math.round(conditions.cloudCoverAvg ?? 0) }}%</dd></div>
           <div><dt>temp</dt><dd>{{ conditions.temperatureF ?? '—' }}°F</dd></div>
-          <div><dt>wind avg</dt><dd>{{ conditions.windMphAvg ?? '—' }} mph</dd></div>
+          <div><dt>wind avg</dt><dd>{{ Math.round(conditions.windMphAvg) ?? '—' }} mph</dd></div>
         </dl>
         <p v-if="current" class="muted small">
           now: {{ current.description ?? '—' }}, {{ current.cloudCover ?? '—' }}% cloud — {{ current.station }}
@@ -76,6 +76,20 @@ const fmtMagRange = (star) => {
         <p class="muted small">{{ bestWindow.shortForecast }} — {{ bestWindow.reasons[0] ?? '' }}</p>
       </div>
       <p v-else class="muted small">no dark hours in the forecast</p>
+    </article>
+
+    <!-- Hourly strip -->
+    <article v-if="forecast?.hours?.length" class="panel ov-card card-hourly">
+      <h2>hourly</h2>
+      <div class="ov-hours">
+        <div v-for="h in forecast.hours" :key="h.time"
+             class="hour-chip" :class="{ best: bestWindow && h.time === bestWindow.time }">
+          <span class="hour-chip-time">{{ fmtTime(h.time) }}</span>
+          <span class="hour-chip-emoji">{{ weatherEmoji(h) }}</span>
+          <span class="hour-chip-temp">{{ h.tempF != null ? h.tempF + '°' : '—' }}</span>
+          <span class="hour-chip-cloud muted small">{{ h.skyCover != null ? h.skyCover + '%' : '—' }}</span>
+        </div>
+      </div>
     </article>
 
     <!-- Top picks per instrument -->

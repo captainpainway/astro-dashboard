@@ -32,6 +32,37 @@ export function fmtDec(dec) {
   return `${dec >= 0 ? '+' : ''}${dec.toFixed(1)}°`
 }
 
+const EMOJI_RULES = [
+  [/thunder|lightning/i, '⛈️'],
+  [/snow|sleet|blizzard/i, '🌨️'],
+  [/rain|drizzle|shower/i, '🌧️'],
+  [/fog|mist|haze/i, '🌫️'],
+  [/tropical|hurricane|storm/i, '🌪️'],
+]
+
+/** Emoji icon for an hourly forecast row; falls back to sky cover, then a generic icon. */
+export function weatherEmoji(h = {}) {
+  const f = h.shortForecast ?? ''
+  for (const [re, emoji] of EMOJI_RULES) if (re.test(f)) return emoji
+
+  const clear = /clear|sunny|fair/i.test(f)
+  const partly = /partly/i.test(f)
+  const cloudy = /cloud|overcast/i.test(f)
+  const cover = h.skyCover ?? null
+
+  if (clear || partly) {
+    if (partly) return '⛅'
+    return h.isDark ? '🌙' : '☀️'
+  }
+  if (cloudy) return '☁️'
+  if (cover != null) {
+    if (cover < 25) return h.isDark ? '🌙' : '☀️'
+    if (cover < 65) return '⛅'
+    return '☁️'
+  }
+  return '🌤️'
+}
+
 export function timeline(night, target) {
   const start = new Date(night.startLocal).getTime()
   const end = new Date(night.endLocal).getTime()

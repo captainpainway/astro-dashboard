@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fmtTime, pct, compass, timeline, fmtRa, fmtDec } from '../src/format'
+import { fmtTime, pct, compass, timeline, fmtRa, fmtDec, weatherEmoji } from '../src/format'
 
 describe('fmtTime', () => {
   it('formats ISO local times as h:mm AM/PM', () => {
@@ -38,6 +38,30 @@ describe('fmtRa / fmtDec (discover coordinates)', () => {
   it('handles null', () => {
     expect(fmtRa(null)).toBe('—')
     expect(fmtDec(null)).toBe('—')
+  })
+})
+
+describe('weatherEmoji (NWS short forecast → icon)', () => {
+  it('maps known forecast strings', () => {
+    expect(weatherEmoji({ shortForecast: 'Partly Cloudy' })).toBe('⛅')
+    expect(weatherEmoji({ shortForecast: 'Mostly Cloudy' })).toBe('☁️')
+    expect(weatherEmoji({ shortForecast: 'Rain Showers' })).toBe('🌧️')
+    expect(weatherEmoji({ shortForecast: 'Thunderstorms Likely' })).toBe('⛈️')
+    expect(weatherEmoji({ shortForecast: 'Light Snow' })).toBe('🌨️')
+    expect(weatherEmoji({ shortForecast: 'Patchy Fog' })).toBe('🌫️')
+  })
+  it('clear at night is the moon, clear day is the sun', () => {
+    expect(weatherEmoji({ shortForecast: 'Clear', isDark: true })).toBe('🌙')
+    expect(weatherEmoji({ shortForecast: 'Clear', isDark: false })).toBe('☀️')
+  })
+  it('falls back to sky cover for unknown forecast text', () => {
+    expect(weatherEmoji({ shortForecast: 'Blustery', skyCover: 10, isDark: false })).toBe('☀️')
+    expect(weatherEmoji({ shortForecast: 'Blustery', skyCover: 10, isDark: true })).toBe('🌙')
+    expect(weatherEmoji({ shortForecast: 'Blustery', skyCover: 50 })).toBe('⛅')
+    expect(weatherEmoji({ shortForecast: 'Blustery', skyCover: 90 })).toBe('☁️')
+  })
+  it('handles missing everything with a generic icon', () => {
+    expect(weatherEmoji({})).toBe('🌤️')
   })
 })
 

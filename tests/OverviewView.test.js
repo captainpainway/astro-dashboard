@@ -38,11 +38,11 @@ const forecast = {
   night: { startLocal: '2026-08-30T19:00:00-04:00', endLocal: '2026-08-31T07:00:00-04:00', timezone: 'America/New_York' },
   hours: [
     { time: '2026-08-30T20:00:00-04:00', isDark: true, score: 30, rating: 'poor',
-      shortForecast: 'Cloudy', reasons: ['cloudy (90%)'] },
+      tempF: 78, skyCover: 90, shortForecast: 'Cloudy', reasons: ['cloudy (90%)'] },
     { time: '2026-08-31T02:00:00-04:00', isDark: true, score: 80, rating: 'ideal',
-      shortForecast: 'Clear', reasons: ['clear (5%)', 'calm'] },
+      tempF: 74, skyCover: 5, shortForecast: 'Clear', reasons: ['clear (5%)', 'calm'] },
     { time: '2026-08-31T03:00:00-04:00', isDark: false, score: 99, rating: 'ideal',
-      shortForecast: 'Clear', reasons: [] },
+      tempF: 72, skyCover: 4, shortForecast: 'Sunny', reasons: [] },
   ],
 }
 
@@ -119,6 +119,34 @@ describe('OverviewView', () => {
     })
     const placeholders = w.findAll('.card-loading')
     expect(placeholders).toHaveLength(3) // one per data source (tonight, forecast, discover)
+  })
+
+  it('renders hourly strip with time, emoji, temp, cloud per hour', () => {
+    const w = mount(OverviewView, { props: allProps })
+    const chips = w.findAll('.hour-chip')
+    expect(chips).toHaveLength(3)
+    expect(chips[0].text()).toContain('8:00 PM')
+    expect(chips[0].text()).toContain('☁️')
+    expect(chips[0].text()).toContain('78°')
+    expect(chips[0].text()).toContain('90%')
+    expect(chips[1].text()).toContain('🌙') // Clear + dark
+    expect(chips[2].text()).toContain('☀️') // Sunny + not dark
+  })
+
+  it('highlights only the best dark hour in the hourly strip', () => {
+    const w = mount(OverviewView, { props: allProps })
+    const chips = w.findAll('.hour-chip')
+    expect(chips[1].classes()).toContain('best')  // score 80, dark
+    expect(chips[0].classes()).not.toContain('best')
+    expect(chips[2].classes()).not.toContain('best') // score 99 but not dark
+  })
+
+  it('hourly strip hidden when forecast data is missing', () => {
+    const w = mount(OverviewView, {
+      props: { tonight, forecast: null, discover,
+               tonightLoading: false, forecastLoading: false, discoverLoading: false },
+    })
+    expect(w.find('.card-hourly').exists()).toBe(false)
   })
 
   it('hides sections whose data failed to arrive (no error text)', () => {
