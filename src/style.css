@@ -1,0 +1,20 @@
+:root {
+  --bg: #0b1020;
+  --panel: #141b31;
+  --panel-2: #1b2440;
+  --text: #e8ecf8;
+  --muted: #93a0c2;
+  --accent: #7aa2ff;
+  --good: #4ade80;
+  --warn: #fbbf24;
+  --bad: #f87171;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+.page { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+button { font: inherit; cursor: pointer; }
