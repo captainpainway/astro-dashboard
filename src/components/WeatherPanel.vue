@@ -16,7 +16,7 @@ defineProps({
       <dl>
         <div><dt>cloud avg</dt><dd>{{ weather.summary.cloudCoverAvg != null ? Math.round(weather.summary.cloudCoverAvg) : '—' }}%</dd></div>
         <div><dt>temp</dt><dd>{{ weather.summary.temperatureF ?? '—' }}°F</dd></div>
-        <div><dt>wind avg</dt><dd>{{ weather.summary.windMphAvg ?? '—' }} mph</dd></div>
+        <div><dt>wind avg</dt><dd>{{ Math.round(weather.summary.windMphAvg) ?? '—' }} mph</dd></div>
       </dl>
     </template>
     <template v-else-if="mode === 'instant' && weather.atTime">

@@ -2,7 +2,7 @@ const COMPASS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW',
 
 /** True when a target should be displayed: score must be positive. */
 export function isDisplayable(t) {
-  return t.score != null && t.score > 0
+  return t.score != null && Math.floor(t.score) > 0
 }
 
 export function fmtTime(iso) {
