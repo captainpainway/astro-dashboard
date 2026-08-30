@@ -33,7 +33,7 @@ function moonClass(mi) {
     <thead>
       <tr>
         <th /> <th>target</th> <th>class</th> <th>score</th> <th>alt</th>
-        <th>az</th> <th>best time</th> <th>moon</th>
+        <th>az</th> <th>dir</th> <th>best time</th> <th>moon</th>
       </tr>
     </thead>
     <tbody>
@@ -48,12 +48,13 @@ function moonClass(mi) {
               <span>{{ t.score?.toFixed(0) ?? '—' }}</span></div>
           </td>
           <td>{{ t.altAtBest != null ? t.altAtBest.toFixed(0) + '°' : '—' }}</td>
+          <td>{{ t.azAtBest != null ? t.azAtBest.toFixed(0) + '°' : '—' }}</td>
           <td>{{ compass(t.azAtBest) }}</td>
           <td>{{ fmtTime(t.bestTime) }}</td>
           <td :class="moonClass(t.moonInterference)">{{ pct(t.moonInterference) }}</td>
         </tr>
         <tr v-if="expandedId === t.id" class="detail-row">
-          <td colspan="8">
+          <td colspan="9">
             <p v-if="t.notes" class="notes">{{ t.notes }}</p>
             <p class="muted small">
               visible {{ fmtTime(t.window.start) }}–{{ fmtTime(t.window.end) }},

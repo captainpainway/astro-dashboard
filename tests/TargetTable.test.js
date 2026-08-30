@@ -33,4 +33,14 @@ describe('TargetTable', () => {
     const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
     expect(w.text()).toContain('70%')
   })
+
+  it('shows azimuth degrees in AZ and cardinal in DIR', () => {
+    const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
+    const headings = w.findAll('th').map(h => h.text().toLowerCase())
+    expect(headings).toContain('az')
+    expect(headings).toContain('dir')
+    const ssCygRow = w.findAll('tbody tr.data-row')[0]
+    expect(ssCygRow.text()).toContain('2°')   // azimuth value, not direction
+    expect(ssCygRow.text()).toContain('N')    // direction in its own column
+  })
 })
