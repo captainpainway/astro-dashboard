@@ -100,7 +100,7 @@ describe('App integration', () => {
     const w = mount(App)
     await flushPromises()
     expect(w.find('.card-conditions').exists()).toBe(true)
-    expect(w.find('.card-window').exists()).toBe(true)
+    expect(w.find('.card-hourly').exists()).toBe(true)
     expect(w.find('.card-discoveries').exists()).toBe(true)
     expect(w.find('.card-picks').text()).toContain('SS Cyg')
     // all three endpoints fetched on mount
@@ -112,9 +112,8 @@ describe('App integration', () => {
 
   it('renders header, weather, tabs, and table from live-shaped data', async () => {
     const w = await mountOnTonightView()
-    expect(w.text()).toContain('astro dashboard')
+    expect(w.text()).toContain("Astronomer's Dashboard")
     expect(w.text()).toContain('9:00 PM – 5:00 AM (America/New_York)')
-    expect(w.text()).toContain('Good night')
     expect(w.text()).toContain('SS Cyg')
     // both instrument tabs render with counts
     const tabs = w.findAll('.tabs button')
@@ -141,9 +140,8 @@ describe('App integration', () => {
     await flushPromises()
     const calledUrl = fetch.mock.calls.at(-1)[0]
     expect(calledUrl).toContain('at=22:30')
-    expect(w.text()).toContain('Poor at that time')
-    expect(w.text()).toContain('Mostly Cloudy')
     expect(w.text()).toContain('Sky at 10:30 PM')
+    expect(w.text()).toContain('SS Cyg')
   })
 
   it('shows the degraded-data banner when errors[] is non-empty', async () => {

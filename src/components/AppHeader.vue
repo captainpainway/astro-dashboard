@@ -13,7 +13,7 @@ defineEmits(['refresh'])
 <template>
   <header class="app-header">
     <div class="header-row">
-      <h1>astro dashboard</h1>
+      <h1>Astronomer's Dashboard</h1>
       <button class="refresh" :disabled="loading" @click="$emit('refresh')">
         {{ loading ? 'loading…' : 'refresh' }}
       </button>
@@ -22,6 +22,6 @@ defineEmits(['refresh'])
     <p v-else-if="night" class="muted">
       {{ fmtTime(night.startLocal) }} – {{ fmtTime(night.endLocal) }} ({{ night.timezone }})
     </p>
-    <p v-if="generatedAt" class="muted small">generated {{ new Date(generatedAt).toLocaleTimeString('en-US') }}</p>
+    <p v-if="generatedAt" class="muted small">Generated @ {{ new Date(generatedAt).toLocaleTimeString('en-US') }}</p>
   </header>
 </template>

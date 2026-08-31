@@ -94,15 +94,6 @@ describe('OverviewView', () => {
     expect(card.text()).toContain('11:15 PM') // Veil bestTime
   })
 
-  it('renders best-window card from the highest-scoring DARK hour', () => {
-    const w = mount(OverviewView, { props: allProps })
-    const card = w.find('.card-window')
-    expect(card.text()).toContain('2:00 AM')
-    expect(card.text()).toContain('Ideal')
-    expect(card.text()).toContain('Clear')
-    expect(card.text()).not.toContain('3:00 AM') // score 99 but not dark — excluded
-  })
-
   it('renders discoveries card with top star and remaining count', () => {
     const w = mount(OverviewView, { props: allProps })
     const card = w.find('.card-discoveries')
@@ -141,6 +132,20 @@ describe('OverviewView', () => {
     expect(chips[2].classes()).not.toContain('best') // score 99 but not dark
   })
 
+  it('color-codes each hourly chip by its rating', () => {
+    const w = mount(OverviewView, { props: allProps })
+    const chips = w.findAll('.hour-chip')
+    expect(chips[0].classes()).toContain('rc-poor')   // rating: poor
+    expect(chips[1].classes()).toContain('rc-ideal')  // rating: ideal
+    expect(chips[2].classes()).toContain('rc-ideal')  // rating: ideal (not dark, still colored)
+  })
+
+  it('falls back to a neutral class for unknown ratings', () => {
+    const fc = { ...forecast, hours: [{ ...forecast.hours[0], rating: 'bizarre' }] }
+    const w = mount(OverviewView, { props: { ...allProps, forecast: fc } })
+    expect(w.findAll('.hour-chip')[0].classes()).toContain('rc-none')
+  })
+
   it('hourly strip hidden when forecast data is missing', () => {
     const w = mount(OverviewView, {
       props: { tonight, forecast: null, discover,
@@ -154,7 +159,7 @@ describe('OverviewView', () => {
       props: { tonight, forecast: null, discover: null,
                tonightLoading: false, forecastLoading: false, discoverLoading: false },
     })
-    expect(w.find('.card-window').exists()).toBe(false)
+    expect(w.find('.card-hourly').exists()).toBe(false)
     expect(w.find('.card-discoveries').exists()).toBe(false)
     expect(w.find('.card-conditions').exists()).toBe(true)
     expect(w.text()).not.toContain('failed')

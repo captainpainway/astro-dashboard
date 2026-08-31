@@ -95,7 +95,6 @@ watch(requestParams, refresh)
     <ErrorsBanner v-if="data" :errors="data.errors" />
     <ControlsBar v-if="data" v-model:mode="mode" v-model:at-time="atTime"
                  v-model:active-classes="activeClasses" v-model:sort-key="sortKey" />
-    <WeatherPanel v-if="data" :weather="data.weather" :mode="data.mode" />
     <nav v-if="data && instruments.length > 1" class="tabs">
       <button v-for="ins in instruments" :key="ins" :class="{ active: ins === activeInstrument }"
               @click="instrument = ins">
