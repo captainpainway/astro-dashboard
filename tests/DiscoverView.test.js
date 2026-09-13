@@ -6,7 +6,7 @@ const night = { startLocal: '2026-08-30T21:00:00-04:00', endLocal: '2026-08-31T0
 
 function star(over = {}) {
   return {
-    name: 'V1452 Tau', auid: '000-BQP-885', constellation: 'Tau', varType: 'N',
+    name: 'V1452 Tau', auid: '000-BQP-885', oid: '10875985', constellation: 'Tau', varType: 'N',
     periodDays: null, maxMag: 8.7, minMag: 23.4, magBand: 'V',
     raHours: 5.35, decDegrees: 23.64, ...over,
   }
@@ -62,15 +62,33 @@ describe('DiscoverView', () => {
     expect(detail.text()).toContain('2:45 AM')
     expect(detail.text()).toContain('RA 5h 21m')
     expect(detail.text()).toContain('Dec +23.6°')
-    const link = w.find('a')
+    const link = w.find('.chart-link')
     expect(link.attributes('href')).toBe('https://app.aavso.org/vsp/X42882PV')
     expect(link.text()).toContain('X42882PV')
+  })
+
+  it('links the AUID to the star VSX detail page', async () => {
+    const w = mount(DiscoverView, { props: props([target()]) })
+    await w.find('tbody tr.data-row').trigger('click')
+    const link = w.find('.vsx-link')
+    expect(link.exists()).toBe(true)
+    expect(link.text()).toBe('000-BQP-885')
+    expect(link.attributes('href')).toBe('https://vsx.aavso.org/index.php?view=detail.top&oid=10875985')
+    expect(link.attributes('target')).toBe('_blank')
+    expect(link.attributes('rel')).toContain('noopener')
+  })
+
+  it('renders the AUID as plain text when no oid is known', async () => {
+    const w = mount(DiscoverView, { props: props([target({ star: star({ oid: null }) })]) })
+    await w.find('tbody tr.data-row').trigger('click')
+    expect(w.find('.vsx-link').exists()).toBe(false)
+    expect(w.find('.detail-row').text()).toContain('000-BQP-885')
   })
 
   it('shows no chart link when chartUrl is null', async () => {
     const w = mount(DiscoverView, { props: props([target()]) })
     await w.find('tbody tr.data-row').trigger('click')
-    expect(w.find('a').exists()).toBe(false)
+    expect(w.find('.chart-link').exists()).toBe(false)
   })
 
   it('shows loading placeholder', () => {

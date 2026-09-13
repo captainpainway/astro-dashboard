@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { compass, fmtDec, fmtRa, fmtTime, isDisplayable } from '../format'
+import { compass, fmtDec, fmtRa, fmtTime, isDisplayable, vsxUrl } from '../format'
 
 const props = defineProps({
   targets: { type: Array, required: true },
@@ -55,12 +55,14 @@ function fmtMagRange(star) {
           <tr v-if="expandedId === t.star.auid" class="detail-row">
             <td colspan="11">
               <p class="muted small">
-                AUID {{ t.star.auid ?? '—' }} ·
+                AUID <a v-if="vsxUrl(t.star.oid)" class="vsx-link" :href="vsxUrl(t.star.oid)"
+                        target="_blank" rel="noopener">{{ t.star.auid ?? '—' }}</a><template
+                  v-else>{{ t.star.auid ?? '—' }}</template> ·
                 RA {{ fmtRa(t.star.raHours) }} · Dec {{ fmtDec(t.star.decDegrees) }} ·
                 visible {{ fmtTime(t.window.start) }}–{{ fmtTime(t.window.end) }}
               </p>
               <p v-if="t.chartUrl" class="muted small">
-                VSP chart: <a :href="t.chartUrl" target="_blank" rel="noopener">{{ t.chartId ?? 'chart' }}</a>
+                VSP chart: <a class="chart-link" :href="t.chartUrl" target="_blank" rel="noopener">{{ t.chartId ?? 'chart' }}</a>
               </p>
             </td>
           </tr>

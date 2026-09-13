@@ -51,6 +51,10 @@ button { font: inherit; cursor: pointer; }
 .targets thead th { color: var(--muted); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
 .data-row { cursor: pointer; }
 .data-row:hover, .data-row.open { background: var(--panel-2); }
+a { color: var(--accent); }
+a:hover { text-decoration: underline; }
+.discover .vsx-link { color: var(--accent); }
+.discover .chart-link { color: var(--accent); }
 .badge { padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.75rem; background: var(--panel-2); color: var(--muted); }
 .score-wrap { display: flex; align-items: center; gap: 0.5rem; min-width: 110px; }
 .score-bar { height: 6px; border-radius: 3px; background: var(--accent); min-width: 2px; }
@@ -101,4 +105,16 @@ button { font: inherit; cursor: pointer; }
 .hour-chip-time { font-size: 0.78rem; color: var(--muted); }
 .hour-chip-temp { font-weight: 600; font-size: 0.9rem; }
 .ov-card.card-hourly { grid-column: 1 / -1; }
+.outlook { margin-top: 0.75rem; }
+.outlook-night { margin: 0 0 0.75rem; }
+.outlook-night-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.outlook-night-title h2 { margin: 0; font-size: 1.1rem; }
+.outlook-stats { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0.75rem 0 0; }
+.outlook-stats dt { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; }
+.outlook-stats dd { margin: 0.1rem 0 0; font-weight: 600; font-size: 0.9rem; }
+.outlook-forecast { margin: 0.4rem 0 0; }
+.outlook-reasons { margin: 0.4rem 0 0.75rem; padding-left: 1.1rem; color: var(--muted); font-size: 0.78rem; }
+.outlook-reasons li { margin: 0.1rem 0; }
+.outlook .ov-hours { margin-top: 0.5rem; }
+.hour-chip.not-dark { opacity: 0.55; }
 .discover { margin-top: 0.75rem; }

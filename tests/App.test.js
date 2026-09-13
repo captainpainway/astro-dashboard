@@ -65,12 +65,47 @@ const discoverFixture = {
   generatedAt: '2026-08-31T02:41:03+00:00',
   night: windowFixture.night,
   targets: [
-    { star: { name: 'V1452 Tau', auid: '000-BQP-885', constellation: 'Tau', varType: 'N',
+    { star: { name: 'V1452 Tau', auid: '000-BQP-885', oid: '10875985', constellation: 'Tau', varType: 'N',
               periodDays: null, maxMag: 8.7, minMag: 23.4, magBand: 'V',
               raHours: 5.35, decDegrees: 23.64 },
       score: 55.8, maxAlt: 47.1, bestTime: '2026-08-31T05:00:00-04:00',
       window: { start: '2026-08-31T02:45:00-04:00', end: '2026-08-31T05:00:00-04:00' },
       azAtBest: 85, chartId: null, chartUrl: null },
+  ],
+  errors: [],
+}
+
+const outlookFixture = {
+  generatedAt: '2026-09-02T00:54:16+00:00',
+  timezone: 'America/New_York',
+  nights: [
+    {
+      date: '2026-09-01', label: 'Tonight',
+      start: '2026-09-01T20:00:00-04:00', end: '2026-09-02T06:00:00-04:00',
+      tempF: 75.0, windMph: 5.0, windDir: 'NE', cloudCover: 46.5, cloudSource: 'grid',
+      precipProb: 19, shortForecast: 'Slight Chance Showers And Thunderstorms then Partly Cloudy',
+      moonIllum: 0.73, moonUpFraction: 0.75, darkHours: 2.5,
+      rating: 'fair', reasons: ['partly cloudy (46%)'], score: 52.0,
+      hours: [
+        { time: '2026-09-01T23:00:00-04:00', tempF: 76, skyCover: 48, windMph: 5, windDir: 'NE',
+          humidity: 90, precipProb: 19, shortForecast: 'Partly Cloudy', sunAlt: -40,
+          moonAlt: 47, moonIllum: 0.73, twilightPhase: 'dark', moonUp: true, isDark: true,
+          rating: 'fair', reasons: [], score: 45 },
+        { time: '2026-09-02T00:00:00-04:00', tempF: 74, skyCover: 10, windMph: 3, windDir: 'NE',
+          humidity: 88, precipProb: 5, shortForecast: 'Clear', sunAlt: -45,
+          moonAlt: 50, moonIllum: 0.73, twilightPhase: 'dark', moonUp: true, isDark: true,
+          rating: 'great', reasons: [], score: 75 },
+      ],
+    },
+    {
+      date: '2026-09-02', label: 'Wednesday Night',
+      start: '2026-09-02T18:00:00-04:00', end: '2026-09-03T06:00:00-04:00',
+      tempF: 75.0, windMph: 5.0, windDir: 'E', cloudCover: 46.9, cloudSource: 'grid',
+      precipProb: 53, shortForecast: 'Chance Showers And Thunderstorms then Partly Cloudy',
+      moonIllum: 0.63, moonUpFraction: 0.54, darkHours: 5.5,
+      rating: 'poor', reasons: ['rain likely (53%)'], score: 38.2,
+      hours: [],
+    },
   ],
   errors: [],
 }
@@ -192,5 +227,56 @@ describe('App integration', () => {
     const tabs = w.findAll('.tabs button')
     expect(tabs[0].text()).toContain('(1)') // 2 targets from API, 1 hidden by score filter
     expect(w.findAll('tbody tr.data-row')).toHaveLength(1)
+  })
+
+  it('outlook view: lazy-loads on tab switch and renders nights with hourly chips', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
+      if (String(url).includes('/api/outlook')) return { ok: true, json: () => Promise.resolve(outlookFixture) }
+      return { ok: true, json: () => Promise.resolve(windowFixture) }
+    }))
+    const w = mount(App)
+    await flushPromises()
+    fetch.mockClear()
+    // not fetched on mount
+    expect(fetch.mock.calls.some(c => String(c[0]).includes('/api/outlook'))).toBe(false)
+    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await flushPromises()
+    expect(fetch.mock.calls.at(-1)[0]).toBe('/api/outlook')
+    const panels = w.findAll('.outlook-night')
+    expect(panels).toHaveLength(2)
+    expect(panels[0].text()).toContain('Tonight')
+    expect(panels[0].find('.rating').classes()).toContain('rating-fair')
+    expect(panels[0].findAll('.hour-chip')).toHaveLength(2)
+    expect(panels[0].findAll('.hour-chip')[1].classes()).toContain('rc-great')
+    expect(panels[0].findAll('.hour-chip')[1].classes()).toContain('best')
+    // second night beyond the hourly grid: headline only
+    expect(panels[1].text()).toContain('no hourly detail for this night')
+  })
+
+  it('outlook view: refresh refetches, errors surface inline, banner shows errors[]', async () => {
+    let fail = false
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
+      if (String(url).includes('/api/outlook')) {
+        if (fail) return Promise.reject(new Error('Failed to fetch'))
+        return { ok: true, json: () => Promise.resolve(outlookFixture) }
+      }
+      return { ok: true, json: () => Promise.resolve(windowFixture) }
+    }))
+    const w = mount(App)
+    await flushPromises()
+    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await flushPromises()
+    // refresh button still triggers an outlook refetch
+    fetch.mockClear()
+    await w.find('.refresh').trigger('click')
+    await flushPromises()
+    expect(fetch.mock.calls.some(c => String(c[0]).includes('/api/outlook'))).toBe(true)
+    // a failed refresh shows the inline error, keeps rendered nights
+    fail = true
+    fetch.mockClear()
+    await w.find('.refresh').trigger('click')
+    await flushPromises()
+    expect(w.text()).toContain('outlook failed:')
+    expect(w.findAll('.outlook-night')).toHaveLength(2)
   })
 })

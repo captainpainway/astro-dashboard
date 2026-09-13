@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { fmtTime, pct, compass, timeline, fmtRa, fmtDec, weatherEmoji } from '../src/format'
+import { fmtTime, pct, compass, timeline, fmtRa, fmtDec, weatherEmoji, vsxUrl } from '../src/format'
+
+describe('vsxUrl', () => {
+  it('builds a VSX detail URL from an OID', () => {
+    expect(vsxUrl('10875985')).toBe('https://vsx.aavso.org/index.php?view=detail.top&oid=10875985')
+  })
+  it('returns null without an OID so callers render plain text', () => {
+    expect(vsxUrl(null)).toBeNull()
+    expect(vsxUrl('')).toBeNull()
+    expect(vsxUrl(undefined)).toBeNull()
+  })
+})
 
 describe('fmtTime', () => {
   it('formats ISO local times as h:mm AM/PM', () => {

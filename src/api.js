@@ -23,6 +23,20 @@ export async function fetchForecast(opts = {}) {
   return res.json()
 }
 
+export function buildOutlookQuery({ nights } = {}) {
+  return nights ? `?nights=${nights}` : ''
+}
+
+export async function fetchOutlook(opts = {}) {
+  const res = await fetch(`${BASE}/outlook${buildOutlookQuery(opts)}`)
+  if (!res.ok) {
+    let detail = `${res.status} ${res.statusText}`
+    try { const body = await res.json(); if (body?.detail) detail = String(body.detail) } catch { /* keep status text */ }
+    throw new Error(detail)
+  }
+  return res.json()
+}
+
 export function buildDiscoverQuery({ limit, charts } = {}) {
   const parts = []
   if (limit != null) parts.push(`limit=${limit}`)

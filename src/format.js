@@ -1,5 +1,14 @@
 const COMPASS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
+/**
+ * VSX detail-page URL for a star's AAVSO OID (e.g. 10875985).
+ * VSX keys its detail pages by OID, not AUID — there is no AUID-based URL.
+ * Returns null when no OID is known so callers can fall back to plain text.
+ */
+export function vsxUrl(oid) {
+  return oid ? `https://vsx.aavso.org/index.php?view=detail.top&oid=${oid}` : null
+}
+
 /** True when a target should be displayed: score must be positive. */
 export function isDisplayable(t) {
   return t.score != null && Math.floor(t.score) > 0
@@ -8,6 +17,14 @@ export function isDisplayable(t) {
 export function fmtTime(iso) {
   if (!iso) return '—'
   return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+}
+
+/** 'Wed, Sep 2' style label for a YYYY-MM-DD date string. */
+export function fmtDate(dateStr) {
+  if (!dateStr) return '—'
+  const [y, m, d] = dateStr.split('-').map(Number)
+  if (!y || !m || !d) return dateStr
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
 export function pct(x) {

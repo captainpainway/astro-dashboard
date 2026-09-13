@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
 import { useDiscover } from './composables/useDiscover'
+import { useOutlook } from './composables/useOutlook'
 import AppHeader from './components/AppHeader.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
@@ -11,13 +12,15 @@ import TargetTable from './components/TargetTable.vue'
 import ForecastView from './components/ForecastView.vue'
 import DiscoverView from './components/DiscoverView.vue'
 import OverviewView from './components/OverviewView.vue'
+import OutlookView from './components/OutlookView.vue'
 import { isDisplayable } from './format'
 
 const { data, loading, error, load } = useTonight()
 const forecast = useForecast()
 const discover = useDiscover()
+const outlook = useOutlook()
 
-const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'discover'
+const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'discover'
 
 async function loadAll() {
   await Promise.all([
@@ -28,6 +31,7 @@ async function loadAll() {
 }
 watch(view, (v) => {
   if (v === 'forecast' && !forecast.loaded.value && !forecast.loading.value) forecast.load()
+  if (v === 'outlook' && !outlook.loaded.value && !outlook.loading.value) outlook.load()
   if (v === 'discover' && !discover.loaded.value && !discover.loading.value) discover.load({ limit: 20 })
 })
 
@@ -60,6 +64,7 @@ const instrumentLabels = {
 async function refresh() {
   if (view.value === 'home') await loadAll()
   else if (view.value === 'forecast') await forecast.load()
+  else if (view.value === 'outlook') await outlook.load()
   else if (view.value === 'discover') await discover.load({ limit: 20 })
   else await load(requestParams.value)
 }
@@ -73,6 +78,7 @@ watch(requestParams, refresh)
       <button :class="{ active: view === 'home' }" @click="view = 'home'">home</button>
       <button :class="{ active: view === 'tonight' }" @click="view = 'tonight'">tonight</button>
       <button :class="{ active: view === 'forecast' }" @click="view = 'forecast'">forecast</button>
+      <button :class="{ active: view === 'outlook' }" @click="view = 'outlook'">outlook</button>
       <button :class="{ active: view === 'discover' }" @click="view = 'discover'">discover</button>
     </nav>
 
@@ -105,6 +111,16 @@ watch(requestParams, refresh)
     <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :sort-key="sortKey" />
     <p v-else-if="data && !loading" class="muted">no targets match the current filters</p>
     <p v-if="loading && !data" class="muted">loading tonight's plan…</p>
+    </template>
+
+    <template v-else-if="view === 'outlook'">
+      <AppHeader :night="null" :at-local="null"
+                 :generated-at="outlook.data.value?.generatedAt ?? ''"
+                 :loading="outlook.loading.value" @refresh="refresh" />
+      <p v-if="outlook.error.value" class="error">outlook failed: {{ outlook.error.value }}</p>
+      <ErrorsBanner v-if="outlook.data.value" :errors="outlook.data.value.errors" />
+      <OutlookView :nights="outlook.data.value?.nights ?? []"
+                   :loading="outlook.loading.value" />
     </template>
 
     <template v-else-if="view === 'discover'">
