@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ForecastView from '../src/components/ForecastView.vue'
+import NightTimes from '../src/components/NightTimes.vue'
 
 const night = { startLocal: '2026-08-30T19:00:00-04:00', endLocal: '2026-08-31T07:00:00-04:00', timezone: 'America/New_York' }
 
@@ -70,5 +71,29 @@ describe('ForecastView', () => {
     const w = mount(ForecastView, { props: props([hour()]) })
     expect(w.text()).toContain('partly cloudy (48%)')
     expect(w.text()).toContain('moon up (90%)')
+  })
+
+  it('flags daylight hours as not observing time', () => {
+    const hours = [hour({ daylight: true, isDark: false }),
+                   hour({ time: '2026-08-31T03:00:00-04:00' })]
+    const w = mount(ForecastView, { props: props(hours) })
+    const cards = w.findAll('.hour-card')
+    expect(cards[0].classes()).toContain('daylight')
+    expect(cards[0].text()).toContain('sun up')
+    expect(cards[1].classes()).not.toContain('daylight')
+    expect(cards[1].text()).not.toContain('sun up')
+  })
+
+  it('shows the night-times card when twilight is present', () => {
+    const tw = { sunset: '2026-08-30T19:27:00-04:00', sunrise: '2026-08-31T07:13:00-04:00',
+                 astroDusk: '2026-08-30T20:46:00-04:00', astroDawn: '2026-08-31T05:54:00-04:00' }
+    const w = mount(ForecastView, { props: { ...props([hour()]), twilight: tw } })
+    expect(w.findComponent(NightTimes).exists()).toBe(true)
+    expect(w.text()).toContain('7:27 PM')
+  })
+
+  it('omits the night-times card when twilight is absent', () => {
+    const w = mount(ForecastView, { props: props([hour()]) })
+    expect(w.findComponent(NightTimes).exists()).toBe(false)
   })
 })

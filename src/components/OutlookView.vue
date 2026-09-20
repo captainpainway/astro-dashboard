@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { fmtTime, fmtDate, weatherEmoji } from '../format'
 import { ratingStyle, normalizeRating } from '../ratings'
+import NightTimes from './NightTimes.vue'
 
 const props = defineProps({
   nights: { type: Array, required: true },
@@ -43,6 +44,8 @@ const rows = computed(() =>
       </dl>
 
       <p v-if="night.shortForecast" class="muted small outlook-forecast">{{ night.shortForecast }}</p>
+
+      <NightTimes v-if="night.twilight" :twilight="night.twilight" compact />
 
       <ul class="outlook-reasons">
         <li v-for="r in night.reasons" :key="r">{{ r }}</li>

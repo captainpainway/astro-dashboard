@@ -2,10 +2,12 @@
 import { computed } from 'vue'
 import { fmtTime } from '../format'
 import { ratingStyle } from '../ratings'
+import NightTimes from './NightTimes.vue'
 
 const props = defineProps({
   hours: { type: Array, required: true },
   night: { type: Object, default: null },
+  twilight: { type: Object, default: null },
   loading: { type: Boolean, default: false },
 })
 
@@ -16,6 +18,8 @@ const best = computed(() =>
 
 <template>
   <section class="forecast">
+    <NightTimes v-if="twilight" :twilight="twilight" />
+
     <div v-if="best" class="best-window panel">
       <span class="rating" :class="ratingStyle(best.rating).css">
         {{ ratingStyle(best.rating).label }}
@@ -29,7 +33,7 @@ const best = computed(() =>
 
     <div v-else class="hours">
       <div v-for="h in hours" :key="h.time"
-           class="hour-card panel" :class="{ 'not-dark': !h.isDark }">
+           class="hour-card panel" :class="{ 'not-dark': !h.isDark, daylight: h.daylight }">
         <div class="hour-head">
           <strong>{{ fmtTime(h.time) }}</strong>
           <span class="rating" :class="ratingStyle(h.rating).css">
@@ -37,6 +41,7 @@ const best = computed(() =>
           </span>
         </div>
         <div class="hour-forecast">{{ h.shortForecast }}</div>
+        <p v-if="h.daylight" class="hour-daylight muted small">☀️ sun up — not observing time</p>
         <dl class="hour-stats">
           <div><dt>cloud</dt><dd>{{ h.skyCover ?? '—' }}%</dd></div>
           <div><dt>temp</dt><dd>{{ h.tempF ?? '—' }}°F</dd></div>

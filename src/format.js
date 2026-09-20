@@ -19,6 +19,21 @@ export function fmtTime(iso) {
   return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
 }
 
+/**
+ * Human-readable duration between two ISO instants, e.g. '9h 07m'.
+ * Returns null when either end is missing or the range is not positive, so
+ * callers can skip the element rather than render a nonsense span.
+ */
+export function fmtDuration(startIso, endIso) {
+  if (!startIso || !endIso) return null
+  const ms = new Date(endIso).getTime() - new Date(startIso).getTime()
+  if (!Number.isFinite(ms) || ms <= 0) return null
+  const totalMinutes = Math.round(ms / 60000)
+  const h = Math.floor(totalMinutes / 60)
+  const m = totalMinutes % 60
+  return h ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}m`
+}
+
 /** 'Wed, Sep 2' style label for a YYYY-MM-DD date string. */
 export function fmtDate(dateStr) {
   if (!dateStr) return '—'

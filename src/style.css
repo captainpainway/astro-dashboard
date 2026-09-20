@@ -118,3 +118,27 @@ a:hover { text-decoration: underline; }
 .outlook .ov-hours { margin-top: 0.5rem; }
 .hour-chip.not-dark { opacity: 0.55; }
 .discover { margin-top: 0.75rem; }
+
+/* Night times — sunset/sunrise + twilight boundaries (NightTimes.vue) */
+.tw-card { margin: 0; }
+.tw-card h2 { margin: 0 0 0.75rem; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.tw-bar { position: relative; height: 14px; border-radius: 7px; overflow: hidden;
+  background: var(--panel-2); margin: 0.5rem 0 0.25rem; }
+.tw-seg { position: absolute; top: 0; bottom: 0; }
+.tw-civil { background: #3d5a8a; }
+.tw-nautical { background: #23325c; }
+.tw-astro { background: #161f3a; }
+.tw-dark { background: #060a18; outline: 1px solid rgba(122, 162, 255, .25); outline-offset: -1px; }
+.tw-bar-labels { display: flex; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
+.tw-dark-label { color: var(--accent); }
+.tw-times { display: flex; flex-wrap: wrap; gap: 0.35rem 1.4rem; margin: 0; }
+.tw-times dt { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.tw-times dd { margin: 0.1rem 0 0; font-weight: 600; font-size: 0.92rem; }
+.tw-dark-row dt { color: var(--text); }
+.tw-dark-row dd { color: var(--accent); }
+.tw-icon { margin-right: 0.15rem; }
+.tw-sub { text-transform: none; letter-spacing: 0; }
+.tw-summary { margin: 0.6rem 0 0; }
+.tw-card.compact .tw-times { gap: 0.25rem 1rem; }
+.tw-card.compact .tw-times dt { font-size: 0.65rem; }
+.tw-card.compact .tw-times dd { font-size: 0.82rem; }

@@ -11,6 +11,14 @@ const windowFixture = {
     startUtc: '2026-08-31T01:00:00+00:00', endUtc: '2026-08-31T09:00:00+00:00',
     timezone: 'America/New_York',
   },
+  twilight: {
+    date: '2026-08-30',
+    sunset: '2026-08-30T19:27:46-04:00', sunrise: '2026-08-31T07:13:32-04:00',
+    civilDusk: '2026-08-30T19:51:23-04:00', civilDawn: '2026-08-31T06:49:54-04:00',
+    nauticalDusk: '2026-08-30T20:18:56-04:00', nauticalDawn: '2026-08-31T06:22:19-04:00',
+    astroDusk: '2026-08-30T20:46:46-04:00', astroDawn: '2026-08-31T05:54:28-04:00',
+    midnightSun: false, polarNight: false,
+  },
   weather: {
     summary: { cloudCoverAvg: 46.3, temperatureF: 75, windMphAvg: 2.2, rating: 'good' },
     current: { cloudCover: 71, temperatureF: 82.4, windMph: 6.9,
@@ -52,11 +60,19 @@ const forecastFixture = {
   night: { startLocal: '2026-08-30T19:00:00-04:00', endLocal: '2026-08-31T07:00:00-04:00',
            startUtc: '2026-08-30T23:00:00+00:00', endUtc: '2026-08-31T11:00:00+00:00',
            timezone: 'America/New_York' },
+  twilight: {
+    date: '2026-08-30',
+    sunset: '2026-08-30T19:27:46-04:00', sunrise: '2026-08-31T07:13:32-04:00',
+    civilDusk: '2026-08-30T19:51:23-04:00', civilDawn: '2026-08-31T06:49:54-04:00',
+    nauticalDusk: '2026-08-30T20:18:56-04:00', nauticalDawn: '2026-08-31T06:22:19-04:00',
+    astroDusk: '2026-08-30T20:46:46-04:00', astroDawn: '2026-08-31T05:54:28-04:00',
+    midnightSun: false, polarNight: false,
+  },
   hours: [
     { time: '2026-08-31T02:00:00-04:00', tempF: 76, dewpointF: 75, skyCover: 5, windMph: 0,
       windDir: '', humidity: 90, precipProb: 0, shortForecast: 'Clear', sunAlt: -52,
       moonAlt: 47.6, moonIllum: 0.9, twilightPhase: 'dark', moonUp: true, isDark: true,
-      rating: 'ideal', reasons: ['clear (5%)'], score: 80 },
+      daylight: false, rating: 'ideal', reasons: ['clear (5%)'], score: 80 },
   ],
   errors: [],
 }
@@ -86,6 +102,14 @@ const outlookFixture = {
       precipProb: 19, shortForecast: 'Slight Chance Showers And Thunderstorms then Partly Cloudy',
       moonIllum: 0.73, moonUpFraction: 0.75, darkHours: 2.5,
       rating: 'fair', reasons: ['partly cloudy (46%)'], score: 52.0,
+      twilight: {
+        date: '2026-09-01',
+        sunset: '2026-09-01T19:51:00-04:00', sunrise: '2026-09-02T07:09:00-04:00',
+        civilDusk: '2026-09-01T20:15:00-04:00', civilDawn: '2026-09-02T06:45:00-04:00',
+        nauticalDusk: '2026-09-01T20:43:00-04:00', nauticalDawn: '2026-09-02T06:18:00-04:00',
+        astroDusk: '2026-09-01T21:11:00-04:00', astroDawn: '2026-09-02T05:50:00-04:00',
+        midnightSun: false, polarNight: false,
+      },
       hours: [
         { time: '2026-09-01T23:00:00-04:00', tempF: 76, skyCover: 48, windMph: 5, windDir: 'NE',
           humidity: 90, precipProb: 19, shortForecast: 'Partly Cloudy', sunAlt: -40,
@@ -124,6 +148,18 @@ async function mountOnTonightView(fixture = windowFixture) {
 }
 
 beforeEach(() => { vi.stubGlobal('fetch', mockFetchJson(windowFixture)) })
+
+/** Mount the app on the home view with all three endpoint fixtures wired. */
+async function mountHome() {
+  vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
+    if (String(url).includes('/api/forecast')) return { ok: true, json: () => Promise.resolve(forecastFixture) }
+    if (String(url).includes('/api/discover')) return { ok: true, json: () => Promise.resolve(discoverFixture) }
+    return { ok: true, json: () => Promise.resolve(windowFixture) }
+  }))
+  const w = mount(App)
+  await flushPromises()
+  return w
+}
 
 describe('App integration', () => {
   it('home view renders overview cards from all three endpoints', async () => {
@@ -278,5 +314,57 @@ describe('App integration', () => {
     await flushPromises()
     expect(w.text()).toContain('outlook failed:')
     expect(w.findAll('.outlook-night')).toHaveLength(2)
+  })
+
+  it('home view: shows sunset, twilight boundaries and the dark span', async () => {
+    const w = await mountHome()
+    const tw = w.find('.tw-card')
+    expect(tw.exists()).toBe(true)
+    const text = tw.text()
+    expect(text).toContain('sunset')
+    expect(text).toContain('7:27 PM')
+    expect(text).toContain('8:46 PM')          // full dark
+    expect(text).toContain('sunrise')
+    expect(text).toContain('7:13 AM')
+    expect(text).toContain('fully dark')
+    // 8 boundaries → 7 phases between them.
+    expect(w.findAll('.tw-seg').length).toBe(7)
+  })
+
+  it('forecast view: shows the night-times card and marks daylight hours', async () => {
+    const w = await mountHome()
+    await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
+    await flushPromises()
+    expect(w.find('.tw-card').exists()).toBe(true)
+    expect(w.find('.tw-card').text()).toContain('7:27 PM')
+    // The fixture's only hour is after dark, so no daylight notice.
+    expect(w.find('.hour-card').classes()).not.toContain('daylight')
+  })
+
+  it('tonight view: shows the compact night-times strip', async () => {
+    const w = await mountOnTonightView()
+    expect(w.find('.tw-card').exists()).toBe(true)
+    expect(w.find('.tw-card').text()).toContain('8:46 PM')
+    expect(w.find('.tw-card').text()).toContain('fully dark')
+  })
+
+  it('outlook view: each night row carries its own twilight times', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
+      if (String(url).includes('/api/outlook')) {
+        return { ok: true, json: () => Promise.resolve(outlookFixture) }
+      }
+      return { ok: true, json: () => Promise.resolve(windowFixture) }
+    }))
+    const w = mount(App)
+    await flushPromises()
+    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await flushPromises()
+    // Only night 1 carries twilight in the fixture (night 2 is beyond the data).
+    expect(w.findAll('.outlook-night .tw-card')).toHaveLength(1)
+    const row = w.findAll('.outlook-night')[0]
+    // Compact rows keep just the planning-critical boundaries: full dark ↔ dawn.
+    expect(row.text()).toContain('9:11 PM')
+    expect(row.text()).toContain('5:50 AM')
+    expect(row.text()).toContain('fully dark')
   })
 })

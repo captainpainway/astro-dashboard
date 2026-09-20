@@ -2,11 +2,13 @@
 import { computed } from 'vue'
 import { fmtTime, weatherEmoji } from '../format'
 import { ratingStyle, normalizeRating } from '../ratings'
+import NightTimes from './NightTimes.vue'
 
 const props = defineProps({
   tonight: { type: Object, default: null },
   forecast: { type: Object, default: null },
   discover: { type: Object, default: null },
+  twilight: { type: Object, default: null },
   tonightLoading: { type: Boolean, default: false },
   forecastLoading: { type: Boolean, default: false },
   discoverLoading: { type: Boolean, default: false },
@@ -64,6 +66,9 @@ const fmtMagRange = (star) => {
       </div>
       <p v-else class="muted small">conditions unavailable</p>
     </article>
+
+    <!-- Night times: sunset/sunrise + twilight boundaries -->
+    <NightTimes v-if="twilight" :twilight="twilight" />
 
     <!-- Top picks per instrument -->
     <article v-if="tonight" class="panel ov-card card-picks">

@@ -13,6 +13,7 @@ import ForecastView from './components/ForecastView.vue'
 import DiscoverView from './components/DiscoverView.vue'
 import OverviewView from './components/OverviewView.vue'
 import OutlookView from './components/OutlookView.vue'
+import NightTimes from './components/NightTimes.vue'
 import { isDisplayable } from './format'
 
 const { data, loading, error, load } = useTonight()
@@ -90,6 +91,7 @@ watch(requestParams, refresh)
       <p v-if="forecast.error.value" class="error">forecast failed: {{ forecast.error.value }}</p>
       <p v-if="discover.error.value" class="error">discover failed: {{ discover.error.value }}</p>
       <OverviewView :tonight="data" :forecast="forecast.data.value" :discover="discover.data.value"
+                   :twilight="data?.twilight ?? forecast.data.value?.twilight ?? null"
                    :tonight-loading="loading" :forecast-loading="forecast.loading.value"
                    :discover-loading="discover.loading.value" />
     </template>
@@ -101,6 +103,7 @@ watch(requestParams, refresh)
     <ErrorsBanner v-if="data" :errors="data.errors" />
     <ControlsBar v-if="data" v-model:mode="mode" v-model:at-time="atTime"
                  v-model:active-classes="activeClasses" v-model:sort-key="sortKey" />
+    <NightTimes v-if="data?.twilight" :twilight="data.twilight" compact />
     <nav v-if="data && instruments.length > 1" class="tabs">
       <button v-for="ins in instruments" :key="ins" :class="{ active: ins === activeInstrument }"
               @click="instrument = ins">
@@ -142,6 +145,7 @@ watch(requestParams, refresh)
       <ErrorsBanner v-if="forecast.data.value" :errors="forecast.data.value.errors" />
       <ForecastView :hours="forecast.data.value?.hours ?? []"
                     :night="forecast.data.value?.night ?? null"
+                    :twilight="forecast.data.value?.twilight ?? null"
                     :loading="forecast.loading.value" />
     </template>
   </main>
