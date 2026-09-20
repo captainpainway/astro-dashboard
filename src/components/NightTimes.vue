@@ -43,7 +43,8 @@ const rows = computed(() => {
 
 /** Only the boundaries that actually occur (polar nights drop several). */
 const present = computed(() => rows.value.filter((r) => r.time))
-const shown = computed(() => (props.compact ? present.value.filter((r) => r.primary) : present.value))
+// const shown = computed(() => (props.compact ? present.value.filter((r) => r.primary) : present.value))
+const shown = present.value;
 
 const darkSpan = computed(() => fmtDuration(props.twilight?.astroDusk, props.twilight?.astroDawn))
 const nightSpan = computed(() => fmtDuration(props.twilight?.sunset, props.twilight?.sunrise))

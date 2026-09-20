@@ -67,9 +67,6 @@ const fmtMagRange = (star) => {
       <p v-else class="muted small">conditions unavailable</p>
     </article>
 
-    <!-- Night times: sunset/sunrise + twilight boundaries -->
-    <NightTimes v-if="twilight" :twilight="twilight" />
-
     <!-- Top picks per instrument -->
     <article v-if="tonight" class="panel ov-card card-picks">
       <h2>top targets</h2>
@@ -105,6 +102,9 @@ const fmtMagRange = (star) => {
       </div>
       <p v-else class="muted small">no under-observed stars found</p>
     </article>
+
+    <!-- Night times: sunset/sunrise + twilight boundaries -->
+    <NightTimes v-if="twilight" :twilight="twilight" class="panel ov-card card-hourly" />
 
     <!-- Hourly strip -->
     <article v-if="forecast?.hours?.length" class="panel ov-card card-hourly">
