@@ -30,14 +30,14 @@ const hasAny = computed(() => {
 const rows = computed(() => {
   const t = props.twilight ?? {}
   return [
-    { key: 'sunset', label: 'sunset', time: t.sunset, icon: '🌇' },
+    { key: 'sunset', label: 'sunset', time: t.sunset },
     { key: 'civilDusk', label: 'civil dusk', time: t.civilDusk, sub: 'sun −6°' },
     { key: 'nauticalDusk', label: 'nautical dusk', time: t.nauticalDusk, sub: 'sun −12°' },
     { key: 'astroDusk', label: 'full dark', time: t.astroDusk, sub: 'sun −18°', dark: true, primary: true },
     { key: 'astroDawn', label: 'dark ends', time: t.astroDawn, sub: 'sun −18°', dark: true, primary: true },
     { key: 'nauticalDawn', label: 'nautical dawn', time: t.nauticalDawn, sub: 'sun −12°' },
     { key: 'civilDawn', label: 'civil dawn', time: t.civilDawn, sub: 'sun −6°' },
-    { key: 'sunrise', label: 'sunrise', time: t.sunrise, icon: '🌅' },
+    { key: 'sunrise', label: 'sunrise', time: t.sunrise },
   ]
 })
 
@@ -105,7 +105,6 @@ const lastMark = computed(() => (present.value[present.value.length - 1]?.time ?
       <dl class="tw-times">
         <div v-for="r in shown" :key="r.key" :class="{ 'tw-dark-row': r.dark }">
           <dt>
-            <span v-if="r.icon" class="tw-icon">{{ r.icon }}</span>
             {{ r.label }}
             <span v-if="r.sub" class="tw-sub muted">({{ r.sub }})</span>
           </dt>
