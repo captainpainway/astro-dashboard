@@ -5,6 +5,7 @@ import { useForecast } from './composables/useForecast'
 import { useDiscover } from './composables/useDiscover'
 import { useOutlook } from './composables/useOutlook'
 import AppHeader from './components/AppHeader.vue'
+import AppDock from './components/AppDock.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
 import ControlsBar from './components/ControlsBar.vue'
@@ -69,24 +70,25 @@ async function refresh() {
   else if (view.value === 'discover') await discover.load({ limit: 20 })
   else await load(requestParams.value)
 }
+const dockLoading = computed(() => {
+  if (view.value === 'home') return loading.value || forecast.loading.value || discover.loading.value
+  if (view.value === 'forecast') return forecast.loading.value
+  if (view.value === 'outlook') return outlook.loading.value
+  if (view.value === 'discover') return discover.loading.value
+  return loading.value
+})
 onMounted(loadAll)
 watch(requestParams, refresh)
 </script>
 
 <template>
-  <main class="page">
-    <nav class="view-switch">
-      <button :class="{ active: view === 'home' }" @click="view = 'home'">home</button>
-      <button :class="{ active: view === 'tonight' }" @click="view = 'tonight'">tonight</button>
-      <button :class="{ active: view === 'forecast' }" @click="view = 'forecast'">forecast</button>
-      <button :class="{ active: view === 'outlook' }" @click="view = 'outlook'">outlook</button>
-      <button :class="{ active: view === 'discover' }" @click="view = 'discover'">discover</button>
-    </nav>
+  <div class="shell">
+  <AppDock v-model="view" :loading="dockLoading" @refresh="refresh" />
+  <main class="page" :class="{ 'page-wide': view === 'home' }">
 
     <template v-if="view === 'home'">
-      <AppHeader :night="night" :at-local="null"
-                 :generated-at="data?.generatedAt ?? ''"
-                 :loading="loading || forecast.loading.value || discover.loading.value" @refresh="refresh" />
+      <AppHeader :night="null" :at-local="null" :location="data?.location ?? null"
+                 :generated-at="data?.generatedAt ?? ''" />
       <p v-if="error" class="error">failed to load: {{ error }}</p>
       <p v-if="forecast.error.value" class="error">forecast failed: {{ forecast.error.value }}</p>
       <p v-if="discover.error.value" class="error">discover failed: {{ discover.error.value }}</p>
@@ -97,8 +99,7 @@ watch(requestParams, refresh)
     </template>
 
     <template v-else-if="view === 'tonight'">
-    <AppHeader :night="night" :at-local="atLocal" :generated-at="data?.generatedAt ?? ''"
-               :loading="loading" @refresh="refresh" />
+    <AppHeader :night="night" :at-local="atLocal" :generated-at="data?.generatedAt ?? ''" />
     <p v-if="error" class="error">failed to load: {{ error }}</p>
     <ErrorsBanner v-if="data" :errors="data.errors" />
     <ControlsBar v-if="data" v-model:mode="mode" v-model:at-time="atTime"
@@ -118,8 +119,7 @@ watch(requestParams, refresh)
 
     <template v-else-if="view === 'outlook'">
       <AppHeader :night="null" :at-local="null"
-                 :generated-at="outlook.data.value?.generatedAt ?? ''"
-                 :loading="outlook.loading.value" @refresh="refresh" />
+                 :generated-at="outlook.data.value?.generatedAt ?? ''" />
       <p v-if="outlook.error.value" class="error">outlook failed: {{ outlook.error.value }}</p>
       <ErrorsBanner v-if="outlook.data.value" :errors="outlook.data.value.errors" />
       <OutlookView :nights="outlook.data.value?.nights ?? []"
@@ -128,8 +128,7 @@ watch(requestParams, refresh)
 
     <template v-else-if="view === 'discover'">
       <AppHeader :night="discover.data.value?.night ?? null" :at-local="null"
-                 :generated-at="discover.data.value?.generatedAt ?? ''"
-                 :loading="discover.loading.value" @refresh="refresh" />
+                 :generated-at="discover.data.value?.generatedAt ?? ''" />
       <p v-if="discover.error.value" class="error">failed to load: {{ discover.error.value }}</p>
       <ErrorsBanner v-if="discover.data.value" :errors="discover.data.value.errors" />
       <DiscoverView :targets="discover.data.value?.targets ?? []"
@@ -139,8 +138,7 @@ watch(requestParams, refresh)
 
     <template v-else>
       <AppHeader :night="forecast.data.value?.night ?? null" :at-local="null"
-                 :generated-at="forecast.data.value?.generatedAt ?? ''"
-                 :loading="forecast.loading.value" @refresh="refresh" />
+                 :generated-at="forecast.data.value?.generatedAt ?? ''" />
       <p v-if="forecast.error.value" class="error">failed to load: {{ forecast.error.value }}</p>
       <ErrorsBanner v-if="forecast.data.value" :errors="forecast.data.value.errors" />
       <ForecastView :hours="forecast.data.value?.hours ?? []"
@@ -149,4 +147,5 @@ watch(requestParams, refresh)
                     :loading="forecast.loading.value" />
     </template>
   </main>
+  </div>
 </template>

@@ -5,6 +5,8 @@ import App from '../src/App.vue'
 // Fixture mirrors the live GET /tonight response (window mode)
 const windowFixture = {
   generatedAt: '2026-08-31T02:41:03+00:00',
+  location: { name: 'Big Bend National Park, TX', latitude: 29.33, longitude: -103.21,
+              elevationM: 56, timezone: 'America/New_York' },
   mode: 'window',
   night: {
     startLocal: '2026-08-30T21:00:00-04:00', endLocal: '2026-08-31T05:00:00-04:00',
@@ -181,10 +183,19 @@ describe('App integration', () => {
     expect(urls.some(u => u.includes('/api/discover'))).toBe(true)
   })
 
+  it('home header shows the observing location instead of the observing window', async () => {
+    const w = await mountHome()
+    const header = w.find('.app-header').text()
+    expect(header).toContain('Big Bend National Park, TX · 29.33°N 103.21°W')
+    expect(header).not.toContain('9:00 PM – 5:00 AM')
+    expect(header).toContain('Generated @ Aug 30, 10:41 PM')
+  })
+
   it('renders header, weather, tabs, and table from live-shaped data', async () => {
     const w = await mountOnTonightView()
     expect(w.text()).toContain("Astronomer's Dashboard")
-    expect(w.text()).toContain('9:00 PM – 5:00 AM (America/New_York)')
+    expect(w.text()).toContain('observing window 9:00 PM – 5:00 AM')
+    expect(w.find('.app-header').text()).not.toContain('Big Bend National Park, TX') // location is home-only
     expect(w.text()).toContain('SS Cyg')
     // both instrument tabs render with counts
     const tabs = w.findAll('.tabs button')

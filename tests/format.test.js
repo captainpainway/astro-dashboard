@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fmtTime, pct, compass, timeline, fmtRa, fmtDec, weatherEmoji, vsxUrl } from '../src/format'
+import { fmtTime, fmtDateTime, pct, compass, timeline, fmtRa, fmtDec, weatherEmoji, vsxUrl, fmtLocation } from '../src/format'
 
 describe('vsxUrl', () => {
   it('builds a VSX detail URL from an OID', () => {
@@ -19,6 +19,15 @@ describe('fmtTime', () => {
   })
   it('returns em-dash for empty input', () => {
     expect(fmtTime(null)).toBe('—')
+  })
+})
+
+describe('fmtDateTime', () => {
+  it('includes the date so a stale timestamp is obvious', () => {
+    expect(fmtDateTime('2026-08-31T02:41:03+00:00')).toBe('Aug 30, 10:41 PM')
+  })
+  it('returns em-dash for empty input', () => {
+    expect(fmtDateTime('')).toBe('—')
   })
 })
 
@@ -92,5 +101,22 @@ describe('timeline', () => {
     const t = timeline(night, { window: { start: night.startLocal, end: night.endLocal },
                                 bestTime: '2026-08-31T12:00:00-04:00' })
     expect(t.starPct).toBe(100)
+  })
+})
+
+describe('fmtLocation', () => {
+  it('formats name with hemisphere-lettered coordinates', () => {
+    expect(fmtLocation({ name: 'Big Bend National Park, TX', latitude: 29.33, longitude: -103.21 }))
+      .toBe('Big Bend National Park, TX · 29.33°N 103.21°W')
+  })
+  it('uses S and E for southern / eastern sites', () => {
+    expect(fmtLocation({ name: 'Sydney', latitude: -33.868, longitude: 151.209 }))
+      .toBe('Sydney · 33.87°S 151.21°E')
+  })
+  it('falls back to the name when coordinates are missing', () => {
+    expect(fmtLocation({ name: 'home' })).toBe('home')
+  })
+  it('returns an empty string for no location', () => {
+    expect(fmtLocation(null)).toBe('')
   })
 })

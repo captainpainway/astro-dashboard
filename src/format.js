@@ -9,6 +9,19 @@ export function vsxUrl(oid) {
   return oid ? `https://vsx.aavso.org/index.php?view=detail.top&oid=${oid}` : null
 }
 
+/**
+ * Observing site label, e.g. "Big Bend National Park, TX · 29.33°N 103.21°W".
+ * Falls back to just the name when coordinates are missing; '' for no location.
+ */
+export function fmtLocation(loc) {
+  if (!loc) return ''
+  const { name, latitude: lat, longitude: lon } = loc
+  if (lat == null || lon == null) return name ?? ''
+  const coords = `${Math.abs(lat).toFixed(2)}°${lat < 0 ? 'S' : 'N'} ` +
+                 `${Math.abs(lon).toFixed(2)}°${lon < 0 ? 'W' : 'E'}`
+  return name ? `${name} · ${coords}` : coords
+}
+
 /** True when a target should be displayed: score must be positive. */
 export function isDisplayable(t) {
   return t.score != null && Math.floor(t.score) > 0
@@ -17,6 +30,14 @@ export function isDisplayable(t) {
 export function fmtTime(iso) {
   if (!iso) return '—'
   return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+}
+
+/** Date + time, e.g. "Sep 23, 5:52 PM" — for timestamps that may be stale. */
+export function fmtDateTime(iso) {
+  if (!iso) return '—'
+  return new Date(iso).toLocaleString('en-US', {
+    month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
+  })
 }
 
 /**

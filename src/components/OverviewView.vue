@@ -47,37 +47,45 @@ const fmtMagRange = (star) => {
 </script>
 
 <template>
-  <section class="overview">
-    <!-- Conditions -->
-    <article v-if="tonight" class="panel ov-card card-conditions">
+  <section class="overview bento">
+    <!-- Conditions: the hero — "is tonight worth it?" -->
+    <article v-if="tonight" class="panel ov-card tile-hero card-conditions">
       <h2>tonight's conditions</h2>
-      <div v-if="conditions" class="ov-conditions">
-        <span class="rating" :class="ratingStyle(conditions.rating).css">
+      <template v-if="conditions">
+        <span class="rating ov-hero-rating" :class="ratingStyle(conditions.rating).css">
           {{ ratingStyle(conditions.rating).label }} night
         </span>
-        <dl>
-          <div><dt>cloud avg</dt><dd>{{ Math.round(conditions.cloudCoverAvg ?? 0) }}%</dd></div>
-          <div><dt>temp</dt><dd>{{ conditions.temperatureF ?? '—' }}°F</dd></div>
-          <div><dt>wind avg</dt><dd>{{ Math.round(conditions.windMphAvg) ?? '—' }} mph</dd></div>
+        <dl class="ov-stats">
+          <div><dt>cloud avg</dt><dd class="ov-stat-value">{{ Math.round(conditions.cloudCoverAvg ?? 0) }}%</dd></div>
+          <div><dt>temp</dt><dd class="ov-stat-value">{{ conditions.temperatureF ?? '—' }}°F</dd></div>
+          <div>
+            <dt>wind avg</dt>
+            <dd class="ov-stat-value">{{ conditions.windMphAvg != null ? Math.round(conditions.windMphAvg) : '—' }} mph</dd>
+          </div>
         </dl>
-        <p v-if="current" class="muted small">
-          NOW: {{ current.description ?? '—' }}, {{ current.cloudCover ?? '—' }}% cloud — {{ current.station }}
+        <p v-if="current" class="ov-now muted small">
+          <span class="ov-now-label">now</span>
+          {{ current.description ?? '—' }}, {{ current.cloudCover ?? '—' }}% cloud — {{ current.station }}
         </p>
-      </div>
+      </template>
       <p v-else class="muted small">conditions unavailable</p>
+    </article>
+    <article v-else-if="tonightLoading" class="panel ov-card tile-hero card-loading">
+      <p class="muted">loading tonight…</p>
     </article>
 
     <!-- Top picks per instrument -->
-    <article v-if="tonight" class="panel ov-card card-picks">
+    <article v-if="tonight" class="panel ov-card tile-wide card-picks">
       <h2>top targets</h2>
       <ul v-if="picks.length" class="ov-picks">
         <li v-for="p in picks" :key="p.target.id">
+          <span class="ov-pick-instrument">{{ p.instrument }}</span>
           <div class="ov-pick-main">
             <span class="ov-pick-name">{{ p.target.name }}</span>
             <span class="badge">{{ p.target.targetClass }}</span>
           </div>
           <div class="muted small">
-            {{ p.instrument }} · best {{ fmtTime(p.target.bestTime) }} ·
+            best {{ fmtTime(p.target.bestTime) }} ·
             alt {{ p.target.altAtBest?.toFixed(0) ?? '—' }}° · score {{ p.target.score.toFixed(0) }}
           </div>
         </li>
@@ -85,10 +93,24 @@ const fmtMagRange = (star) => {
       <p v-else class="muted small">no displayable targets tonight</p>
     </article>
 
+    <!-- Best dark hour -->
+    <article v-if="bestWindow" class="panel ov-card tile-sm card-best">
+      <h2>best hour</h2>
+      <div class="ov-best-main">
+        <span class="ov-best-emoji">{{ weatherEmoji(bestWindow) }}</span>
+        <span class="ov-best-time">{{ fmtTime(bestWindow.time) }}</span>
+      </div>
+      <p class="muted small ov-foot">
+        <span class="rating" :class="ratingStyle(bestWindow.rating).css">{{ ratingStyle(bestWindow.rating).label }}</span>
+        score {{ bestWindow.score?.toFixed(0) ?? '—' }}
+        <template v-if="bestWindow.skyCover != null"> · {{ bestWindow.skyCover }}% cloud</template>
+      </p>
+    </article>
+
     <!-- Fresh discoveries -->
-    <article v-if="discover" class="panel ov-card card-discoveries">
+    <article v-if="discover" class="panel ov-card tile-sm card-discoveries">
       <h2>fresh discoveries</h2>
-      <div v-if="topDiscovery">
+      <template v-if="topDiscovery">
         <div class="ov-pick-main">
           <span class="ov-pick-name">{{ topDiscovery.top.star.name }}</span>
           <span class="badge">{{ topDiscovery.top.star.varType }}</span>
@@ -98,16 +120,19 @@ const fmtMagRange = (star) => {
           best {{ fmtTime(topDiscovery.top.bestTime) }} ·
           score {{ topDiscovery.top.score.toFixed(0) }}
         </p>
-        <p v-if="topDiscovery.more > 0" class="muted small">+{{ topDiscovery.more }} more</p>
-      </div>
+        <p v-if="topDiscovery.more > 0" class="muted small ov-foot">+{{ topDiscovery.more }} more</p>
+      </template>
       <p v-else class="muted small">no under-observed stars found</p>
     </article>
+    <article v-else-if="discoverLoading" class="panel ov-card tile-sm card-loading">
+      <p class="muted">loading discover…</p>
+    </article>
 
-    <!-- Night times: sunset/sunrise + twilight boundaries -->
-    <NightTimes v-if="twilight" :twilight="twilight" class="panel ov-card card-hourly" />
+    <!-- Night times: tall column, times listed vertically -->
+    <NightTimes v-if="twilight" :twilight="twilight" class="ov-card tile-tall card-night" />
 
-    <!-- Hourly strip -->
-    <article v-if="forecast?.hours?.length" class="panel ov-card card-hourly">
+    <!-- Hourly strip: one scrolling row -->
+    <article v-if="forecast?.hours?.length" class="panel ov-card tile-strip card-hourly">
       <h2>hourly</h2>
       <div class="ov-hours">
         <div v-for="h in forecast.hours" :key="h.time"
@@ -120,10 +145,8 @@ const fmtMagRange = (star) => {
         </div>
       </div>
     </article>
-
-    <!-- Loading placeholders -->
-    <article v-if="tonightLoading" class="panel ov-card card-loading"><p class="muted">loading tonight…</p></article>
-    <article v-if="forecastLoading" class="panel ov-card card-loading"><p class="muted">loading forecast…</p></article>
-    <article v-if="discoverLoading" class="panel ov-card card-loading"><p class="muted">loading discover…</p></article>
+    <article v-else-if="forecastLoading" class="panel ov-card tile-strip card-loading">
+      <p class="muted">loading forecast…</p>
+    </article>
   </section>
 </template>

@@ -164,4 +164,31 @@ describe('OverviewView', () => {
     expect(w.find('.card-conditions').exists()).toBe(true)
     expect(w.text()).not.toContain('failed')
   })
+
+  it('shows the best dark hour as its own tile', () => {
+    const w = mount(OverviewView, { props: allProps })
+    const card = w.find('.card-best')
+    expect(card.exists()).toBe(true)
+    expect(card.text()).toContain('🌙')
+    expect(card.text()).toContain('score 80')
+  })
+
+  it('renders night times in its own tile, separate from the hourly strip', () => {
+    const twilight = { sunset: '2026-08-30T19:45:00-04:00', astroDusk: '2026-08-30T21:15:00-04:00',
+                       astroDawn: '2026-08-31T05:10:00-04:00', sunrise: '2026-08-31T06:40:00-04:00' }
+    const w = mount(OverviewView, { props: { ...allProps, twilight } })
+    const card = w.find('.card-night')
+    expect(card.exists()).toBe(true)
+    expect(card.classes()).not.toContain('card-hourly')
+    expect(card.text()).toContain('9:15 PM')
+    expect(w.findAll('.card-hourly')).toHaveLength(1)
+  })
+
+  it('shows a dash, not NaN, when average wind is missing', () => {
+    const t = { ...tonight, weather: { ...tonight.weather,
+      summary: { ...tonight.weather.summary, windMphAvg: null } } }
+    const w = mount(OverviewView, { props: { ...allProps, tonight: t } })
+    expect(w.find('.card-conditions').text()).not.toContain('NaN')
+    expect(w.find('.card-conditions').text()).toContain('— mph')
+  })
 })
