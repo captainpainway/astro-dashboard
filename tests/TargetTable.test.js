@@ -34,14 +34,54 @@ describe('TargetTable', () => {
     expect(w.text()).toContain('70%')
   })
 
-  it('shows azimuth degrees in AZ and cardinal in DIR', () => {
+  it('shows cardinal direction and azimuth degrees together in one AZ column', () => {
     const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
     const headings = w.findAll('th').map(h => h.text().toLowerCase())
     expect(headings).toContain('az')
-    expect(headings).toContain('dir')
-    const ssCygRow = w.findAll('tbody tr.data-row')[0]
-    expect(ssCygRow.text()).toContain('2°')   // azimuth value, not direction
-    expect(ssCygRow.text()).toContain('N')    // direction in its own column
+    expect(headings).not.toContain('dir')
+    const ssCygAz = w.findAll('tbody tr.data-row')[0].find('td.az')
+    expect(ssCygAz.text()).toContain('N')
+    expect(ssCygAz.text()).toContain('2°')
+  })
+
+  it('colors class badges by target class', () => {
+    const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
+    const badges = w.findAll('.badge')
+    expect(badges[0].classes()).toContain('cls-variable')
+    expect(badges[1].classes()).toContain('cls-cluster')
+  })
+
+  it('marks every other row for alternating shading', () => {
+    const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
+    const rows = w.findAll('tbody tr.data-row')
+    expect(rows[0].classes()).not.toContain('alt')
+    expect(rows[1].classes()).toContain('alt')
+  })
+
+  it('explains the moon interference thresholds', () => {
+    const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
+    const moonTh = w.findAll('th').find(h => h.text().toLowerCase() === 'moon')
+    expect(moonTh.attributes('title')).toMatch(/20%.*50%/)
+    expect(w.find('.moon-legend').exists()).toBe(true)
+  })
+
+  it('shows the top 25 targets until "show all" is clicked', async () => {
+    const many = Array.from({ length: 30 }, (_, i) => ({
+      ...targets[0], id: `T${i}`, name: `Target ${i}`, score: 90 - i,
+    }))
+    const w = mount(TargetTable, { props: { targets: many, night, sortKey: 'score' } })
+    expect(w.findAll('tbody tr.data-row')).toHaveLength(25)
+    const btn = w.find('.show-more')
+    expect(btn.text()).toContain('show all 30')
+    await btn.trigger('click')
+    expect(w.findAll('tbody tr.data-row')).toHaveLength(30)
+    await w.find('.show-more').trigger('click')
+    expect(w.findAll('tbody tr.data-row')).toHaveLength(25)
+  })
+
+  it('omits the "show all" button when everything already fits', () => {
+    const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
+    expect(w.find('.show-more').exists()).toBe(false)
   })
 
   it('hides targets with zero or negative scores', () => {

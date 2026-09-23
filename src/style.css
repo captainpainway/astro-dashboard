@@ -14,6 +14,10 @@
   --dock-w: 76px;
   --glass-bg: rgba(20, 27, 49, .45);
   --glass-bg-2: rgba(27, 36, 64, .5);
+  --glass-bg-dense: rgba(14, 20, 38, .72);
+  --glass-bg-menu: rgba(14, 20, 38, .92);
+  --glass-control: rgba(255, 255, 255, .07);
+  --glass-control-hover: rgba(255, 255, 255, .13);
   --glass-border: rgba(255, 255, 255, .08);
   --glass-edge: rgba(255, 255, 255, .16);
   --glass-blur: blur(18px) saturate(140%);
@@ -22,7 +26,8 @@
 }
 /* No blur support → solid panels so text keeps its contrast */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  :root { --glass-bg: var(--panel); --glass-bg-2: var(--panel-2); }
+  :root { --glass-bg: var(--panel); --glass-bg-2: var(--panel-2); --glass-bg-dense: var(--panel); --glass-bg-menu: var(--panel);
+    --glass-control: var(--panel-2); --glass-control-hover: #25305a; }
 }
 * { box-sizing: border-box; }
 body {
@@ -62,33 +67,99 @@ button { font: inherit; cursor: pointer; }
 .weather dd { margin: 0.15rem 0 0; font-weight: 600; }
 .weather .current { margin-top: 0.75rem; }
 .controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
-.controls .mode, .controls .chips, .controls .sorts { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
-.chips button, .mode button { background: rgba(255, 255, 255, .05); color: var(--text); border: 1px solid var(--glass-border); border-radius: 6px; padding: 0.3rem 0.8rem; }
-.chips button.active, .mode button.active { background: rgba(122, 162, 255, .15); border-color: var(--accent); color: var(--accent); }
-.sorts label { color: var(--muted); font-size: 0.85rem; }
-.sorts select { background: rgba(255, 255, 255, .04); color: var(--text); border: 1px solid var(--glass-border); border-radius: 6px; padding: 0.3rem 0.5rem; }
-.mode input[type="time"] { background: rgba(255, 255, 255, .04); color: var(--text); border: 1px solid var(--glass-border); border-radius: 6px; padding: 0.25rem 0.5rem; }
+.controls .mode, .controls .chips, .glass-select { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+/* Glass controls — frosted pills shared by the mode/class chips, instrument tabs and form inputs */
+.chips button, .mode > button, .tabs button, .show-more, .glass-select-trigger {
+  background: var(--glass-control); color: var(--text);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border); border-top-color: var(--glass-edge);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 2px 8px rgba(0, 0, 0, .2);
+  transition: background .15s, border-color .15s, color .15s, box-shadow .15s; }
+.chips button, .mode > button { border-radius: 999px; padding: 0.3rem 0.9rem; }
+.chips button:hover:not(.active), .mode > button:hover:not(.active), .tabs button:hover:not(.active), .show-more:hover {
+  background: var(--glass-control-hover); color: var(--text); }
+.chips button.active, .mode > button.active, .tabs button.active {
+  background: rgba(122, 162, 255, .2); border-color: rgba(122, 162, 255, .55); color: #b9ccff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 0 14px rgba(122, 162, 255, .25); }
+.chips button:focus-visible, .mode > button:focus-visible, .tabs button:focus-visible, .show-more:focus-visible,
+.glass-select-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Lift the controls above later panels so the open glass-select menus overlap them; stays under the dock (z 10) */
+.controls { position: relative; z-index: 5; }
+.glass-select { position: relative; }
+.glass-select-label { color: var(--muted); font-size: 0.85rem; }
+/* Select trigger: a chip-shaped button; the chevron is an inline SVG in the muted text colour and flips when open */
+.glass-select-trigger { position: relative; border-radius: 999px; padding: 0.3rem 2rem 0.3rem 0.9rem; }
+.glass-select-trigger::after { content: ''; position: absolute; right: 0.75rem; top: 50%; width: 12px; height: 12px; margin-top: -6px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%2393a0c2' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat;
+  transition: transform .15s; }
+.glass-select-trigger:hover { background: var(--glass-control-hover); }
+.glass-select-trigger[aria-expanded="true"] { border-color: rgba(122, 162, 255, .55); }
+.glass-select-trigger[aria-expanded="true"]::after { transform: rotate(180deg); }
+/* The menu: near-opaque glass — nested inside the controls panel its backdrop-filter can't blur what sits behind, so chips would show through */
+.glass-select-menu { position: absolute; z-index: 1; top: calc(100% + 6px); right: 0; min-width: 100%; margin: 0; padding: 0.3rem;
+  max-height: 16rem; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--glass-edge) transparent;
+  list-style: none; border-radius: var(--radius); background: var(--glass-bg-menu);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border); border-top-color: var(--glass-edge); box-shadow: var(--glass-shadow);
+  animation: glass-select-menu-in .12s ease-out; }
+.glass-select-menu.align-left { left: 0; right: auto; }
+.glass-select-menu:focus { outline: none; }
+.glass-select-menu:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.glass-select-menu li { padding: 0.4rem 0.8rem; border-radius: 7px; white-space: nowrap; cursor: pointer; color: var(--text); }
+.glass-select-menu li.highlighted { background: var(--glass-control-hover); }
+.glass-select-menu li[aria-selected="true"] { background: rgba(122, 162, 255, .2); color: #b9ccff; }
+.glass-select-menu li[aria-selected="true"]::after { content: ' ✓'; }
+.glass-select-menu li.highlighted[aria-selected="true"] { background: rgba(122, 162, 255, .3); }
+@keyframes glass-select-menu-in { from { opacity: 0; transform: translateY(-4px); } }
 .error { color: var(--bad); }
 .tabs { display: flex; gap: 0.5rem; margin: 0.75rem 0; }
-.tabs button { background: rgba(255, 255, 255, .05); border: 1px solid var(--glass-border); border-radius: 8px; padding: 0.5rem 1rem; color: var(--muted); }
-.tabs button.active { background: rgba(122, 162, 255, .15); color: var(--accent); border-color: var(--accent); }
-.targets { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-.targets th, .targets td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--glass-border); }
-.targets thead th { color: var(--muted); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
-.data-row { cursor: pointer; }
-.data-row:hover, .data-row.open { background: rgba(122, 162, 255, .06); }
+.tabs button { border-radius: 12px; padding: 0.5rem 1rem; color: var(--muted); }
+/* Target list sits on a denser glass panel than the tiles: long rows of small text need more contrast than the blur alone gives */
+/* No overflow here: a scroll container would pin the sticky header to the panel instead of the window */
+.targets-panel { padding: 0.5rem 0.75rem; background: var(--glass-bg-dense); }
+.targets { width: 100%; border-collapse: collapse; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+.targets th, .targets td { text-align: left; padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, .07); white-space: nowrap; }
+.targets tbody tr:last-child td { border-bottom: none; }
+.targets thead th { color: var(--muted); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase;
+  border-bottom-color: var(--glass-edge); position: sticky; top: 0; z-index: 1; background: var(--panel); }
+.targets thead th:first-child { border-top-left-radius: 8px; }
+.targets thead th:last-child { border-top-right-radius: 8px; }
+.targets thead th[title] { cursor: help; }
+.targets .rank { color: var(--muted); width: 2rem; }
+.targets .name { font-weight: 600; white-space: normal; }
+.targets .az .dir { font-weight: 500; }
+.targets .az .deg { margin-left: 0.35em; }
+.detail-row td { white-space: normal; }
+.data-row { cursor: pointer; transition: background .12s; }
+.data-row.alt { background: rgba(255, 255, 255, .025); }
+.data-row:hover { background: rgba(255, 255, 255, .05); }
+.data-row.open { background: rgba(122, 162, 255, .1); }
+.targets .badge { font-size: 0.78rem; font-weight: 500; }
+.badge.cls-planet { background: rgba(251, 191, 36, .18); color: var(--warn); }
+.badge.cls-moon { background: rgba(232, 236, 248, .14); color: var(--text); }
+.badge.cls-variable { background: rgba(192, 132, 252, .18); color: #c084fc; }
+.badge.cls-messier { background: rgba(122, 162, 255, .18); color: var(--accent); }
+.badge.cls-nebula { background: rgba(244, 114, 182, .18); color: #f472b6; }
+.badge.cls-cluster { background: rgba(74, 222, 128, .18); color: var(--good); }
+.targets-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  padding: 0.6rem 0.6rem 0.25rem; border-top: 1px solid var(--glass-edge); }
+.targets-foot .moon-legend { margin: 0; }
+.show-more { border-radius: 999px; padding: 0.3rem 0.9rem; }
 a { color: var(--accent); }
 a:hover { text-decoration: underline; }
 .discover .vsx-link { color: var(--accent); }
 .discover .chart-link { color: var(--accent); }
 .badge { padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.75rem; background: var(--glass-bg-2); color: var(--muted); }
-.score-wrap { display: flex; align-items: center; gap: 0.5rem; min-width: 110px; }
-.score-bar { height: 6px; border-radius: 3px; background: var(--accent); min-width: 2px; }
+.score-wrap { display: flex; align-items: center; gap: 0.6rem; }
+/* Number first at a fixed width so the column lines up; bars share a full-width track so lengths compare */
+.score-num { width: 2.5ch; text-align: right; font-weight: 600; }
+.score-track { width: 120px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .08); }
+.score-bar { height: 100%; border-radius: 3px; background: var(--accent); min-width: 2px; }
 .moon-low { color: var(--good); }
 .moon-mid { color: var(--warn); }
 .moon-high { color: var(--bad); }
 .moon-none { color: var(--muted); }
-.detail-row td { background: rgba(122, 162, 255, .06); }
+.detail-row td { background: rgba(122, 162, 255, .1); }
 .notes { margin: 0.25rem 0; }
 .mini-timeline { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
 .tl-track { position: relative; flex: 1; height: 10px; background: var(--bg); border-radius: 5px; }
@@ -224,8 +295,9 @@ a:hover { text-decoration: underline; }
 @keyframes tile-pulse { 50% { background: var(--glass-bg-2); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .dock-item { transition: none; }
-  .bento .card-loading, .refresh.spinning .dock-icon { animation: none; }
+  .dock-item, .data-row, .chips button, .mode > button, .tabs button, .show-more, .glass-select-trigger { transition: none; }
+  .bento .card-loading, .refresh.spinning .dock-icon, .glass-select-menu { animation: none; }
+  .glass-select-trigger::after { transition: none; }
 }
 
 /* Tablet: two columns */
@@ -235,6 +307,34 @@ a:hover { text-decoration: underline; }
   .bento .card-night .tw-times { flex-direction: row; flex-wrap: wrap; gap: 0.5rem 1.4rem; }
   .bento .card-night .tw-times > div { display: block; }
   .bento .card-night .tw-times dd { margin-top: 0.1rem; }
+}
+
+/* Target list: shorter score track so the 8-column table still fits beside the dock */
+@media (max-width: 1100px) {
+  .score-track { width: 70px; }
+  .targets th, .targets td { padding-left: 0.5rem; padding-right: 0.5rem; }
+}
+
+/* Target list → two-line cards once the table no longer fits: rank/name/class/score, then alt · az · time · moon */
+@media (max-width: 900px) {
+  .targets, .targets tbody { display: block; }
+  .targets thead { display: none; }
+  .targets .data-row { display: flex; flex-wrap: wrap; align-items: center; column-gap: 0.5rem; row-gap: 0.2rem;
+    padding: 0.6rem 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, .07); }
+  .targets tbody .data-row:last-of-type { border-bottom: none; }
+  .targets .data-row td { display: block; padding: 0; border: none; }
+  /* Zero-height full-width item forces the metadata onto its own line */
+  .targets .data-row::before { content: ''; order: 1; flex-basis: 100%; height: 0; }
+  .targets .data-row .rank { width: 1.5rem; }
+  .targets .data-row .name { flex: 1; min-width: 0; }
+  .targets .data-row .alt-c, .targets .data-row .az, .targets .data-row .time, .targets .data-row .moon {
+    order: 2; font-size: 0.85rem; }
+  .targets .data-row .alt-c { margin-left: 2rem; }
+  .targets .data-row .alt-c, .targets .data-row .az, .targets .data-row .time { color: var(--muted); }
+  .targets .data-row .az::before, .targets .data-row .time::before { content: '·'; margin-right: 0.5rem; color: var(--muted); }
+  .targets .data-row .moon::before { content: '· moon '; color: var(--muted); }
+  .score-track { width: 60px; }
+  .targets .detail-row, .targets .detail-row td { display: block; }
 }
 
 /* Phone: one column, dock becomes a bottom bar */
