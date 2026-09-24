@@ -17,14 +17,14 @@ const targets = [
 describe('TargetTable', () => {
   it('renders one row per target sorted by score desc', () => {
     const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
-    const rows = w.findAll('tbody tr.data-row')
+    const rows = w.findAll('tr.data-row')
     expect(rows).toHaveLength(2)
     expect(rows[0].text()).toContain('SS Cyg')
   })
 
   it('expands a row on click revealing notes and timeline', async () => {
     const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
-    await w.find('tbody tr.data-row').trigger('click')
+    await w.find('tr.data-row').trigger('click')
     expect(w.text()).toContain('dwarf nova')
     expect(w.find('.mini-timeline').exists()).toBe(true)
   })
@@ -39,7 +39,7 @@ describe('TargetTable', () => {
     const headings = w.findAll('th').map(h => h.text().toLowerCase())
     expect(headings).toContain('az')
     expect(headings).not.toContain('dir')
-    const ssCygAz = w.findAll('tbody tr.data-row')[0].find('td.az')
+    const ssCygAz = w.findAll('tr.data-row')[0].find('td.az')
     expect(ssCygAz.text()).toContain('N')
     expect(ssCygAz.text()).toContain('2°')
   })
@@ -53,7 +53,7 @@ describe('TargetTable', () => {
 
   it('marks every other row for alternating shading', () => {
     const w = mount(TargetTable, { props: { targets, night, sortKey: 'score' } })
-    const rows = w.findAll('tbody tr.data-row')
+    const rows = w.findAll('tr.data-row')
     expect(rows[0].classes()).not.toContain('alt')
     expect(rows[1].classes()).toContain('alt')
   })
@@ -70,13 +70,13 @@ describe('TargetTable', () => {
       ...targets[0], id: `T${i}`, name: `Target ${i}`, score: 90 - i,
     }))
     const w = mount(TargetTable, { props: { targets: many, night, sortKey: 'score' } })
-    expect(w.findAll('tbody tr.data-row')).toHaveLength(25)
+    expect(w.findAll('tr.data-row')).toHaveLength(25)
     const btn = w.find('.show-more')
     expect(btn.text()).toContain('show all 30')
     await btn.trigger('click')
-    expect(w.findAll('tbody tr.data-row')).toHaveLength(30)
+    expect(w.findAll('tr.data-row')).toHaveLength(30)
     await w.find('.show-more').trigger('click')
-    expect(w.findAll('tbody tr.data-row')).toHaveLength(25)
+    expect(w.findAll('tr.data-row')).toHaveLength(25)
   })
 
   it('omits the "show all" button when everything already fits', () => {
@@ -97,7 +97,7 @@ describe('TargetTable', () => {
         altAtBest: 20, azAtBest: 270, moonInterference: 0, notes: 'hide me too' },
     ]
     const w = mount(TargetTable, { props: { targets: withJunk, night, sortKey: 'score' } })
-    const rows = w.findAll('tbody tr.data-row')
+    const rows = w.findAll('tr.data-row')
     expect(rows).toHaveLength(2) // only the positive-score targets
     expect(w.text()).not.toContain('Zero Score Target')
     expect(w.text()).not.toContain('Negative Score Target')

@@ -1,11 +1,11 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
 import { useDiscover } from './composables/useDiscover'
 import { useOutlook } from './composables/useOutlook'
 import AppHeader from './components/AppHeader.vue'
-import AppDock from './components/AppDock.vue'
+import AppDock, { ITEMS as DOCK_ITEMS } from './components/AppDock.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
 import ControlsBar from './components/ControlsBar.vue'
@@ -23,6 +23,21 @@ const discover = useDiscover()
 const outlook = useOutlook()
 
 const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'discover'
+
+// Slide between pages where the View Transitions API is available; direction follows dock order.
+function setView(v) {
+  if (v === view.value) return
+  if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    view.value = v
+    return
+  }
+  const order = DOCK_ITEMS.map((it) => it.key)
+  document.documentElement.dataset.navDir = order.indexOf(v) > order.indexOf(view.value) ? 'forward' : 'back'
+  document.startViewTransition(async () => {
+    view.value = v
+    await nextTick() // DOM must reflect the new view before the "new" snapshot
+  })
+}
 
 async function loadAll() {
   await Promise.all([
@@ -83,7 +98,7 @@ watch(requestParams, refresh)
 
 <template>
   <div class="shell">
-  <AppDock v-model="view" :loading="dockLoading" @refresh="refresh" />
+  <AppDock :model-value="view" @update:model-value="setView" :loading="dockLoading" @refresh="refresh" />
   <main class="page" :class="{ 'page-wide': view === 'home' }">
 
     <template v-if="view === 'home'">

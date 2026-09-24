@@ -289,10 +289,13 @@ a:hover { text-decoration: underline; }
 .dock-items { display: flex; flex-direction: column; gap: 0.35rem; }
 .dock-item { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
   background: none; border: none; border-radius: 12px; padding: 0.6rem 0.25rem; color: var(--muted);
-  transition: background .15s, color .15s; }
+  isolation: isolate; transition: background .15s, color .15s; }
 .dock-item:hover:not(:disabled) { background: rgba(255, 255, 255, .06); color: var(--text); }
-.dock-item.active { background: rgba(122, 162, 255, .12); color: var(--accent); }
-.dock-item.active::before { content: ''; position: absolute; left: -0.5rem; top: 22%; bottom: 22%;
+.dock-item.active { color: var(--accent); }
+/* Active highlight is a real element so it can glide between items via view-transition-name */
+.dock-indicator { position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+  background: rgba(122, 162, 255, .12); view-transition-name: dock-indicator; }
+.dock-indicator::before { content: ''; position: absolute; left: -0.5rem; top: 22%; bottom: 22%;
   width: 3px; border-radius: 0 3px 3px 0; background: var(--accent); }
 .dock-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .dock-item:disabled { cursor: default; opacity: .7; }
@@ -347,11 +350,32 @@ a:hover { text-decoration: underline; }
   animation: tile-pulse 1.4s ease-in-out infinite; }
 @keyframes tile-pulse { 50% { background: var(--glass-bg-2); } }
 
+/* Page changes slide via document.startViewTransition (see setView in App.vue).
+   Axis follows the dock: vertical beside the left rail, horizontal above the phone tab bar. */
+.page { view-transition-name: page; }
+/* Own layer so the sliding page never paints over the dock (groups stack in paint order; dock is z 10) */
+.dock { view-transition-name: dock; }
+:root { --vt-dx: 0px; --vt-dy: 28px; --vt-dir: 1; }
+html[data-nav-dir="back"] { --vt-dir: -1; }
+@keyframes vt-slide-out { to { opacity: 0;
+  transform: translate(calc(var(--vt-dx) * var(--vt-dir) * -1), calc(var(--vt-dy) * var(--vt-dir) * -1)); } }
+@keyframes vt-slide-in { from { opacity: 0;
+  transform: translate(calc(var(--vt-dx) * var(--vt-dir)), calc(var(--vt-dy) * var(--vt-dir))); } }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: .25s; animation-timing-function: ease; }
+::view-transition-old(page) { animation: vt-slide-out .22s cubic-bezier(.4, 0, 1, 1) both; }
+::view-transition-new(page) { animation: vt-slide-in .32s cubic-bezier(0, 0, .2, 1) both; }
+::view-transition-group(page) { animation-duration: .32s; }
+::view-transition-group(dock) { animation: none; }
+::view-transition-group(dock-indicator) { animation-duration: .38s;
+  animation-timing-function: cubic-bezier(.34, 1.35, .64, 1); }
+
 @media (prefers-reduced-motion: reduce) {
   .dock-item, .data-row, .chips button, .mode > button, .tabs button, .show-more, .glass-select-trigger { transition: none; }
   .bento .card-loading, .refresh.spinning .dock-icon, .glass-select-menu { animation: none; }
   .glass-select-trigger::after { transition: none; }
   .outlook-chevron, .outlook-chevron svg { transition: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none; }
 }
 
 /* Tablet: two columns */
@@ -394,6 +418,7 @@ a:hover { text-decoration: underline; }
 
 /* Phone: one column, dock becomes a bottom bar */
 @media (max-width: 700px) {
+  :root { --vt-dx: 36px; --vt-dy: 0px; }
   .shell { padding-left: 0; }
   .page { padding: 1rem 16px 88px; }
   .dock { inset: auto 0 0 0; width: auto; height: 68px; flex-direction: row; padding: 0.4rem 0.5rem;
@@ -401,7 +426,7 @@ a:hover { text-decoration: underline; }
   .dock-items { flex-direction: row; flex: 1; justify-content: space-around; gap: 0; }
   .dock .dock-item { flex: 1; padding: 0.4rem 0; }
   .dock .refresh { flex: 0 0 56px; }
-  .dock-item.active::before { left: 25%; right: 25%; top: -0.4rem; bottom: auto; width: auto; height: 3px;
+  .dock-indicator::before { left: 25%; right: 25%; top: -0.4rem; bottom: auto; width: auto; height: 3px;
     border-radius: 0 0 3px 3px; }
   .bento { grid-template-columns: 1fr; gap: 12px; }
   .bento .ov-card { padding: 18px; }

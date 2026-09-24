@@ -273,7 +273,7 @@ describe('App integration', () => {
     const w = await mountOnTonightView(fixture)
     const tabs = w.findAll('.tabs button')
     expect(tabs[0].text()).toContain('(1)') // 2 targets from API, 1 hidden by score filter
-    expect(w.findAll('tbody tr.data-row')).toHaveLength(1)
+    expect(w.findAll('tr.data-row')).toHaveLength(1)
   })
 
   it('outlook view: lazy-loads on tab switch and renders nights with hourly chips', async () => {

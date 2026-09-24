@@ -18,6 +18,16 @@ describe('AppDock', () => {
     expect(active[0].attributes('aria-current')).toBe('page')
   })
 
+  it('renders a single indicator inside the active item', async () => {
+    const w = mount(AppDock, { props: { modelValue: 'tonight' } })
+    expect(w.findAll('.dock-indicator')).toHaveLength(1)
+    expect(w.find('.dock-item.active .dock-indicator').exists()).toBe(true)
+    await w.setProps({ modelValue: 'discover' })
+    expect(w.findAll('.dock-indicator')).toHaveLength(1)
+    expect(w.find('.dock-item.active').text()).toBe('discover')
+    expect(w.find('.dock-item.active .dock-indicator').exists()).toBe(true)
+  })
+
   it('emits the chosen view on click', async () => {
     const w = mount(AppDock, { props: { modelValue: 'home' } })
     await items(w)[2].trigger('click')
