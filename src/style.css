@@ -180,37 +180,41 @@ a:hover { text-decoration: underline; }
 .tl-track { position: relative; flex: 1; height: 10px; background: var(--bg); border-radius: 5px; }
 .tl-bar { position: absolute; top: 0; height: 100%; background: rgba(122, 162, 255, .35); border-radius: 5px; }
 .tl-star { position: absolute; top: -6px; transform: translateX(-50%); color: var(--warn); }
-.forecast { margin-top: 1.25rem; }
-.forecast .hours { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--gap); }
-.hour-card { margin: 0; padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; min-width: 0;
-  border-left: 3px solid var(--glass-border); }
-.hour-card.rc-ideal, .hour-card.rc-great { border-left-color: var(--good); }
-.hour-card.rc-good { border-left-color: var(--accent); }
-.hour-card.rc-fair { border-left-color: var(--warn); }
-.hour-card.rc-poor, .hour-card.rc-bad { border-left-color: var(--bad); }
+/* Forecast: one row per hour, columns shared with the header so values line up down the night */
+.forecast { margin-top: 1.25rem;
+  --fc-cols: 5.25rem 4.25rem minmax(9rem, 1.4fr) 7rem 3.5rem 4.25rem 4.5rem 4.5rem minmax(0, 1.6fr); }
+.forecast .hours { display: grid; padding: 0.35rem 0.25rem; background: var(--glass-bg-dense); }
+.hour-colhead, .hour-card { display: grid; grid-template-columns: var(--fc-cols); column-gap: 1rem; align-items: center; }
+.hour-colhead { padding: 0.5rem 1rem 0.55rem; border-bottom: 1px solid var(--glass-edge);
+  color: var(--muted); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.hour-card { position: relative; margin: 0; padding: 0.6rem 1rem; min-width: 0; }
+.hour-card + .hour-card { border-top: 1px solid rgba(255, 255, 255, .07); }
+.hour-card.best { background: rgba(74, 222, 128, .07); border-radius: var(--radius); box-shadow: inset 0 0 0 1px rgba(74, 222, 128, .35); }
+.hour-card.best, .hour-card.best + .hour-card { border-top-color: transparent; }
 .hour-card.not-dark { opacity: 0.55; }
-.hour-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
-.hour-time { font-size: 1.15rem; font-weight: 650; font-variant-numeric: tabular-nums; }
-.hour-head .rating { font-size: 0.78rem; }
-.hour-forecast { display: flex; align-items: center; gap: 0.4rem; margin: 0.35rem 0 0; color: var(--muted); font-size: 0.85rem; }
+.hour-time { font-size: 1rem; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hour-card .rating { justify-self: start; font-size: 0.78rem; }
+.hour-forecast { display: flex; align-items: center; gap: 0.4rem; min-width: 0; color: var(--muted); font-size: 0.85rem; }
 .hour-emoji { font-size: 1rem; line-height: 1; }
 .hour-forecast-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hour-daylight { align-self: flex-start; margin: 0.45rem 0 0; padding: 0.1rem 0.55rem; border-radius: 999px;
-  background: rgba(251, 191, 36, .12); color: var(--warn); font-size: 0.72rem; }
-.hour-cloud { display: flex; align-items: baseline; gap: 0.45rem; margin: 0.85rem 0 0.35rem; }
-.hour-cloud-value { font-size: 1.6rem; font-weight: 650; line-height: 1; font-variant-numeric: tabular-nums; }
-.hour-cloud-value small { font-size: 0.9rem; font-weight: 600; color: var(--muted); margin-left: 1px; }
-.hour-cloud-label { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
-.hour-cloud-bar { height: 5px; border-radius: 3px; background: var(--glass-bg-2); overflow: hidden; }
+.hour-daylight { flex: none; padding: 0.05rem 0.5rem; border-radius: 999px;
+  background: rgba(251, 191, 36, .12); color: var(--warn); font-size: 0.7rem; }
+.hour-cloud { display: flex; align-items: baseline; gap: 0.45rem; margin-bottom: 0.3rem; }
+.hour-cloud-value { font-size: 1.15rem; font-weight: 650; line-height: 1; font-variant-numeric: tabular-nums; }
+.hour-cloud-value small { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-left: 1px; }
+.hour-cloud-label { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.hour-cloud-bar { height: 4px; border-radius: 3px; background: var(--glass-bg-2); overflow: hidden; }
 .hour-cloud-bar span { display: block; height: 100%; border-radius: 3px; background: rgba(147, 160, 194, .7); }
-.hour-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem 1rem; margin: 0.85rem 0; }
-.hour-stats > div { display: flex; justify-content: space-between; align-items: baseline; gap: 0.4rem; min-width: 0; }
+.hour-stats { grid-column: span 4; display: grid; grid-template-columns: subgrid; margin: 0; }
 .hour-stats dt { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; }
 .hour-stats dd { margin: 0; font-weight: 600; font-size: 0.88rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.hour-reasons { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem; margin: auto 0 0; padding: 0.75rem 0 0;
-  border-top: 1px solid var(--glass-border); }
-.hour-reasons li { padding: 0.12rem 0.5rem; border-radius: 999px; background: var(--glass-control);
-  color: var(--muted); font-size: 0.72rem; line-height: 1.4; }
+/* The column header labels these on wide screens; keep them for screen readers */
+.hour-card .hour-cloud-label, .hour-card .hour-stats dt { position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; }
+.hour-reasons { list-style: none; display: flex; gap: 0.3rem; min-width: 0; margin: 0; padding: 0; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
+.hour-reasons li { flex: none; padding: 0.12rem 0.5rem; border-radius: 999px; background: var(--glass-control);
+  color: var(--muted); font-size: 0.72rem; line-height: 1.4; white-space: nowrap; }
 .best-window { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 .ov-card { margin: 0; }
 .ov-card h2 { margin: 0 0 0.75rem; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
@@ -431,6 +435,30 @@ html[data-nav-dir="back"] { --vt-dir: -1; }
   .targets .data-row .moon::before { content: '· moon '; color: var(--muted); }
   .score-track { width: 60px; }
   .targets .detail-row, .targets .detail-row td { display: block; }
+}
+
+/* Forecast rows → compact stacked rows once the columns no longer fit: time · rating · conditions · cloud, then stats, then notes */
+@media (max-width: 900px) {
+  .hour-colhead { display: none; }
+  .hour-card { grid-template-columns: auto auto minmax(0, 1fr) 5.5rem; row-gap: 0.4rem; column-gap: 0.75rem;
+    grid-template-areas: "time rating cond cloud" "stats stats stats stats" "notes notes notes notes"; }
+  .hour-time { grid-area: time; }
+  .hour-card .rating { grid-area: rating; }
+  .hour-forecast { grid-area: cond; }
+  .hour-cloud-cell { grid-area: cloud; }
+  .hour-stats { grid-area: stats; display: flex; flex-wrap: wrap; gap: 0.25rem 1.1rem; }
+  .hour-stats > div { display: flex; align-items: baseline; gap: 0.35rem; }
+  .hour-card .hour-cloud-label, .hour-card .hour-stats dt { position: static; width: auto; height: auto; overflow: visible;
+    clip-path: none; }
+  .hour-reasons { grid-area: notes; flex-wrap: wrap; -webkit-mask-image: none; mask-image: none; }
+}
+
+/* Phone forecast rows: conditions get their own line */
+@media (max-width: 560px) {
+  .hour-card { grid-template-columns: auto auto minmax(0, 1fr) 5.5rem;
+    grid-template-areas: "time rating . cloud" "cond cond cond cond" "stats stats stats stats" "notes notes notes notes"; }
+  .hour-stats { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; }
+  .hour-stats > div { flex-direction: column; gap: 0; }
 }
 
 /* Phone: one column, dock becomes a bottom bar */

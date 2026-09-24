@@ -67,10 +67,14 @@ describe('ForecastView', () => {
     expect(w.text()).toContain('no hourly forecast available')
   })
 
-  it('lists hourly reasons on each card', () => {
-    const w = mount(ForecastView, { props: props([hour()]) })
-    expect(w.text()).toContain('partly cloudy (48%)')
-    expect(w.text()).toContain('moon up (90%)')
+  it('lists hourly reasons on each card, skipping ones that restate the cloud and moon columns', () => {
+    const reasons = ['partly cloudy (48%)', 'rain possible (19%)', 'very humid (97%) — heavy dew', 'moon up (90%)']
+    const w = mount(ForecastView, { props: props([hour({ reasons })]) })
+    const notes = w.find('.hour-reasons').text()
+    expect(notes).toContain('rain possible (19%)')
+    expect(notes).toContain('very humid (97%) — heavy dew')
+    expect(notes).not.toContain('partly cloudy')
+    expect(notes).not.toContain('moon up')
   })
 
   it('flags daylight hours as not observing time', () => {
