@@ -109,7 +109,8 @@ const lastMark = computed(() => (present.value[present.value.length - 1]?.time ?
       </dl>
 
       <p v-if="nightSpan && darkSpan" class="muted small tw-summary">
-        {{ nightSpan }} sunset → sunrise · {{ darkSpan }} fully dark
+        <span>{{ nightSpan }} sunset → sunrise</span>
+        <span class="tw-summary-dark">{{ darkSpan }} fully dark</span>
       </p>
       <p v-else-if="compact && darkSpan" class="muted small tw-summary">
         {{ darkSpan }} fully dark
