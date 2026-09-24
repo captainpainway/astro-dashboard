@@ -214,14 +214,47 @@ a:hover { text-decoration: underline; }
 .hour-chip-temp { font-weight: 600; font-size: 0.9rem; }
 .outlook { margin-top: 0.75rem; }
 .outlook-night { margin: 0 0 0.75rem; }
-.outlook-night-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.outlook-night-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  list-style: none; cursor: pointer; border-radius: 10px;
+  -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+.outlook-night-head::-webkit-details-marker { display: none; }
+.outlook-night-head:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.outlook-night-title { display: flex; flex-direction: column; gap: 0.15rem; flex: 1; min-width: 0; }
 .outlook-night-title h2 { margin: 0; font-size: 1.1rem; }
-.outlook-stats { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0.75rem 0 0; }
+.outlook-glance { margin-top: 0.15rem; }
+.outlook-night-side { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+/* Round glass badge; turns accent and flips when the night is open */
+.outlook-chevron { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--glass-control); border: 1px solid var(--glass-edge); color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+  transition: background .2s, border-color .2s, color .2s, box-shadow .2s, transform .15s; }
+.outlook-chevron svg { display: block; transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+.outlook-night[open]:not(.closing) .outlook-chevron { background: rgba(122, 162, 255, .18);
+  border-color: rgba(122, 162, 255, .5); color: var(--accent); box-shadow: 0 0 12px rgba(122, 162, 255, .3); }
+.outlook-night[open]:not(.closing) .outlook-chevron svg { transform: rotate(180deg); }
+.outlook-night-head:active .outlook-chevron { transform: scale(.92); }
+/* Hover only where it's real — on touch it would stick after a tap */
+@media (hover: hover) {
+  .outlook-night-head:hover .outlook-chevron { background: var(--glass-control-hover); }
+  .outlook-night[open]:not(.closing) .outlook-night-head:hover .outlook-chevron { background: rgba(122, 162, 255, .26); }
+}
+/* One segment per hour, colored by rating — the night's shape at a glance */
+.outlook-strip { display: flex; gap: 2px; height: 6px; max-width: 360px; margin-top: 0.45rem; }
+.outlook-strip span { flex: 1; border-radius: 2px; background: var(--glass-bg-2); }
+.outlook-strip .rc-ideal, .outlook-strip .rc-great { background: rgba(74, 222, 128, .75); }
+.outlook-strip .rc-good { background: rgba(122, 162, 255, .75); }
+.outlook-strip .rc-fair { background: rgba(251, 191, 36, .7); }
+.outlook-strip .rc-poor, .outlook-strip .rc-bad { background: rgba(248, 113, 113, .7); }
+.outlook-strip .not-dark { opacity: 0.35; }
+.outlook-strip .best { outline: 1px solid var(--text); outline-offset: 1px; }
+.outlook-body { margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid var(--glass-border); }
+.outlook-stats { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0; }
 .outlook-stats dt { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; }
 .outlook-stats dd { margin: 0.1rem 0 0; font-weight: 600; font-size: 0.9rem; }
 .outlook-forecast { margin: 0.4rem 0 0; }
-.outlook-reasons { margin: 0.4rem 0 0.75rem; padding-left: 1.1rem; color: var(--muted); font-size: 0.78rem; }
-.outlook-reasons li { margin: 0.1rem 0; }
+.outlook-reasons { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.75rem 0; padding: 0; }
+.outlook-reasons li { padding: 0.12rem 0.5rem; border-radius: 999px; background: var(--glass-control);
+  color: var(--muted); font-size: 0.72rem; line-height: 1.4; }
 .ov-hours { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .outlook .ov-hours { margin-top: 0.5rem; }
 .hour-chip.not-dark { opacity: 0.55; }
@@ -318,6 +351,7 @@ a:hover { text-decoration: underline; }
   .dock-item, .data-row, .chips button, .mode > button, .tabs button, .show-more, .glass-select-trigger { transition: none; }
   .bento .card-loading, .refresh.spinning .dock-icon, .glass-select-menu { animation: none; }
   .glass-select-trigger::after { transition: none; }
+  .outlook-chevron, .outlook-chevron svg { transition: none; }
 }
 
 /* Tablet: two columns */
@@ -379,6 +413,16 @@ a:hover { text-decoration: underline; }
   .bento .card-night { order: 5; }
   .bento .card-discoveries { order: 6; }
   .ov-stat-value { font-size: 1.2rem; }
+  /* Outlook hour chips: one swipeable row instead of many wrapped rows */
+  .outlook .ov-hours { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity;
+    padding: 2px 2px 6px; margin-left: -2px; margin-right: -2px;
+    scrollbar-width: thin; scrollbar-color: var(--glass-border) transparent; }
+  .outlook .ov-hours .hour-chip { flex: 0 0 auto; scroll-snap-align: start; }
+  .outlook-strip { max-width: none; }
+  /* Rating pins to the title row so the date and glance line get the full card width */
+  .outlook-night-head { position: relative; }
+  .outlook-night-side { position: absolute; top: 0; right: 0; }
+  .outlook-night-title h2 { padding-right: 9rem; }
 }
 
 /* Phone night times: evening column | morning column, each row pairing the same sun altitude */

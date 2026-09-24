@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import OutlookView from '../src/components/OutlookView.vue'
 
@@ -87,5 +87,74 @@ describe('OutlookView', () => {
   it('shows loading and empty placeholders', () => {
     expect(mount(OutlookView, { props: { nights: [], loading: true } }).text()).toContain('loading outlook…')
     expect(mount(OutlookView, { props: { nights: [], loading: false } }).text()).toContain('no nightly outlook available')
+  })
+
+  it('opens only tonight, even when a later night scores higher', () => {
+    const nights = [
+      night({ date: '2026-09-01', score: 40 }),
+      night({ date: '2026-09-02', score: 20 }),
+      night({ date: '2026-09-03', score: 80 }),
+    ]
+    const w = mount(OutlookView, { props: props(nights) })
+    const open = w.findAll('.outlook-night').map((p) => p.element.open)
+    expect(open).toEqual([true, false, false])
+  })
+
+  it('shows a compact glance line in the summary', () => {
+    const w = mount(OutlookView, { props: props([night()]) })
+    const glance = w.find('summary .outlook-glance').text()
+    expect(glance).toContain('47%')
+    expect(glance).toContain('73%')
+    expect(glance).toContain('2.5h moonless')
+  })
+
+  it('renders one strip segment per hour with rating classes and best marker', () => {
+    const w = mount(OutlookView, { props: props([night()]) })
+    const segs = w.findAll('summary .outlook-strip span')
+    expect(segs).toHaveLength(2)
+    expect(segs[0].classes()).toContain('rc-fair')
+    expect(segs[1].classes()).toContain('rc-good')
+    expect(segs[1].classes()).toContain('best')
+  })
+
+  it('keeps user toggles across a refresh with the same nights', async () => {
+    const nights = [night({ date: '2026-09-01' }), night({ date: '2026-09-02', score: 10 })]
+    const w = mount(OutlookView, { props: props(nights) })
+    const first = w.findAll('.outlook-night')[0]
+    first.element.open = false
+    await first.trigger('toggle')
+    const second = w.findAll('.outlook-night')[1]
+    second.element.open = true
+    await second.trigger('toggle')
+
+    await w.setProps({ nights: nights.map((n) => ({ ...n })) })
+    expect(w.findAll('.outlook-night').map((p) => p.element.open)).toEqual([false, true])
+  })
+  describe('summary click', () => {
+    afterEach(() => vi.unstubAllGlobals())
+
+    it('opens a closed night right away', async () => {
+      const nights = [night({ date: '2026-09-01' }), night({ date: '2026-09-02' })]
+      const w = mount(OutlookView, { props: props(nights), attachTo: document.body })
+      await w.findAll('.outlook-night summary')[1].trigger('click')
+      expect(w.findAll('.outlook-night')[1].element.open).toBe(true)
+      w.unmount()
+    })
+
+    it('keeps a night rendered while it animates shut', async () => {
+      const w = mount(OutlookView, { props: props([night()]), attachTo: document.body })
+      await w.find('.outlook-night summary').trigger('click')
+      const panel = w.find('.outlook-night')
+      expect(panel.element.open).toBe(true)
+      expect(panel.classes()).toContain('closing')
+      w.unmount()
+    })
+
+    it('closes immediately when reduced motion is preferred', async () => {
+      vi.stubGlobal('matchMedia', (q) => ({ matches: q.includes('reduce') }))
+      const w = mount(OutlookView, { props: props([night()]) })
+      await w.find('.outlook-night summary').trigger('click')
+      expect(w.find('.outlook-night').element.open).toBe(false)
+    })
   })
 })
