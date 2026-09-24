@@ -45,11 +45,9 @@ describe('NightTimes', () => {
     expect(text).toContain('7:13 AM')
   })
 
-  it('shows the sun-altitude thresholds so the phases are unambiguous', () => {
+  it('does not show sun-altitude notes beside the labels', () => {
     const w = mount(NightTimes, { props: { twilight } })
-    expect(w.text()).toContain('sun −6°')
-    expect(w.text()).toContain('sun −12°')
-    expect(w.text()).toContain('sun −18°')
+    expect(w.text()).not.toContain('sun −')
   })
 
   it('reports sunset→sunrise and full-dark spans', () => {

@@ -165,16 +165,37 @@ a:hover { text-decoration: underline; }
 .tl-track { position: relative; flex: 1; height: 10px; background: var(--bg); border-radius: 5px; }
 .tl-bar { position: absolute; top: 0; height: 100%; background: rgba(122, 162, 255, .35); border-radius: 5px; }
 .tl-star { position: absolute; top: -6px; transform: translateX(-50%); color: var(--warn); }
-.forecast .hours { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.75rem; }
-.hour-card { margin: 0; padding: 0.75rem 0.9rem; }
+.forecast { margin-top: 1.25rem; }
+.forecast .hours { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--gap); }
+.hour-card { margin: 0; padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; min-width: 0;
+  border-left: 3px solid var(--glass-border); }
+.hour-card.rc-ideal, .hour-card.rc-great { border-left-color: var(--good); }
+.hour-card.rc-good { border-left-color: var(--accent); }
+.hour-card.rc-fair { border-left-color: var(--warn); }
+.hour-card.rc-poor, .hour-card.rc-bad { border-left-color: var(--bad); }
 .hour-card.not-dark { opacity: 0.55; }
 .hour-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
-.hour-forecast { color: var(--muted); font-size: 0.85rem; margin: 0.25rem 0 0.5rem; }
-.hour-stats { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0; }
-.hour-stats dt { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; }
-.hour-stats dd { margin: 0.05rem 0 0; font-weight: 600; font-size: 0.9rem; }
-.hour-reasons { margin: 0.5rem 0 0; padding-left: 1.1rem; color: var(--muted); font-size: 0.78rem; }
-.hour-reasons li { margin: 0.1rem 0; }
+.hour-time { font-size: 1.15rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.hour-head .rating { font-size: 0.78rem; }
+.hour-forecast { display: flex; align-items: center; gap: 0.4rem; margin: 0.35rem 0 0; color: var(--muted); font-size: 0.85rem; }
+.hour-emoji { font-size: 1rem; line-height: 1; }
+.hour-forecast-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hour-daylight { align-self: flex-start; margin: 0.45rem 0 0; padding: 0.1rem 0.55rem; border-radius: 999px;
+  background: rgba(251, 191, 36, .12); color: var(--warn); font-size: 0.72rem; }
+.hour-cloud { display: flex; align-items: baseline; gap: 0.45rem; margin: 0.85rem 0 0.35rem; }
+.hour-cloud-value { font-size: 1.6rem; font-weight: 650; line-height: 1; font-variant-numeric: tabular-nums; }
+.hour-cloud-value small { font-size: 0.9rem; font-weight: 600; color: var(--muted); margin-left: 1px; }
+.hour-cloud-label { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.hour-cloud-bar { height: 5px; border-radius: 3px; background: var(--glass-bg-2); overflow: hidden; }
+.hour-cloud-bar span { display: block; height: 100%; border-radius: 3px; background: rgba(147, 160, 194, .7); }
+.hour-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem 1rem; margin: 0.85rem 0; }
+.hour-stats > div { display: flex; justify-content: space-between; align-items: baseline; gap: 0.4rem; min-width: 0; }
+.hour-stats dt { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.hour-stats dd { margin: 0; font-weight: 600; font-size: 0.88rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hour-reasons { list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem; margin: auto 0 0; padding: 0.75rem 0 0;
+  border-top: 1px solid var(--glass-border); }
+.hour-reasons li { padding: 0.12rem 0.5rem; border-radius: 999px; background: var(--glass-control);
+  color: var(--muted); font-size: 0.72rem; line-height: 1.4; }
 .best-window { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 .ov-card { margin: 0; }
 .ov-card h2 { margin: 0 0 0.75rem; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
@@ -220,10 +241,9 @@ a:hover { text-decoration: underline; }
 .tw-dark-label { color: var(--accent); }
 .tw-times { display: flex; flex-wrap: wrap; gap: 0.35rem 1.4rem; margin: 0; justify-content: space-between; }
 .tw-times dt { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; }
-.tw-times dd { margin: 0.1rem 0 0; font-weight: 600; font-size: 0.92rem; }
+.tw-times dd { margin: 0.1rem 0 0; font-weight: 600; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
 .tw-dark-row dt { color: var(--text); }
 .tw-dark-row dd { color: var(--accent); }
-.tw-sub { text-transform: none; letter-spacing: 0; }
 .tw-summary { margin: 0.6rem 0 0; }
 .tw-card.compact .tw-times { gap: 0.25rem 1rem; }
 .tw-card.compact .tw-times dt { font-size: 0.65rem; }
@@ -304,7 +324,8 @@ a:hover { text-decoration: underline; }
 @media (max-width: 1100px) {
   .bento { grid-template-columns: 1fr 1fr; }
   .bento .tile-hero, .bento .tile-wide, .bento .tile-tall, .bento .tile-strip { grid-column: 1 / -1; grid-row: auto; }
-  .bento .card-night .tw-times { flex-direction: row; flex-wrap: wrap; gap: 0.5rem 1.4rem; }
+  /* Night times: dusk row over dawn row, in fixed columns so the times line up */
+  .tw-card:not(.compact) .tw-times { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem 1rem; }
   .bento .card-night .tw-times > div { display: block; }
   .bento .card-night .tw-times dd { margin-top: 0.1rem; }
 }
@@ -358,4 +379,14 @@ a:hover { text-decoration: underline; }
   .bento .card-night { order: 5; }
   .bento .card-discoveries { order: 6; }
   .ov-stat-value { font-size: 1.2rem; }
+}
+
+/* Phone night times: evening column | morning column, each row pairing the same sun altitude */
+@media (max-width: 560px) {
+  .tw-card:not(.compact) .tw-times, .tw-card.compact .tw-times { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1rem; }
+  .tw-row-sunset { order: 1; } .tw-row-sunrise { order: 2; }
+  .tw-row-civilDusk { order: 3; } .tw-row-civilDawn { order: 4; }
+  .tw-row-nauticalDusk { order: 5; } .tw-row-nauticalDawn { order: 6; }
+  .tw-row-astroDusk { order: 7; } .tw-row-astroDawn { order: 8; }
+  .tw-row-sunrise, .tw-row-civilDawn, .tw-row-nauticalDawn, .tw-row-astroDawn { text-align: right; }
 }

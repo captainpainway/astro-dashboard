@@ -96,4 +96,12 @@ describe('ForecastView', () => {
     const w = mount(ForecastView, { props: props([hour()]) })
     expect(w.findComponent(NightTimes).exists()).toBe(false)
   })
+
+  it('sizes the cloud meter by sky cover and hides it when unknown', () => {
+    const w = mount(ForecastView, { props: props([hour(), hour({ time: '2026-08-31T02:00:00-04:00', skyCover: null })]) })
+    const cards = w.findAll('.hour-card')
+    expect(cards[0].find('.hour-cloud-bar span').attributes('style')).toContain('width: 48%')
+    expect(cards[1].find('.hour-cloud-bar').exists()).toBe(false)
+    expect(cards[1].find('.hour-cloud-value').text()).toBe('—')
+  })
 })

@@ -31,20 +31,19 @@ const rows = computed(() => {
   const t = props.twilight ?? {}
   return [
     { key: 'sunset', label: 'sunset', time: t.sunset },
-    { key: 'civilDusk', label: 'civil dusk', time: t.civilDusk, sub: 'sun −6°' },
-    { key: 'nauticalDusk', label: 'nautical dusk', time: t.nauticalDusk, sub: 'sun −12°' },
-    { key: 'astroDusk', label: 'full dark', time: t.astroDusk, sub: 'sun −18°', dark: true, primary: true },
-    { key: 'astroDawn', label: 'dark ends', time: t.astroDawn, sub: 'sun −18°', dark: true, primary: true },
-    { key: 'nauticalDawn', label: 'nautical dawn', time: t.nauticalDawn, sub: 'sun −12°' },
-    { key: 'civilDawn', label: 'civil dawn', time: t.civilDawn, sub: 'sun −6°' },
+    { key: 'civilDusk', label: 'civil dusk', time: t.civilDusk },
+    { key: 'nauticalDusk', label: 'nautical dusk', time: t.nauticalDusk },
+    { key: 'astroDusk', label: 'full dark', time: t.astroDusk, dark: true, primary: true },
+    { key: 'astroDawn', label: 'dark ends', time: t.astroDawn, dark: true, primary: true },
+    { key: 'nauticalDawn', label: 'nautical dawn', time: t.nauticalDawn },
+    { key: 'civilDawn', label: 'civil dawn', time: t.civilDawn },
     { key: 'sunrise', label: 'sunrise', time: t.sunrise },
   ]
 })
 
 /** Only the boundaries that actually occur (polar nights drop several). */
 const present = computed(() => rows.value.filter((r) => r.time))
-// const shown = computed(() => (props.compact ? present.value.filter((r) => r.primary) : present.value))
-const shown = present.value;
+const shown = computed(() => (props.compact ? present.value.filter((r) => r.primary) : present.value))
 
 const darkSpan = computed(() => fmtDuration(props.twilight?.astroDusk, props.twilight?.astroDawn))
 const nightSpan = computed(() => fmtDuration(props.twilight?.sunset, props.twilight?.sunrise))
@@ -103,11 +102,8 @@ const lastMark = computed(() => (present.value[present.value.length - 1]?.time ?
       </div>
 
       <dl class="tw-times">
-        <div v-for="r in shown" :key="r.key" :class="{ 'tw-dark-row': r.dark }">
-          <dt>
-            {{ r.label }}
-            <span v-if="r.sub" class="tw-sub muted">({{ r.sub }})</span>
-          </dt>
+        <div v-for="r in shown" :key="r.key" :class="[`tw-row-${r.key}`, { 'tw-dark-row': r.dark }]">
+          <dt>{{ r.label }}</dt>
           <dd>{{ fmtTime(r.time) }}</dd>
         </div>
       </dl>
