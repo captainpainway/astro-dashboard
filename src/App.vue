@@ -1,5 +1,6 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { gsap } from 'gsap'
 import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
 import { useDiscover } from './composables/useDiscover'
@@ -24,18 +25,33 @@ const outlook = useOutlook()
 
 const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'discover'
 
+const pageEl = ref(null)
+let navSeq = 0 // only the latest navigation may finish; older ones bail out
+
 // Slide between pages where the View Transitions API is available; direction follows dock order.
-function setView(v) {
+// Naming .page for the slide cuts its glass off from the sky (see style.css), so the frost fades out
+// quickly first, the slide runs unfrosted, and the frost fades back in once the name is gone.
+async function setView(v) {
   if (v === view.value) return
   if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) {
     view.value = v
     return
   }
+  const seq = ++navSeq
+  await gsap.to(pageEl.value, { '--frost': 0, duration: 0.15, ease: 'power2.in', overwrite: true })
+  if (seq !== navSeq) return
   const order = DOCK_ITEMS.map((it) => it.key)
-  document.documentElement.dataset.navDir = order.indexOf(v) > order.indexOf(view.value) ? 'forward' : 'back'
-  document.startViewTransition(async () => {
+  const root = document.documentElement
+  root.dataset.navDir = order.indexOf(v) > order.indexOf(view.value) ? 'forward' : 'back'
+  root.dataset.pageVt = '' // names .page for this transition only
+  const t = document.startViewTransition(async () => {
     view.value = v
     await nextTick() // DOM must reflect the new view before the "new" snapshot
+  })
+  t.finished.finally(() => {
+    if (seq !== navSeq) return
+    delete root.dataset.pageVt
+    gsap.to(pageEl.value, { '--frost': 1, duration: 0.6, ease: 'power1.out', overwrite: true })
   })
 }
 
@@ -99,7 +115,7 @@ watch(requestParams, refresh)
 <template>
   <div class="shell">
   <AppDock :model-value="view" @update:model-value="setView" :loading="dockLoading" @refresh="refresh" />
-  <main class="page" :class="{ 'page-wide': view === 'home' }">
+  <main ref="pageEl" class="page" :class="{ 'page-wide': view === 'home' }">
 
     <template v-if="view === 'home'">
       <AppHeader :night="null" :at-local="null" :location="data?.location ?? null"

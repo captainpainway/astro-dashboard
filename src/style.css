@@ -370,8 +370,15 @@ a:hover { text-decoration: underline; }
 @keyframes tile-pulse { 50% { background: var(--glass-bg-2); } }
 
 /* Page changes slide via document.startViewTransition (see setView in App.vue).
-   Axis follows the dock: vertical beside the left rail, horizontal above the phone tab bar. */
-.page { view-transition-name: page; }
+   Axis follows the dock: vertical beside the left rail, horizontal above the phone tab bar.
+   Named only while a transition runs: a view-transition-name makes .page a backdrop root,
+   so the glass panels inside it would blur nothing but the transparent page instead of the sky. */
+html[data-page-vt] .page { view-transition-name: page; }
+/* Frost 1 → 0 fades the page's glass to plain tint (blur 0, saturate 1), which looks the same inside or outside
+   the backdrop root, so setView can fade it out before naming .page and fade it back in after. Declared on
+   .page, not :root, so the var() resolves against the animated --frost; the dock keeps its full blur. */
+@property --frost { syntax: '<number>'; inherits: true; initial-value: 1; }
+.page { --glass-blur: blur(calc(var(--frost) * 18px)) saturate(calc(1 + var(--frost) * .4)); }
 /* Own layer so the sliding page never paints over the dock (groups stack in paint order; dock is z 10) */
 .dock { view-transition-name: dock; }
 :root { --vt-dx: 0px; --vt-dy: 28px; --vt-dir: 1; }
