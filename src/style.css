@@ -14,7 +14,7 @@
   --dock-w: 76px;
   --glass-bg: rgba(20, 27, 49, .45);
   --glass-bg-2: rgba(27, 36, 64, .5);
-  --glass-bg-dense: rgba(14, 20, 38, .72);
+  --glass-bg-dense: rgba(18, 25, 46, .6);
   --glass-bg-menu: rgba(14, 20, 38, .92);
   --glass-control: rgba(255, 255, 255, .07);
   --glass-control-hover: rgba(255, 255, 255, .13);
@@ -130,13 +130,12 @@ button { font: inherit; cursor: pointer; }
 .tabs { display: flex; gap: 0.5rem; margin: 0.75rem 0; }
 .tabs button { border-radius: 12px; padding: 0.5rem 1rem; color: var(--muted); }
 /* Target list sits on a denser glass panel than the tiles: long rows of small text need more contrast than the blur alone gives */
-/* No overflow here: a scroll container would pin the sticky header to the panel instead of the window */
 .targets-panel { padding: 0.5rem 0.75rem; background: var(--glass-bg-dense); }
 .targets { width: 100%; border-collapse: collapse; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
 .targets th, .targets td { text-align: left; padding: 0.55rem 0.6rem; border-bottom: 1px solid rgba(255, 255, 255, .07); white-space: nowrap; }
 .targets tbody tr:last-child td { border-bottom: none; }
 .targets thead th { color: var(--muted); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase;
-  border-bottom-color: var(--glass-edge); position: sticky; top: 0; z-index: 1; background: var(--panel); }
+  border-bottom-color: var(--glass-edge); background: transparent; }
 .targets thead th:first-child { border-top-left-radius: 8px; }
 .targets thead th:last-child { border-top-right-radius: 8px; }
 .targets thead th[title] { cursor: help; }
@@ -176,10 +175,16 @@ a:hover { text-decoration: underline; }
 .moon-none { color: var(--muted); }
 .detail-row td { background: rgba(122, 162, 255, .1); }
 .notes { margin: 0.25rem 0; }
-.mini-timeline { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+.mini-timeline { display: flex; align-items: center; gap: 0.85rem; margin-top: 0.5rem; }
 .tl-track { position: relative; flex: 1; height: 10px; background: var(--bg); border-radius: 5px; }
 .tl-bar { position: absolute; top: 0; height: 100%; background: rgba(122, 162, 255, .35); border-radius: 5px; }
-.tl-star { position: absolute; top: -6px; transform: translateX(-50%); color: var(--warn); }
+/* Best-time marker: a gold star drawn as a shape rather than a ★ glyph, whose height in its line box varies by font.
+   The polygon's points are shifted down so the star itself (not just its box) is centered on the track; the shape
+   lives on ::before so the glow filter on the span isn't clipped away with it. */
+.tl-star { position: absolute; top: 50%; width: 20px; height: 20px; transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 4px rgba(251, 191, 36, .8)) drop-shadow(0 0 1px rgba(0, 0, 0, .6)); }
+.tl-star::before { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg, #fff4c2, var(--warn) 55%, #f59e0b);
+  clip-path: polygon(50% 4.5%, 61% 39.5%, 98% 39.5%, 68% 61.5%, 79% 95.5%, 50% 74.5%, 21% 95.5%, 32% 61.5%, 2% 39.5%, 39% 39.5%); }
 /* Forecast: one row per hour, columns shared with the header so values line up down the night */
 .forecast { margin-top: 1.25rem;
   --fc-cols: 5.25rem 4.25rem minmax(9rem, 1.4fr) 7rem 3.5rem 4.25rem 4.5rem 4.5rem minmax(0, 1.6fr); }

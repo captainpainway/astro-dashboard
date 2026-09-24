@@ -143,8 +143,8 @@ function moonClass(mi) {
                 <div class="tl-bar"
                      :style="{ left: `${timeline(night, t).leftPct}%`,
                                 width: `${timeline(night, t).widthPct}%` }" />
-                <span class="tl-star"
-                      :style="{ left: `${timeline(night, t).starPct}%` }">★</span>
+                <span class="tl-star" role="img" aria-label="best time"
+                      :style="{ left: `${timeline(night, t).starPct}%` }" />
               </div>
               <span class="muted small">{{ fmtTime(night.endLocal) }}</span>
             </div>
