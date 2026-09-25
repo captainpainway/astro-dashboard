@@ -30,6 +30,8 @@
     --glass-control: var(--panel-2); --glass-control-hover: #25305a; }
 }
 * { box-sizing: border-box; }
+/* home-bento-redesign: always reserve the scrollbar's space so pages with and without one share a viewport width */
+html { scrollbar-gutter: stable; }
 body {
   margin: 0;
   font-family: system-ui, -apple-system, sans-serif;
