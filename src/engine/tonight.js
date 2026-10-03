@@ -1,10 +1,10 @@
-import { twilightEvents } from './astro'
+import { darkWindow, twilightEvents } from './astro'
 import { round1 } from './forecast'
 import { fetchGridpoint, fetchHourly, fetchObservation, pointProps, weatherFetchedAt } from './nws'
 import { cloudFromText } from './outlook'
 import { rateConditions } from './rating'
-import { TARGET_CLASSES, generatePlan, timeGrid } from './scoring'
-import { localDate, nextOccurrence, toLocalIso, tonightWindow } from './time'
+import { TARGET_CLASSES, generatePlan, halfHourGrid } from './scoring'
+import { localDate, nextOccurrence, toLocalIso } from './time'
 
 const AT_RE = /^([01]?\d|2[0-3]):[0-5]\d$/
 const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null)
@@ -118,7 +118,7 @@ export async function buildTonight(location, { at, include } = {}, now = new Dat
     const [h, m] = at.split(':').map(Number)
     instant = nextOccurrence(now, h, m, tz)
   }
-  const { start, end } = instant ? { start: instant, end: instant } : tonightWindow(now, tz)
+  const { start, end } = instant ? { start: instant, end: instant } : darkWindow(location, now)
 
   const errors = []
   const fail = (e) => errors.push(`weather: ${e.message}`)
@@ -139,7 +139,7 @@ export async function buildTonight(location, { at, include } = {}, now = new Dat
 
   const elevationM = location.elevationM ?? (grid?.elevationM == null ? null : Math.round(grid.elevationM))
   const loc = { ...location, elevationM }
-  const instruments = generatePlan(loc, instant ? [instant] : timeGrid(start, end), include?.length ? include : TARGET_CLASSES)
+  const instruments = generatePlan(loc, instant ? [instant] : halfHourGrid(start, end), include?.length ? include : TARGET_CLASSES)
   const twilight = twilightEvents(loc, localDate(start, tz))
   const sky = grid?.skyCover
   const common = { generatedAt: weatherFetchedAt(), location: loc, twilight, instruments, errors: [...new Set(errors)] }

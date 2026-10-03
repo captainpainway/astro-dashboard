@@ -150,8 +150,8 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
       <AppHeader :night="lunar.data.value?.night ?? null" :at-local="null"
                  :generated-at="lunar.data.value?.generatedAt ?? ''" />
       <p v-if="lunar.error.value" class="error">failed to load: {{ lunar.error.value }}</p>
-      <LunarView :features="lunar.data.value?.features ?? []" :moon="lunar.data.value?.moon ?? null"
-                 :loading="lunar.loading.value" />
+      <LunarView :features="lunar.data.value?.features ?? []" :moon="lunar.data.value?.moon ?? null" :location="location"
+                 :night="lunar.data.value?.night ?? null" :loading="lunar.loading.value" />
     </template>
 
     <template v-else>

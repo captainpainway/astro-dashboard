@@ -3,6 +3,7 @@ import { buildForecast } from '../src/engine/forecast'
 import { clearWeatherCache } from '../src/engine/nws'
 import { buildOutlook } from '../src/engine/outlook'
 import { buildTonight } from '../src/engine/tonight'
+import { TARGET_CLASSES, generatePlan, halfHourGrid } from '../src/engine/scoring'
 import { BIG_BEND, expectPlan, expectRow, expectTwilight, nwsFetch } from './parity'
 import forecastWant from './fixtures/forecast-expected.json'
 import outlookWant from './fixtures/outlook-expected.json'
@@ -15,19 +16,33 @@ const NIGHT_TOL = { moonIllum: 1e-3, moonUpFraction: 0.05, darkHours: 0.5, score
 beforeEach(() => { clearWeatherCache(); vi.stubGlobal('fetch', nwsFetch()) })
 
 describe('buildForecast', () => {
-  it('matches astro-cli for the night of 2026-10-03', async () => {
+  it('matches astro-cli for the night of 2026-10-03, from the sunset hour to the sunrise hour', async () => {
     const got = await buildForecast(BIG_BEND, { date: '2026-10-03' })
     expect(got.errors).toEqual([])
     expect(got.location).toEqual(forecastWant.location)
-    expect(got.night).toEqual(forecastWant.night)
     expectTwilight(got.twilight, forecastWant.twilight)
-    expect(got.hours).toHaveLength(forecastWant.hours.length)
-    got.hours.forEach((h, i) => expectRow(h, forecastWant.hours[i], HOUR_TOL))
+    expect([got.night.startLocal, got.night.endLocal]).toEqual([got.twilight.sunset, got.twilight.sunrise])
+    // from the hour containing sunset (19:35) to the one containing sunrise (07:47): astro-cli's hours plus 07:00
+    expect(got.hours.map((h) => h.time.slice(11, 16))).toEqual(
+      ['19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00'])
+    let matched = 0
+    for (const h of got.hours) {
+      const want = forecastWant.hours.find((w) => w.time === h.time)
+      // moonIllum is taken at the window's midpoint, which moved by ~25 minutes with the new window
+      if (want) { expectRow(h, want, { ...HOUR_TOL, moonIllum: 0.01 }); matched++ }
+    }
+    expect(matched).toBe(12)
   })
 
   it('defaults to tonight in the location timezone', async () => {
     const got = await buildForecast(BIG_BEND, {}, new Date('2026-10-04T03:00:00Z'))
-    expect(got.night.startLocal).toBe('2026-10-03T19:00:00-05:00')
+    expect(got.night.startLocal).toBe(got.twilight.sunset)
+    expect(got.twilight.sunset.slice(0, 10)).toBe('2026-10-03')
+  })
+
+  it('keeps 19:00 to 07:00 where the Sun does not set', async () => {
+    const got = await buildForecast({ ...BIG_BEND, latitude: 80, longitude: 0, timezone: 'UTC' }, { date: '2026-06-21' })
+    expect([got.night.startLocal, got.night.endLocal]).toEqual(['2026-06-21T19:00:00+00:00', '2026-06-22T07:00:00+00:00'])
   })
 
   it('rejects an invalid date', async () => {
@@ -86,17 +101,29 @@ describe('buildOutlook', () => {
 describe('buildTonight', () => {
   const NOW = new Date('2026-10-03T15:00:00-05:00')
 
-  it('matches astro-cli for tonight (window mode)', async () => {
+  // astro-cli ranks over 21:00-05:00; here the window is astronomical dusk to dawn, so the ranking itself is
+  // compared with astro-cli in engine.test.js (same grid), and this checks the window and its plumbing.
+  it('ranks tonight (window mode) over astronomical dusk to dawn', async () => {
     const got = await buildTonight(BIG_BEND, {}, NOW)
     const want = tonight.window
     expect(got.errors).toEqual([])
     expect(got.mode).toBe('window')
     expect(got.location).toEqual(want.location)
-    expect(got.night).toEqual(want.night)
     expectTwilight(got.twilight, want.twilight)
-    expectRow(got.weather.summary, want.weather.summary, { score: 1e-6 })
+    expect([got.night.startLocal, got.night.endLocal]).toEqual([got.twilight.astroDusk, got.twilight.astroDawn])
     expect(got.weather.current).toEqual(want.weather.current)
-    expectPlan(got.instruments, want.instruments)
+    expect(got.weather.summary.rating).toBeTruthy()
+    const grid = halfHourGrid(new Date(got.night.startUtc), new Date(got.night.endUtc))
+    expect(got.instruments).toEqual(generatePlan(got.location, grid, TARGET_CLASSES))
+  })
+
+  it('reports best times and visible windows on the half hour', async () => {
+    const got = await buildTonight(BIG_BEND, {}, NOW)
+    const targets = Object.values(got.instruments).flat()
+    expect(targets.length).toBeGreaterThan(5)
+    for (const t of targets) {
+      for (const iso of [t.bestTime, t.window.start, t.window.end]) expect(iso.slice(14, 19)).toMatch(/^(00|30):00$/)
+    }
   })
 
   it('matches astro-cli at 22:30 (instant mode)', async () => {

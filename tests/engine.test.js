@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildLunar, reliefScore, subsolarPoint, sunAltitudeAt } from '../src/engine/lunar'
 import { rateConditions } from '../src/engine/rating'
-import { altaz as engineAltaz, observerFor, twilightEvents } from '../src/engine/astro'
+import { altaz as engineAltaz, darkWindow, observerFor, twilightEvents } from '../src/engine/astro'
 import { BIG_BEND, expectPlan, expectTwilight } from './parity'
 import { generatePlan, timeGrid } from '../src/engine/scoring'
 import altaz from './fixtures/altaz.json'
@@ -160,6 +160,26 @@ describe('lunar geometry', () => {
   })
 })
 
+describe('darkWindow', () => {
+  const w = (iso, loc = BIG_BEND) => { const { start, end } = darkWindow(loc, new Date(iso)); return [start.toISOString(), end.toISOString()] }
+  const dark = (day) => { const t = twilightEvents(BIG_BEND, day); return [new Date(t.astroDusk).toISOString(), new Date(t.astroDawn).toISOString()] }
+
+  it('is astronomical dusk to dawn of the coming night', () => {
+    expect(w('2026-10-03T15:00:00-05:00')).toEqual(dark('2026-10-03'))
+  })
+
+  it('keeps the night in progress until its dawn, then moves to the next night', () => {
+    expect(w('2026-10-03T23:00:00-05:00')).toEqual(dark('2026-10-03'))
+    expect(w('2026-10-04T03:00:00-05:00')).toEqual(dark('2026-10-03'))
+    expect(w('2026-10-04T08:00:00-05:00')).toEqual(dark('2026-10-04'))
+  })
+
+  it('falls back to 21:00-05:00 where it never gets fully dark', () => {
+    expect(w('2026-06-21T12:00:00Z', { latitude: 65, longitude: 0, timezone: 'UTC' }))
+      .toEqual(['2026-06-21T21:00:00.000Z', '2026-06-22T05:00:00.000Z'])
+  })
+})
+
 describe('buildLunar (places)', () => {
   const night = (iso) => buildLunar(BIG_BEND, new Date(iso))
   const rowOf = (id) => lunar.find((f) => f.id === id)
@@ -189,26 +209,63 @@ describe('buildLunar (places)', () => {
     expect(r.features[0].reason).toMatch(/high Sun/)
   })
 
-  it('new Moon: nothing is listed and the Moon never clears 10°', () => {
+  it('new Moon: nothing is listed even though the Moon is up by day', () => {
     const r = night('2026-10-10T15:00:00-05:00')
     expect(r.features).toEqual([])
-    expect(r.moon.maxAlt).toBeLessThan(10)
+    expect(r.moon.maxAlt).toBeGreaterThan(10)
   })
 
   it('returns the response envelope with the night window and a Moon summary', () => {
     const r = night('2026-10-17T15:00:00-05:00')
-    expect(r.night).toMatchObject({ startLocal: '2026-10-17T21:00:00-05:00', endLocal: '2026-10-18T05:00:00-05:00',
-                                    timezone: 'America/Chicago' })
+    expect(r.night).toMatchObject({ startLocal: expect.stringMatching(/^2026-10-17T.*-05:00$/), timezone: 'America/Chicago' })
+    expect(r.night.startUtc < r.night.endUtc).toBe(true)
     expect(r.errors).toEqual([])
     expect(r.moon.note).toMatch(/\(\d+% illuminated\)$/)
     expect(r.location).toEqual(BIG_BEND)
   })
 
-  it('works without an elevation and across the fall-back night (9 real hours)', () => {
+  it('works without an elevation', () => {
     const r = buildLunar({ ...BIG_BEND, elevationM: null }, new Date('2026-10-31T15:00:00-05:00'))
-    expect(r.night.endUtc).toBe('2026-11-01T11:00:00+00:00')
     expect(r.features.every((f) => Number.isFinite(f.score))).toBe(true)
     sorted(r)
+  })
+})
+
+describe('buildLunar (best times)', () => {
+  it('lands on the half hour, for places and for crescent and full-Moon rows alike', () => {
+    for (const day of ['2026-10-11', '2026-10-24', '2026-10-17']) { // crescent, full, first quarter
+      const r = buildLunar(BIG_BEND, new Date(`${day}T15:00:00-05:00`))
+      expect(r.features.length).toBeGreaterThan(0)
+      for (const f of r.features) expect(f.bestTime.slice(14, 19)).toMatch(/^(00|30):00$/)
+    }
+  })
+})
+
+describe('buildLunar (observing window)', () => {
+  const win = (iso, loc = BIG_BEND) => buildLunar(loc, new Date(iso)).night
+  const alt = (iso, loc = BIG_BEND) => engineAltaz('moon', new Date(iso), observerFor(loc)).alt
+
+  it("is the Moon's pass above 10°: 10° at both ends, higher between", () => {
+    const n = win('2026-10-18T15:00:00-05:00')
+    const [a, b] = [Date.parse(n.startUtc), Date.parse(n.endUtc)]
+    expect(b).toBeGreaterThan(Date.parse('2026-10-18T15:00:00-05:00'))
+    expect(Math.abs(alt(n.startUtc) - 10)).toBeLessThan(0.1)
+    expect(Math.abs(alt(n.endUtc) - 10)).toBeLessThan(0.1)
+    expect(alt(new Date((a + b) / 2).toISOString())).toBeGreaterThan(10)
+  })
+
+  it('moves on to the next pass once this one is over', () => {
+    const n = win('2026-10-18T15:00:00-05:00')
+    const next = win(new Date(Date.parse(n.endUtc) + 5 * 60_000).toISOString())
+    expect(Date.parse(next.startUtc)).toBeGreaterThan(Date.parse(n.endUtc))
+    expect(Math.abs(alt(next.startUtc) - 10)).toBeLessThan(0.1)
+  })
+
+  it('falls back to 21:00-05:00 when the Moon does not climb to 10°', () => {
+    const arctic = { latitude: 80, longitude: 0, timezone: 'UTC' }
+    const r = buildLunar(arctic, new Date('2026-10-12T15:00:00Z'))
+    expect(r.moon.maxAlt).toBeLessThan(10)
+    expect([r.night.startLocal.slice(11, 16), r.night.endLocal.slice(11, 16)]).toEqual(['21:00', '05:00'])
   })
 })
 

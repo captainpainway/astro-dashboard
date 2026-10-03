@@ -135,6 +135,8 @@ button { font: inherit; cursor: pointer; }
 .btn-group > button:last-child { border-radius: 0 999px 999px 0; }
 .btn-group > button + button { margin-left: -1px; }
 .btn-group > button.active { position: relative; z-index: 1; }
+/* Orientation toggle and time dropdown above the map */
+.moon-controls { justify-content: flex-start; margin-top: 0.75rem; }
 /* Square stage so the dots' percentages land on the disc */
 .moon-map { position: relative; width: min(100%, 1024px); aspect-ratio: 1; margin: 0.75rem auto; }
 .moon-map canvas { width: 100%; height: 100%; display: block; }

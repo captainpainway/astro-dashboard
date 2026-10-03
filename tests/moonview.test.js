@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { moonView, project, sunVector, viewBasis } from '../src/engine/moonview'
+import { Body, Equator, EquatorFromVector, GeoMoon, RotationAxis, SiderealTime } from 'astronomy-engine'
+import { altaz, observerFor } from '../src/engine/astro'
+import { moonVisibleTimes, moonView, project, skyRotation, sunVector, viewBasis } from '../src/engine/moonview'
 import { subsolarPoint } from '../src/engine/lunar'
 import horizons from './fixtures/lunar-horizons.json'
 
@@ -64,5 +66,80 @@ describe('sunVector', () => {
     expect(sunVector({ lat: 0, lon: 0 })).toEqual([1, 0, 0])
     const [x, y, z] = sunVector({ lat: 0, lon: 90 })
     expect([x, y, z]).toEqual([expect.closeTo(0), 1, expect.closeTo(0)])
+  })
+})
+
+describe('skyRotation', () => {
+  const site = { latitude: 40, longitude: -75, timezone: 'America/New_York' }
+  const toRad = Math.PI / 180
+
+  // Independent route: lunar pole's position angle from celestial north, minus the parallactic angle.
+  const reference = (date) => {
+    const eq = EquatorFromVector(GeoMoon(date))
+    const axis = RotationAxis(Body.Moon, date)
+    const dRa = (axis.ra - eq.ra) * 15 * toRad
+    const dec = eq.dec * toRad
+    const pdec = axis.dec * toRad
+    const P = Math.atan2(Math.cos(pdec) * Math.sin(dRa), Math.sin(pdec) * Math.cos(dec) - Math.cos(pdec) * Math.sin(dec) * Math.cos(dRa))
+    const ofDate = Equator(Body.Moon, date, observerFor(site), true, true)
+    const H = (SiderealTime(date) + site.longitude / 15 - ofDate.ra) * 15 * toRad
+    const q = Math.atan2(Math.sin(H), Math.tan(site.latitude * toRad) * Math.cos(ofDate.dec * toRad) - Math.sin(ofDate.dec * toRad) * Math.cos(H))
+    return P - q
+  }
+  const wrapRad = (a) => Math.atan2(Math.sin(a), Math.cos(a))
+
+  it.each(['2026-10-03T23:00:00Z', '2026-10-04T02:00:00Z', '2026-10-04T06:00:00Z', '2026-11-12T01:30:00Z'])(
+    'matches pole position angle minus parallactic angle at %s',
+    (utc) => {
+      const d = new Date(utc)
+      expect(Math.abs(wrapRad(skyRotation(d, site) - reference(d)))).toBeLessThan(1.5 * toRad)
+    })
+
+  it('turns an eastern (rising) Moon counter-clockwise and a western one clockwise, relative to the meridian', () => {
+    const rising = new Date('2026-10-03T23:00:00Z')
+    const times = moonVisibleTimes(site, rising)
+    const [rise, set] = [times[0].date, times.at(-1).date]
+    expect(skyRotation(rise, site) - skyRotation(set, site)).toBeGreaterThan(0)
+  })
+})
+
+describe('moonVisibleTimes', () => {
+  const site = { latitude: 40, longitude: -75, timezone: 'America/New_York' }
+  const now = new Date('2026-10-03T23:00:00Z')
+  const dates = (times) => times.map((t) => t.date)
+
+  it('runs from moonrise to moonset in half-hour steps with the Moon up throughout', () => {
+    const times = dates(moonVisibleTimes(site, now))
+    expect(times.length).toBeGreaterThan(3)
+    times.forEach((t, i) => {
+      if (i) expect(t - times[i - 1]).toBeLessThanOrEqual(30 * 60_000)
+      expect(altaz('moon', t, observerFor(site)).alt).toBeGreaterThan(-1)
+    })
+    expect(times.at(-1) - times[0]).toBeLessThan(18 * 3_600_000)
+  })
+
+  it('tags only the moonrise and moonset ends', () => {
+    const times = moonVisibleTimes(site, now)
+    expect(times.map((t) => t.event)).toEqual(['moonrise', ...Array(times.length - 2).fill(null), 'moonset'])
+  })
+
+  it('covers the pass under way now, or else the next one', () => {
+    const times = dates(moonVisibleTimes(site, now))
+    const up = altaz('moon', now, observerFor(site)).alt > 0
+    expect(up ? times[0] <= now && now <= times.at(-1) : times[0] > now).toBe(true)
+  })
+
+  it('stays inside a window, dropping the rise/set tags the window cuts off', () => {
+    const all = dates(moonVisibleTimes(site, now))
+    const window = { start: all[2], end: all[5] }
+    const times = moonVisibleTimes(site, now, window)
+    expect(times.map((t) => t.date.getTime())).toEqual(all.slice(2, 6).map((t) => t.getTime()))
+    expect(times.every((t) => t.event === null)).toBe(true)
+  })
+
+  it('is empty when the Moon is not up in the window, or never rises or sets', () => {
+    const all = dates(moonVisibleTimes(site, now))
+    expect(moonVisibleTimes(site, now, { start: new Date(+all.at(-1) + 3_600_000), end: new Date(+all.at(-1) + 7_200_000) })).toEqual([])
+    expect(moonVisibleTimes({ latitude: 89.9, longitude: 0, timezone: 'UTC' }, new Date('2026-06-21T00:00:00Z'))).toEqual([])
   })
 })

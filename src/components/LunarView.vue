@@ -7,6 +7,8 @@ import MoonMap from './MoonMap.vue'
 const props = defineProps({
   features: { type: Array, required: true },
   moon: { type: Object, default: null },
+  location: { type: Object, required: true },
+  night: { type: Object, default: null },
   loading: { type: Boolean, default: false },
 })
 
@@ -45,7 +47,7 @@ const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
         </div>
         <p v-if="moon" class="muted small lunar-status">{{ moon.note }}</p>
     </section>
-    <MoonMap v-if="view === 'map'" :key="mapStamp" :features="shown" @failed="mapFailed = true" />
+    <MoonMap v-if="view === 'map'" :key="mapStamp" :features="shown" :location="location" :night="night" @failed="mapFailed = true" />
     <p v-if="loading && !features.length" class="muted">loading lunar features…</p>
     <p v-else-if="!features.length" class="muted">{{ lunarEmpty(moon) }}</p>
     <p v-else-if="!shown.length" class="muted">no {{ tierLabel }} features are well placed tonight</p>

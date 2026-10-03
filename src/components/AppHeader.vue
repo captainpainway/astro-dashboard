@@ -1,6 +1,7 @@
 <script setup>
-import { fmtTime, fmtDateTime, fmtLocation } from '../format'
+import { fmtDate, fmtTime, fmtDateTime, fmtLocation } from '../format'
 
+const day = (iso) => iso.slice(0, 10) // site-local date of an ISO stamp
 const emit = defineEmits(['change-location'])
 defineProps({
   night: { type: Object, default: null },
@@ -21,7 +22,8 @@ defineProps({
         </p>
         <p v-if="atLocal" class="muted">Sky at {{ fmtTime(atLocal) }}</p>
         <p v-else-if="night" class="muted">
-          observing window {{ fmtTime(night.startLocal) }} – {{ fmtTime(night.endLocal) }}
+          {{ fmtDate(day(night.startLocal)) }} · {{ fmtTime(night.startLocal) }} –
+          <template v-if="day(night.endLocal) !== day(night.startLocal)">{{ fmtDate(day(night.endLocal)) }} · </template>{{ fmtTime(night.endLocal) }}
         </p>
       </div>
       <p v-if="generatedAt" class="muted small generated">

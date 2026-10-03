@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
+import { moonVisibleTimes } from '../src/engine/moonview'
 import LunarView from '../src/components/LunarView.vue'
 
 const feature = (over = {}) => ({
@@ -11,8 +12,9 @@ const features = [
   feature(),
   feature({ id: 'rupes-recta', name: 'Rupes Recta', tier: 'telescope', type: 'Rupes', score: 70, sunAlt: 4 }),
 ]
+const location = { latitude: 40, longitude: -75, timezone: 'America/New_York' }
 const moon = { maxAlt: 40, note: 'First Quarter (46% illuminated)' }
-const mountView = (props) => mount(LunarView, { props: { features, moon, loading: false, ...props } })
+const mountView = (props) => mount(LunarView, { props: { features, moon, location, loading: false, ...props } })
 const tab = (w, label) => w.findAll('[aria-label="instrument tier"] button').find((b) => b.text().startsWith(label))
 
 describe('LunarView', () => {
@@ -204,17 +206,21 @@ describe('LunarView moon map', () => {
     expect(dots(w)).toHaveLength(1)
   })
 
-  it('opens a tooltip with the feature name on click, and closes it on outside click or Esc', async () => {
+  const reduceMotion = () => vi.stubGlobal('matchMedia', () => ({ matches: true })) // GSAP tweens finish at once
+
+  it('shows a tooltip with the feature name and its details on hover, and hides it on mouse-out or Esc', async () => {
     stubGl()
+    reduceMotion()
     const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20), atPlace('b', 'Beta', -30, -60)] })
     expect(w.find('.moon-tip').exists()).toBe(false)
-    await dots(w)[1].trigger('click')
-    expect(w.find('.moon-tip').text()).toBe('Beta')
-    document.dispatchEvent(new MouseEvent('click'))
+    await dots(w)[1].trigger('mouseenter')
+    expect(w.find('.moon-tip').text()).toContain('Beta')
+    expect(w.find('.moon-tip').text()).toContain('Best at 1:00 AM')
+    await dots(w)[1].trigger('mouseleave')
     await flushPromises()
     expect(w.find('.moon-tip').exists()).toBe(false)
-    await dots(w)[0].trigger('click')
-    expect(w.find('.moon-tip').text()).toBe('Alpha')
+    await dots(w)[0].trigger('focus')
+    expect(w.find('.moon-tip').text()).toContain('Alpha')
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
     await flushPromises()
     expect(w.find('.moon-tip').exists()).toBe(false)
@@ -222,20 +228,78 @@ describe('LunarView moon map', () => {
 
   it('closes the tooltip when the tier filter removes its feature', async () => {
     stubGl()
+    reduceMotion()
     const w = await mountMap({ features: spread })
-    await dots(w)[0].trigger('click') // Mare Imbrium (eyes)
+    await dots(w)[0].trigger('mouseenter') // Mare Imbrium (eyes)
     expect(w.find('.moon-tip').exists()).toBe(true)
     await tab(w, 'telescope').trigger('click')
+    await flushPromises()
     expect(w.find('.moon-tip').exists()).toBe(false)
   })
 
-  it('merges features at the same spot into one dot that names them all', async () => {
+  it('merges features at the same spot into one dot whose tooltip lists them all', async () => {
     stubGl()
     const w = await mountMap({ features: [atPlace('a', 'Clavius', -58.4, -14.4), atPlace('b', 'Clavius craterlets', -58.4, -14.4),
                                           atPlace('c', 'Copernicus', 9.6, -20)] })
-    expect(dots(w).map((d) => d.attributes('aria-label'))).toEqual(['Clavius · Clavius craterlets', 'Copernicus'])
-    await dots(w)[0].trigger('click')
-    expect(w.find('.moon-tip').text()).toBe('Clavius · Clavius craterlets')
+    expect(dots(w).map((d) => d.attributes('aria-label'))).toEqual(['Clavius, Clavius craterlets', 'Copernicus'])
+    await dots(w)[0].trigger('mouseenter')
+    expect(w.findAll('.moon-tip-item').map((i) => i.find('strong').text())).toEqual(['Clavius', 'Clavius craterlets'])
+  })
+
+  it('starts north-up; the sky view adds a time dropdown (now, moonrise to moonset) and turns the Moon', async () => {
+    stubGl()
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-03T23:00:00Z'))
+    const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)] })
+    const modes = () => w.findAll('.moon-controls .btn-group button')
+    expect(modes().map((b) => b.text())).toEqual(['north up', 'sky view'])
+    expect(modes()[0].classes()).toContain('active')
+    expect(w.find('.moon-controls .glass-select').exists()).toBe(false)
+    const northUp = dots(w)[0].attributes('style')
+
+    await modes()[1].trigger('click')
+    expect(dots(w)[0].attributes('style')).not.toBe(northUp)
+    await w.find('.glass-select-trigger').trigger('click')
+    const opts = w.findAll('[role="option"]').map((o) => o.text())
+    expect(opts[0]).toBe('now')
+    expect(opts[1]).toMatch(/^moonrise /)
+    expect(opts.at(-1)).toMatch(/^moonset /)
+
+    const atNow = dots(w)[0].attributes('style')
+    await w.findAll('[role="option"]').at(-1).trigger('click') // moonset
+    expect(dots(w)[0].attributes('style')).not.toBe(atNow)
+
+    await modes()[0].trigger('click')
+    expect(dots(w)[0].attributes('style')).toBe(northUp)
+  })
+
+  it('notes in the sky view when the Moon is below the horizon, and only then', async () => {
+    stubGl()
+    vi.useFakeTimers({ toFake: ['Date'] })
+    const times = moonVisibleTimes(location, new Date('2026-10-03T23:00:00Z'))
+    const sky = async (now) => {
+      vi.setSystemTime(now)
+      const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)] })
+      expect(w.find('[role="status"]').exists()).toBe(false) // north-up: no note
+      await w.findAll('.moon-controls .btn-group button')[1].trigger('click')
+      return w.find('[role="status"]')
+    }
+    expect((await sky(new Date(times[0].date - 2 * 3_600_000))).text()).toContain('below the horizon')
+    expect((await sky(times[3].date)).exists()).toBe(false)
+  })
+
+  it('limits the sky-view times to the observing window', async () => {
+    stubGl()
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-03T23:00:00Z'))
+    const times = moonVisibleTimes(location, new Date())
+    const night = { startUtc: times[2].date.toISOString(), endUtc: times[6].date.toISOString() }
+    const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)], night })
+    await w.findAll('.moon-controls .btn-group button')[1].trigger('click')
+    await w.find('.glass-select-trigger').trigger('click')
+    const opts = w.findAll('[role="option"]').map((o) => o.text())
+    expect(opts).toHaveLength(1 + 5) // now + five half-hour marks
+    expect(opts.some((o) => /moon(rise|set)/.test(o))).toBe(false)
   })
 
   it('redraws the Moon for the new time when the lunar data is reloaded', async () => {

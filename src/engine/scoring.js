@@ -35,6 +35,14 @@ export function timeGrid(start, end) {
   return out
 }
 
+const HALF_HOUR = 30 * 60_000
+/** Clock-aligned half-hour sample times within [start, end] (so best times land on :00 and :30). */
+export function halfHourGrid(start, end) {
+  const out = []
+  for (let t = Math.ceil(start / HALF_HOUR) * HALF_HOUR; t <= end; t += HALF_HOUR) out.push(new Date(t))
+  return out
+}
+
 function toTarget(tz, { id, name, targetClass, score, above, best, moonInterference, notes }) {
   const iso = (s) => toLocalIso(s.t, tz)
   return {

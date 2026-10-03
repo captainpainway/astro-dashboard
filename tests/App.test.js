@@ -200,7 +200,7 @@ describe('App integration', () => {
   it('renders header, weather, tabs, and table from live-shaped data', async () => {
     const w = await mountOnTonightView()
     expect(w.text()).toContain("Astronomer's Dashboard")
-    expect(w.text()).toContain('observing window 9:00 PM – 5:00 AM')
+    expect(w.text()).toContain('Sun, Aug 30 · 9:00 PM – Mon, Aug 31 · 5:00 AM')
     expect(w.find('.app-header').text()).not.toContain('Big Bend') // location is home-only
     expect(w.text()).toContain('SS Cyg')
     // both instrument tabs render with counts

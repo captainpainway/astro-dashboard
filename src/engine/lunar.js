@@ -1,8 +1,8 @@
 import { Body, GeoMoon, GeoVector, RotationAxis } from 'astronomy-engine'
 import features from './lunar.json'
-import { altaz, moonIllumination, moonIsWaxing, moonPhaseAngle, observerFor, twilightEvents } from './astro'
+import { altaz, darkWindow, moonIllumination, moonIsWaxing, moonPhaseAngle, moonWindow, observerFor, twilightEvents } from './astro'
 import { round1 } from './forecast'
-import { moonNote, timeGrid } from './scoring'
+import { halfHourGrid, moonNote } from './scoring'
 import { localDate, toLocalIso, tonightWindow } from './time'
 
 const RAD = Math.PI / 180
@@ -53,22 +53,23 @@ const PHASE_SCORE = 50 // ponytail: fixed mid-list score; rank phase rows by Moo
 const reasonFor = (f, sunAlt) => (f.ageDays === 14 ? `high Sun ${sunAlt.toFixed(0)}° — best near full`
   : sunAlt < 15 ? `terminator, Sun ${sunAlt.toFixed(0)}°` : `Sun ${sunAlt.toFixed(0)}°`)
 
-/** Peak Moon altitude over [from, to] (epoch ms, 10-minute steps) at or above `minAlt`, or null. */
+/** Peak Moon altitude over [from, to] (epoch ms, half-hour marks) at or above `minAlt`, or null. */
 function moonPeak(from, to, observer, minAlt) {
   let best = null
-  for (let t = from; t <= to; t += 600_000) {
-    const alt = altaz('moon', new Date(t), observer).alt
-    if (alt >= minAlt && (!best || alt > best.alt)) best = { t: new Date(t), alt }
+  for (const t of halfHourGrid(from, to)) {
+    const alt = altaz('moon', t, observer).alt
+    if (alt >= minAlt && (!best || alt > best.alt)) best = { t, alt }
   }
   return best
 }
 
-/** Client-side lunar planner: AL checklist features ranked for tonight's 21:00-05:00 window at `location`. */
+/** Client-side lunar planner: AL checklist features ranked for the Moon's next stretch above 10° at `location`. */
 export function buildLunar(location, now = new Date()) {
   const tz = location.timezone
   const observer = observerFor(location)
-  const { start, end } = tonightWindow(now, tz)
-  const samples = timeGrid(start, end).map((t) => ({ t, moonAlt: altaz('moon', t, observer).alt, sub: subsolarPoint(t) }))
+  // Falls back to 21:00-05:00 when the Moon doesn't get above 10° in the next few passes (high latitudes).
+  const { start, end } = moonWindow(observer, now, MIN_MOON_ALT) ?? tonightWindow(now, tz)
+  const samples = halfHourGrid(start, end).map((t) => ({ t, moonAlt: altaz('moon', t, observer).alt, sub: subsolarPoint(t) }))
   const up = samples.filter((s) => s.moonAlt >= MIN_MOON_ALT)
 
   // ponytail: libration ignored, so limb features (Crisium, Grimaldi, ...) rank as if face-on; weight by Libration() if it matters.
@@ -87,7 +88,7 @@ export function buildLunar(location, now = new Date()) {
   const rows = features.filter((f) => f.kind === 'place').map(place)
     .filter((r) => r && r.score >= MIN_SCORE).sort((a, b) => b.score - a.score)
   // Rows with no place: full/gibbous folklore at the night's highest Moon; crescents low in the twilight.
-  const tw = twilightEvents(location, localDate(start, tz))
+  const tw = twilightEvents(location, localDate(darkWindow(location, now).start, tz))
   const evening = [tw.sunset, tw.astroDusk]
   const morning = [tw.astroDawn, tw.sunrise]
   const highest = up.reduce((a, b) => (!a || b.moonAlt > a.moonAlt ? b : a), null)

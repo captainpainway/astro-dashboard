@@ -75,13 +75,23 @@ export function buildHours({ periods, start, end, sky, observer, moonIllum }) {
     })
 }
 
-/** 19:00 local on `date` (default: today in `tz`) to 07:00 the next morning. */
-function forecastWindow(now, date, tz) {
+/** The night of `date` (default: today in `tz`) as 'YYYY-MM-DD'. */
+function forecastDay(now, date, tz) {
   if (date != null && !(/^\d{4}-\d{2}-\d{2}$/.test(date) && addDays(date, 0) === date)) {
     throw new Error(`Invalid date '${date}'. Use YYYY-MM-DD.`)
   }
-  const day = date ?? localDate(now, tz)
-  return { day, start: zonedTime(day, 19, 0, tz), end: zonedTime(addDays(day, 1), 7, 0, tz) }
+  return date ?? localDate(now, tz)
+}
+
+const HOUR = 3_600_000
+const floorHour = (d) => Math.floor(d / HOUR) * HOUR // NWS periods start on the hour
+
+/** Sunset to the next sunrise; 19:00 to 07:00 local where the Sun doesn't set or rise that night. */
+function forecastWindow(day, twilight, tz) {
+  return {
+    start: twilight.sunset ? new Date(twilight.sunset) : zonedTime(day, 19, 0, tz),
+    end: twilight.sunrise ? new Date(twilight.sunrise) : zonedTime(addDays(day, 1), 7, 0, tz),
+  }
 }
 
 /** Mark hours before sunset or after sunrise, from the almanac rather than the hourly sun altitude. */
@@ -94,10 +104,12 @@ function flagDaylight(hours, twilight) {
   }
 }
 
-/** Client-side equivalent of astro-cli GET /forecast: hourly conditions, evening to dawn. */
+/** Client-side take on astro-cli GET /forecast: hourly conditions from sunset to sunrise. */
 export async function buildForecast(location, { date } = {}, now = new Date()) {
   const tz = location.timezone
-  const { day, start, end } = forecastWindow(now, date, tz)
+  const day = forecastDay(now, date, tz)
+  const twilight = twilightEvents(location, day)
+  const { start, end } = forecastWindow(day, twilight, tz)
   const errors = []
   let hours = []
   let elevationM = location.elevationM
@@ -106,13 +118,13 @@ export async function buildForecast(location, { date } = {}, now = new Date()) {
     // Gridpoint is optional: without it hours just lack sky cover.
     const [periods, grid] = await Promise.all([fetchHourly(props), fetchGridpoint(props).catch(() => null)])
     elevationM ??= grid?.elevationM == null ? null : Math.round(grid.elevationM)
-    hours = buildHours({ periods, start: start.getTime(), end: end.getTime(), sky: grid?.skyCover,
+    // Hours run from the one containing sunset to the one containing sunrise.
+    hours = buildHours({ periods, start: floorHour(start), end: floorHour(end) + HOUR, sky: grid?.skyCover,
                          observer: observerFor(location),
                          moonIllum: moonIllumination(new Date((start.getTime() + end.getTime()) / 2)) })
   } catch (e) {
     errors.push(`forecast: ${e.message}`)
   }
-  const twilight = twilightEvents(location, day)
   flagDaylight(hours, twilight)
   return {
     generatedAt: weatherFetchedAt(),

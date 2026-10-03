@@ -2,16 +2,39 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { gsap } from 'gsap'
 import { fmtCoords, fmtTime } from '../format'
-import { moonView, project, sunVector, viewBasis } from '../engine/moonview'
+import { moonView, moonVisibleTimes, project, rotateBasis, skyRotation, sunVector, viewBasis } from '../engine/moonview'
+import { altaz, observerFor } from '../engine/astro'
+import { toLocalIso } from '../engine/time'
+import GlassSelect from './GlassSelect.vue'
 // NASA SVS CGI Moon Kit (public domain): LROC color map, 2048x1024 equirectangular.
 import textureUrl from '../assets/moon-2k.jpg'
 
-const props = defineProps({ features: { type: Array, required: true } })
+const props = defineProps({
+  features: { type: Array, required: true },
+  location: { type: Object, required: true },
+  night: { type: Object, default: null }, // observing window; the sky-view times stay inside it
+})
 const emit = defineEmits(['failed'])
 
 const SIZE = 1024
-const view = moonView(new Date()) // read once: the map shows the Moon as it is now
-const basis = viewBasis(view.earth)
+const now = new Date() // read once: "now" is when the map was mounted or refreshed
+const orientation = ref('north') // 'north' | 'sky'
+const when = ref('now') // 'now' or epoch ms of a time in the Moon's pass; only used in the sky orientation
+const date = computed(() => (orientation.value === 'sky' && when.value !== 'now' ? new Date(Number(when.value)) : now))
+const view = computed(() => moonView(date.value))
+const basis = computed(() => {
+  const north = viewBasis(view.value.earth)
+  return orientation.value === 'sky' ? rotateBasis(north, skyRotation(date.value, props.location)) : north
+})
+
+const belowHorizon = computed(() => altaz('moon', date.value, observerFor(props.location)).alt < 0)
+const passTimes = moonVisibleTimes(props.location, now,
+  props.night && { start: new Date(props.night.startUtc), end: new Date(props.night.endUtc) })
+const stamp = (d) => fmtTime(toLocalIso(d, props.location.timezone))
+const timeOptions = [{ value: 'now', label: 'now' }, ...passTimes.map(({ date, event }) => ({
+  value: String(date.getTime()),
+  label: `${event ? `${event} ` : ''}${stamp(date)}`,
+}))]
 const failed = ref(typeof WebGLRenderingContext === 'undefined')
 watch(failed, (v) => { if (v) emit('failed') }, { immediate: true }) // lets the page fall back to the list
 const canvas = ref(null)
@@ -33,7 +56,7 @@ const dots = computed(() => {
   const out = []
   for (const f of props.features) {
     if (f.lat == null) continue
-    const p = project(f, basis)
+    const p = project(f, basis.value)
     if (!p.visible) continue
     const near = out.find((d) => Math.hypot(d.x - p.x, d.y - p.y) < MERGE)
     if (near) near.items.push(f)
@@ -64,7 +87,10 @@ void main() {
   gl_FragColor = vec4(texture2D(uTex, uv).rgb * lit * limb * edge, edge); // premultiplied alpha
 }`
 
-function draw(gl, img) {
+let gl = null
+let uniforms = null // set once the texture is uploaded; render() waits for it
+
+function setup(img) {
   const compile = (type, src) => {
     const s = gl.createShader(type)
     gl.shaderSource(s, src)
@@ -89,14 +115,19 @@ function draw(gl, img) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-  const set3 = (name, v) => gl.uniform3fv(gl.getUniformLocation(prog, name), v)
-  set3('uRight', basis.right)
-  set3('uUp', basis.up)
-  set3('uEarth', basis.earth)
-  set3('uSun', sunVector(view.sub))
+  uniforms = Object.fromEntries(['uRight', 'uUp', 'uEarth', 'uSun'].map((n) => [n, gl.getUniformLocation(prog, n)]))
   gl.viewport(0, 0, SIZE, SIZE)
+}
+
+function render() {
+  gl.uniform3fv(uniforms.uRight, basis.value.right)
+  gl.uniform3fv(uniforms.uUp, basis.value.up)
+  gl.uniform3fv(uniforms.uEarth, basis.value.earth)
+  gl.uniform3fv(uniforms.uSun, sunVector(view.value.sub))
+  gl.clear(gl.COLOR_BUFFER_BIT)
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
+watch([basis, view], () => { if (uniforms) render() })
 
 const reduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 // The tip's bottom-left corner sits 14px above its dot: it pops out from there and springs into place, then shrinks back.
@@ -117,10 +148,10 @@ const onKey = (e) => { if (e.key === 'Escape') close() }
 onMounted(() => {
   document.addEventListener('keydown', onKey)
   if (failed.value) return
-  const gl = canvas.value.getContext('webgl')
+  gl = canvas.value.getContext('webgl')
   if (!gl) { failed.value = true; return }
   const img = new Image()
-  img.onload = () => { try { draw(gl, img) } catch { failed.value = true } }
+  img.onload = () => { try { setup(img); render() } catch { failed.value = true } }
   img.onerror = () => { failed.value = true }
   img.src = textureUrl
 })
@@ -131,6 +162,14 @@ onBeforeUnmount(() => {
 
 <template>
   <template v-if="!failed">
+  <section class="controls panel moon-controls">
+    <div class="btn-group" role="group" aria-label="orientation">
+      <button :class="{ active: orientation === 'north' }" @click="orientation = 'north'">north up</button>
+      <button :class="{ active: orientation === 'sky' }" @click="orientation = 'sky'">sky view</button>
+    </div>
+    <GlassSelect v-if="orientation === 'sky'" v-model="when" aria-label="time" :options="timeOptions" />
+    <span v-if="orientation === 'sky' && belowHorizon" class="muted small" role="status">The Moon is below the horizon at this time, so it isn't visible.</span>
+  </section>
   <div class="moon-map">
     <canvas ref="canvas" :width="SIZE" :height="SIZE" />
     <button v-for="d in dots" :key="d.id" class="moon-dot" :class="{ active: d.id === selectedId }"
