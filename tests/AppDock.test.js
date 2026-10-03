@@ -7,7 +7,7 @@ describe('AppDock', () => {
 
   it('renders one button per page, labelled by text only', () => {
     const w = mount(AppDock, { props: { modelValue: 'home' } })
-    expect(items(w).map((b) => b.text())).toEqual(['home', 'tonight', 'forecast', 'outlook', 'discover'])
+    expect(items(w).map((b) => b.text())).toEqual(['home', 'tonight', 'forecast', 'outlook', 'lunar'])
   })
 
   it('marks the current page active', () => {
@@ -22,9 +22,9 @@ describe('AppDock', () => {
     const w = mount(AppDock, { props: { modelValue: 'tonight' } })
     expect(w.findAll('.dock-indicator')).toHaveLength(1)
     expect(w.find('.dock-item.active .dock-indicator').exists()).toBe(true)
-    await w.setProps({ modelValue: 'discover' })
+    await w.setProps({ modelValue: 'lunar' })
     expect(w.findAll('.dock-indicator')).toHaveLength(1)
-    expect(w.find('.dock-item.active').text()).toBe('discover')
+    expect(w.find('.dock-item.active').text()).toBe('lunar')
     expect(w.find('.dock-item.active .dock-indicator').exists()).toBe(true)
   })
 

@@ -1,0 +1,1031 @@
+[
+ {
+  "id": "old-moon-in-new-moon-s-arms",
+  "name": "Old Moon in New Moon's Arms",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "near-new-72"
+ },
+ {
+  "id": "new-moon-in-old-moon-s-arms",
+  "name": "New Moon in Old Moon's Arms",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "near-new-72"
+ },
+ {
+  "id": "crescent-moon-waxing",
+  "name": "Crescent Moon, Waxing",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "waxing-new-48"
+ },
+ {
+  "id": "crescent-moon-waning",
+  "name": "Crescent Moon, Waning",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "waning-new-48"
+ },
+ {
+  "id": "man-in-the-moon",
+  "name": "Man in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "woman-in-the-moon",
+  "name": "Woman in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "rabbit-in-the-moon",
+  "name": "Rabbit in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "cow-jumping-over-the-moon",
+  "name": "Cow Jumping Over the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "gibbous"
+ },
+ {
+  "id": "lion-in-the-moon",
+  "name": "Lion in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "crab-in-the-moon",
+  "name": "Crab in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "rabbit-in-the-moon-making-rice-cakes",
+  "name": "Rabbit in the Moon Making Rice Cakes",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "man-carrying-sticks-in-the-moon",
+  "name": "Man Carrying Sticks in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "rona-a-woman-in-the-moon",
+  "name": "Rona (a Woman) in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "frog-in-the-moon",
+  "name": "Frog in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "jack-and-jill-in-the-moon",
+  "name": "Jack and Jill in the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "hands-on-the-moon",
+  "name": "Hands on the Moon",
+  "tier": "eyes",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "mare-crisium",
+  "name": "Mare Crisium",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": 16.18,
+  "lon": 59.1
+ },
+ {
+  "id": "mare-fecunditatis",
+  "name": "Mare Fecunditatis",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": -7.83,
+  "lon": 53.67
+ },
+ {
+  "id": "mare-frigoris",
+  "name": "Mare Frigoris",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": 57.59,
+  "lon": -0.01
+ },
+ {
+  "id": "mare-humorum",
+  "name": "Mare Humorum",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": -24.48,
+  "lon": -38.57
+ },
+ {
+  "id": "mare-imbrium",
+  "name": "Mare Imbrium",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": 34.72,
+  "lon": -14.91
+ },
+ {
+  "id": "mare-nectaris",
+  "name": "Mare Nectaris",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": -15.19,
+  "lon": 34.6
+ },
+ {
+  "id": "mare-nubium",
+  "name": "Mare Nubium",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": -20.59,
+  "lon": -17.29
+ },
+ {
+  "id": "oceanus-procellarum",
+  "name": "Oceanus Procellarum",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Oceanus",
+  "ageDays": null,
+  "lat": 20.67,
+  "lon": -56.68
+ },
+ {
+  "id": "mare-serenitatis",
+  "name": "Mare Serenitatis",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": 27.29,
+  "lon": 18.36
+ },
+ {
+  "id": "mare-tranquillitatis",
+  "name": "Mare Tranquillitatis",
+  "tier": "eyes",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": 8.35,
+  "lon": 30.83
+ },
+ {
+  "id": "lunar-rays",
+  "name": "Lunar Rays",
+  "tier": "binoculars",
+  "kind": "phase",
+  "when": "full"
+ },
+ {
+  "id": "mare-vaporum",
+  "name": "Mare Vaporum",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Mare",
+  "ageDays": null,
+  "lat": 13.2,
+  "lon": 4.09
+ },
+ {
+  "id": "palus-epidemiarum",
+  "name": "Palus Epidemiarum",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Palus",
+  "ageDays": null,
+  "lat": -32.0,
+  "lon": -27.54
+ },
+ {
+  "id": "palus-somnii",
+  "name": "Palus Somnii",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Palus",
+  "ageDays": null,
+  "lat": 13.69,
+  "lon": 44.72
+ },
+ {
+  "id": "sinus-iridum",
+  "name": "Sinus Iridum",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Sinus",
+  "ageDays": null,
+  "lat": 45.01,
+  "lon": -31.67
+ },
+ {
+  "id": "sinus-medii",
+  "name": "Sinus Medii",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Sinus",
+  "ageDays": null,
+  "lat": 1.63,
+  "lon": 1.03
+ },
+ {
+  "id": "sinus-roris",
+  "name": "Sinus Roris",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Sinus",
+  "ageDays": null,
+  "lat": 50.26,
+  "lon": -50.86
+ },
+ {
+  "id": "atlas",
+  "name": "Atlas",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": 46.74,
+  "lon": 44.38
+ },
+ {
+  "id": "cleomedes",
+  "name": "Cleomedes",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": 27.6,
+  "lon": 55.5
+ },
+ {
+  "id": "endymion",
+  "name": "Endymion",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": 53.61,
+  "lon": 56.48
+ },
+ {
+  "id": "hercules",
+  "name": "Hercules",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": 46.82,
+  "lon": 39.21
+ },
+ {
+  "id": "langrenus",
+  "name": "Langrenus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": -8.86,
+  "lon": 61.04
+ },
+ {
+  "id": "macrobius",
+  "name": "Macrobius",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": 21.26,
+  "lon": 45.97
+ },
+ {
+  "id": "petavius",
+  "name": "Petavius",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": -25.39,
+  "lon": 60.78
+ },
+ {
+  "id": "vendelinus",
+  "name": "Vendelinus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": -16.46,
+  "lon": 61.55
+ },
+ {
+  "id": "albategnius",
+  "name": "Albategnius",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -11.24,
+  "lon": 4.01
+ },
+ {
+  "id": "aristillus",
+  "name": "Aristillus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": 33.88,
+  "lon": 1.21
+ },
+ {
+  "id": "aristoteles",
+  "name": "Aristoteles",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": 50.24,
+  "lon": 17.32
+ },
+ {
+  "id": "autolycus",
+  "name": "Autolycus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": 30.68,
+  "lon": 1.49
+ },
+ {
+  "id": "cassini",
+  "name": "Cassini",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": 40.25,
+  "lon": 4.64
+ },
+ {
+  "id": "catharina",
+  "name": "Catharina",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -17.98,
+  "lon": 23.55
+ },
+ {
+  "id": "cyrillus",
+  "name": "Cyrillus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -13.29,
+  "lon": 24.07
+ },
+ {
+  "id": "eudoxus",
+  "name": "Eudoxus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": 44.27,
+  "lon": 16.23
+ },
+ {
+  "id": "fracastorius",
+  "name": "Fracastorius",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -21.36,
+  "lon": 33.07
+ },
+ {
+  "id": "hipparchus",
+  "name": "Hipparchus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -5.36,
+  "lon": 4.91
+ },
+ {
+  "id": "maurolycus",
+  "name": "Maurolycus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -41.77,
+  "lon": 13.92
+ },
+ {
+  "id": "piccolomini",
+  "name": "Piccolomini",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -29.7,
+  "lon": 32.2
+ },
+ {
+  "id": "posidonius",
+  "name": "Posidonius",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": 31.88,
+  "lon": 29.99
+ },
+ {
+  "id": "theophilus",
+  "name": "Theophilus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -11.45,
+  "lon": 26.28
+ },
+ {
+  "id": "alphonsus",
+  "name": "Alphonsus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -13.39,
+  "lon": -2.85
+ },
+ {
+  "id": "archimedes",
+  "name": "Archimedes",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": 29.72,
+  "lon": -3.99
+ },
+ {
+  "id": "arzachel",
+  "name": "Arzachel",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -18.26,
+  "lon": -1.93
+ },
+ {
+  "id": "bullialdus",
+  "name": "Bullialdus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -20.75,
+  "lon": -22.26
+ },
+ {
+  "id": "clavius",
+  "name": "Clavius",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -58.62,
+  "lon": -14.73
+ },
+ {
+  "id": "copernicus",
+  "name": "Copernicus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": 9.62,
+  "lon": -20.08
+ },
+ {
+  "id": "eratosthenes",
+  "name": "Eratosthenes",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": 14.47,
+  "lon": -11.32
+ },
+ {
+  "id": "gassendi",
+  "name": "Gassendi",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -17.55,
+  "lon": -39.96
+ },
+ {
+  "id": "longomontanus",
+  "name": "Longomontanus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -49.55,
+  "lon": -21.88
+ },
+ {
+  "id": "maginus",
+  "name": "Maginus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -50.03,
+  "lon": -5.98
+ },
+ {
+  "id": "plato",
+  "name": "Plato",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": 51.62,
+  "lon": -9.38
+ },
+ {
+  "id": "ptolemaeus",
+  "name": "Ptolemaeus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -9.16,
+  "lon": -1.84
+ },
+ {
+  "id": "tycho",
+  "name": "Tycho",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -43.3,
+  "lon": -11.22
+ },
+ {
+  "id": "walther",
+  "name": "Walther",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -33.25,
+  "lon": 0.62
+ },
+ {
+  "id": "aristarchus",
+  "name": "Aristarchus",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 14,
+  "lat": 23.73,
+  "lon": -47.49
+ },
+ {
+  "id": "grimaldi",
+  "name": "Grimaldi",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 14,
+  "lat": -5.38,
+  "lon": -68.36
+ },
+ {
+  "id": "kepler",
+  "name": "Kepler",
+  "tier": "binoculars",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 14,
+  "lat": 8.12,
+  "lon": -38.01
+ },
+ {
+  "id": "lacus-mortis",
+  "name": "Lacus Mortis",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Lacus",
+  "ageDays": null,
+  "lat": 45.13,
+  "lon": 27.32
+ },
+ {
+  "id": "mons-hadley",
+  "name": "Mons Hadley",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Mons",
+  "ageDays": null,
+  "lat": 26.69,
+  "lon": 4.12
+ },
+ {
+  "id": "mons-pico",
+  "name": "Mons Pico",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Mons",
+  "ageDays": null,
+  "lat": 45.82,
+  "lon": -8.87
+ },
+ {
+  "id": "mons-piton",
+  "name": "Mons Piton",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Mons",
+  "ageDays": null,
+  "lat": 40.72,
+  "lon": -0.92
+ },
+ {
+  "id": "montes-alpes",
+  "name": "Montes Alpes",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Mons",
+  "ageDays": null,
+  "lat": 48.36,
+  "lon": -0.58
+ },
+ {
+  "id": "montes-apenninus",
+  "name": "Montes Apenninus",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Mons",
+  "ageDays": null,
+  "lat": 19.87,
+  "lon": 0.03
+ },
+ {
+  "id": "palus-putredinis",
+  "name": "Palus Putredinis",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Palus",
+  "ageDays": null,
+  "lat": 27.36,
+  "lon": 0.0
+ },
+ {
+  "id": "promontorium-agarum",
+  "name": "Promontorium Agarum",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Promontorium",
+  "ageDays": null,
+  "lat": 13.87,
+  "lon": 65.73
+ },
+ {
+  "id": "promontorium-heraclides",
+  "name": "Promontorium Heraclides",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Promontorium",
+  "ageDays": null,
+  "lat": 40.6,
+  "lon": -34.1
+ },
+ {
+  "id": "promontorium-laplace",
+  "name": "Promontorium Laplace",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Promontorium",
+  "ageDays": null,
+  "lat": 46.84,
+  "lon": -25.51
+ },
+ {
+  "id": "rima-hyginus",
+  "name": "Rima Hyginus",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Rima",
+  "ageDays": null,
+  "lat": 7.62,
+  "lon": 6.77
+ },
+ {
+  "id": "rupes-altai",
+  "name": "Rupes Altai",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Rupes",
+  "ageDays": null,
+  "lat": -24.32,
+  "lon": 23.12
+ },
+ {
+  "id": "rupes-recta",
+  "name": "Rupes Recta",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Rupes",
+  "ageDays": null,
+  "lat": -21.67,
+  "lon": -7.7
+ },
+ {
+  "id": "sinus-aestuum",
+  "name": "Sinus Aestuum",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Sinus",
+  "ageDays": null,
+  "lat": 12.1,
+  "lon": -8.34
+ },
+ {
+  "id": "vallis-alpes",
+  "name": "Vallis Alpes",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Vallis",
+  "ageDays": null,
+  "lat": 49.21,
+  "lon": 3.63
+ },
+ {
+  "id": "vallis-schroteri",
+  "name": "Vallis Schroteri",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Vallis",
+  "ageDays": null,
+  "lat": 26.16,
+  "lon": -51.58
+ },
+ {
+  "id": "furnerius",
+  "name": "Furnerius",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": -36.0,
+  "lon": 60.54
+ },
+ {
+  "id": "messier-messier-a",
+  "name": "Messier/Messier A",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": -1.9,
+  "lon": 47.65
+ },
+ {
+  "id": "mitchell",
+  "name": "Mitchell",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": 49.77,
+  "lon": 20.17
+ },
+ {
+  "id": "petavius-wall",
+  "name": "Petavius Wall",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": -25.39,
+  "lon": 60.78
+ },
+ {
+  "id": "picard",
+  "name": "Picard",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": 14.57,
+  "lon": 54.72
+ },
+ {
+  "id": "plinius",
+  "name": "Plinius",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 4,
+  "lat": 15.36,
+  "lon": 23.61
+ },
+ {
+  "id": "cassini-a",
+  "name": "Cassini A",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Satellite Feature",
+  "ageDays": 7,
+  "lat": 40.51,
+  "lon": 4.78
+ },
+ {
+  "id": "cassini-b",
+  "name": "Cassini B",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Satellite Feature",
+  "ageDays": 7,
+  "lat": 40.02,
+  "lon": 3.87
+ },
+ {
+  "id": "cassini-c",
+  "name": "Cassini C",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Satellite Feature",
+  "ageDays": 7,
+  "lat": 41.76,
+  "lon": 7.8
+ },
+ {
+  "id": "gemma-frisius",
+  "name": "Gemma Frisius",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": -34.33,
+  "lon": 13.37
+ },
+ {
+  "id": "manilius",
+  "name": "Manilius",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 7,
+  "lat": 14.45,
+  "lon": 9.07
+ },
+ {
+  "id": "clavius-craterlets",
+  "name": "Clavius craterlets",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -58.62,
+  "lon": -14.73
+ },
+ {
+  "id": "davy",
+  "name": "Davy",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -11.85,
+  "lon": -8.15
+ },
+ {
+  "id": "fra-mauro",
+  "name": "Fra Mauro",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -6.06,
+  "lon": -16.97
+ },
+ {
+  "id": "hippalus",
+  "name": "Hippalus",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -24.92,
+  "lon": -30.42
+ },
+ {
+  "id": "j-herschel",
+  "name": "J Herschel",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": 62.31,
+  "lon": -41.86
+ },
+ {
+  "id": "pitatus",
+  "name": "Pitatus",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 10,
+  "lat": -29.88,
+  "lon": -13.53
+ },
+ {
+  "id": "billy",
+  "name": "Billy",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 14,
+  "lat": -13.83,
+  "lon": -50.24
+ },
+ {
+  "id": "reiner-gamma",
+  "name": "Reiner Gamma",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Albedo Feature",
+  "ageDays": 14,
+  "lat": 7.39,
+  "lon": -58.96
+ },
+ {
+  "id": "schickard",
+  "name": "Schickard",
+  "tier": "telescope",
+  "kind": "place",
+  "type": "Crater",
+  "ageDays": 14,
+  "lat": -44.38,
+  "lon": -55.11
+ }
+]

@@ -2,7 +2,7 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
-import { useDiscover } from './composables/useDiscover'
+import { useLunar } from './composables/useLunar'
 import { useOutlook } from './composables/useOutlook'
 import { useLocation } from './composables/useLocation'
 import AppHeader from './components/AppHeader.vue'
@@ -12,7 +12,7 @@ import ErrorsBanner from './components/ErrorsBanner.vue'
 import ControlsBar from './components/ControlsBar.vue'
 import TargetTable from './components/TargetTable.vue'
 import ForecastView from './components/ForecastView.vue'
-import DiscoverView from './components/DiscoverView.vue'
+import LunarView from './components/LunarView.vue'
 import OverviewView from './components/OverviewView.vue'
 import OutlookView from './components/OutlookView.vue'
 import NightTimes from './components/NightTimes.vue'
@@ -21,10 +21,10 @@ import { isDisplayable } from './format'
 const { location } = useLocation()
 const { data, loading, error, load } = useTonight(location)
 const forecast = useForecast(location)
-const discover = useDiscover()
+const lunar = useLunar(location)
 const outlook = useOutlook(location)
 
-const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'discover'
+const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'lunar'
 
 // Crossfade between pages where the View Transitions API is available (see style.css for why it's not a slide).
 function setView(v) {
@@ -43,13 +43,13 @@ async function loadAll() {
   await Promise.all([
     load(requestParams.value),
     forecast.load(),
-    discover.load({ limit: 20 }),
+    lunar.load(),
   ])
 }
 watch(view, (v) => {
   if (v === 'forecast' && !forecast.loaded.value && !forecast.loading.value) forecast.load()
   if (v === 'outlook' && !outlook.loaded.value && !outlook.loading.value) outlook.load()
-  if (v === 'discover' && !discover.loaded.value && !discover.loading.value) discover.load({ limit: 20 })
+  if (v === 'lunar' && !lunar.loaded.value && !lunar.loading.value) lunar.load()
 })
 
 const mode = ref('window') // 'window' | 'instant'
@@ -82,14 +82,14 @@ async function refresh() {
   if (view.value === 'home') await loadAll()
   else if (view.value === 'forecast') await forecast.load()
   else if (view.value === 'outlook') await outlook.load()
-  else if (view.value === 'discover') await discover.load({ limit: 20 })
+  else if (view.value === 'lunar') await lunar.load()
   else await load(requestParams.value)
 }
 const dockLoading = computed(() => {
-  if (view.value === 'home') return loading.value || forecast.loading.value || discover.loading.value
+  if (view.value === 'home') return loading.value || forecast.loading.value || lunar.loading.value
   if (view.value === 'forecast') return forecast.loading.value
   if (view.value === 'outlook') return outlook.loading.value
-  if (view.value === 'discover') return discover.loading.value
+  if (view.value === 'lunar') return lunar.loading.value
   return loading.value
 })
 onMounted(loadAll)
@@ -106,11 +106,11 @@ watch(requestParams, refresh)
                  :generated-at="data?.generatedAt ?? ''" />
       <p v-if="error" class="error">failed to load: {{ error }}</p>
       <p v-if="forecast.error.value" class="error">forecast failed: {{ forecast.error.value }}</p>
-      <p v-if="discover.error.value" class="error">discover failed: {{ discover.error.value }}</p>
-      <OverviewView :tonight="data" :forecast="forecast.data.value" :discover="discover.data.value"
+      <p v-if="lunar.error.value" class="error">lunar failed: {{ lunar.error.value }}</p>
+      <OverviewView :tonight="data" :forecast="forecast.data.value" :lunar="lunar.data.value"
                    :twilight="data?.twilight ?? forecast.data.value?.twilight ?? null"
                    :tonight-loading="loading" :forecast-loading="forecast.loading.value"
-                   :discover-loading="discover.loading.value" />
+                   :lunar-loading="lunar.loading.value" />
     </template>
 
     <template v-else-if="view === 'tonight'">
@@ -141,14 +141,12 @@ watch(requestParams, refresh)
                    :loading="outlook.loading.value" />
     </template>
 
-    <template v-else-if="view === 'discover'">
-      <AppHeader :night="discover.data.value?.night ?? null" :at-local="null"
-                 :generated-at="discover.data.value?.generatedAt ?? ''" />
-      <p v-if="discover.error.value" class="error">failed to load: {{ discover.error.value }}</p>
-      <ErrorsBanner v-if="discover.data.value" :errors="discover.data.value.errors" />
-      <DiscoverView :targets="discover.data.value?.targets ?? []"
-                    :night="discover.data.value?.night ?? null"
-                    :loading="discover.loading.value" />
+    <template v-else-if="view === 'lunar'">
+      <AppHeader :night="lunar.data.value?.night ?? null" :at-local="null"
+                 :generated-at="lunar.data.value?.generatedAt ?? ''" />
+      <p v-if="lunar.error.value" class="error">failed to load: {{ lunar.error.value }}</p>
+      <LunarView :features="lunar.data.value?.features ?? []" :moon="lunar.data.value?.moon ?? null"
+                 :loading="lunar.loading.value" />
     </template>
 
     <template v-else>

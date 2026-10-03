@@ -46,25 +46,18 @@ const forecast = {
   ],
 }
 
-const discover = {
-  targets: [
-    { star: { name: 'V1452 Tau', auid: '000-BQP-885', constellation: 'Tau', varType: 'N',
-              periodDays: null, maxMag: 8.7, minMag: 23.4, magBand: 'V',
-              raHours: 5.35, decDegrees: 23.64 },
-      score: 55.8, maxAlt: 47.1, bestTime: '2026-08-31T05:00:00-04:00',
-      window: { start: '2026-08-31T02:45:00-04:00', end: '2026-08-31T05:00:00-04:00' },
-      azAtBest: 85, chartId: null, chartUrl: null },
-    { star: { name: 'V8055 Sgr', auid: '000-BQQ-461', constellation: 'Sgr', varType: 'N',
-              periodDays: null, maxMag: 8.1, minMag: 21.6, magBand: 'V',
-              raHours: 18.42, decDegrees: -22.42 },
-      score: 47.7, maxAlt: 38.8, bestTime: '2026-08-30T21:15:00-04:00',
-      window: { start: '2026-08-30T21:00:00-04:00', end: '2026-08-31T01:00:00-04:00' },
-      azAtBest: 180, chartId: null, chartUrl: null },
+const lunar = {
+  moon: { maxAlt: 40 },
+  features: [
+    { id: 'aristoteles', name: 'Aristoteles', tier: 'binoculars', kind: 'place', score: 83,
+      bestTime: '2026-08-31T01:00:00-04:00', reason: 'terminator, Sun 7°' },
+    { id: 'eudoxus', name: 'Eudoxus', tier: 'binoculars', kind: 'place', score: 80,
+      bestTime: '2026-08-31T01:00:00-04:00', reason: 'terminator, Sun 8°' },
   ],
 }
 
-const allProps = { tonight, forecast, discover,
-                   tonightLoading: false, forecastLoading: false, discoverLoading: false }
+const allProps = { tonight, forecast, lunar,
+                   tonightLoading: false, forecastLoading: false, lunarLoading: false }
 
 describe('OverviewView', () => {
   it('renders conditions card with rating chip and key numbers', () => {
@@ -94,22 +87,27 @@ describe('OverviewView', () => {
     expect(card.text()).toContain('11:15 PM') // Veil bestTime
   })
 
-  it('renders discoveries card with top star and remaining count', () => {
+  it('renders the lunar highlight with the top feature, its reason, best time and remaining count', () => {
     const w = mount(OverviewView, { props: allProps })
-    const card = w.find('.card-discoveries')
-    expect(card.text()).toContain('V1452 Tau')
-    expect(card.text()).toContain('8.7–23.4 V')
-    expect(card.text()).toContain('N')
-    expect(card.text()).toContain('+1 more')  // 2 found, 1 shown
+    const card = w.find('.card-lunar')
+    expect(card.text()).toContain('Aristoteles')
+    expect(card.text()).toContain('terminator, Sun 7°')
+    expect(card.text()).toContain('1:00 AM')
+    expect(card.text()).toContain('+1 more')  // 2 listed, 1 shown
+  })
+
+  it('explains an empty lunar list instead of showing a blank card', () => {
+    const w = mount(OverviewView, { props: { ...allProps, lunar: { moon: { maxAlt: 4 }, features: [] } } })
+    expect(w.find('.card-lunar').text()).toContain('below 10°')
   })
 
   it('shows per-section loading placeholders while sections load', () => {
     const w = mount(OverviewView, {
-      props: { tonight: null, forecast: null, discover: null,
-               tonightLoading: true, forecastLoading: true, discoverLoading: true },
+      props: { tonight: null, forecast: null, lunar: null,
+               tonightLoading: true, forecastLoading: true, lunarLoading: true },
     })
     const placeholders = w.findAll('.card-loading')
-    expect(placeholders).toHaveLength(3) // one per data source (tonight, forecast, discover)
+    expect(placeholders).toHaveLength(3) // one per data source (tonight, forecast, lunar)
   })
 
   it('renders hourly strip with time, emoji, temp, cloud per hour', () => {
@@ -148,19 +146,19 @@ describe('OverviewView', () => {
 
   it('hourly strip hidden when forecast data is missing', () => {
     const w = mount(OverviewView, {
-      props: { tonight, forecast: null, discover,
-               tonightLoading: false, forecastLoading: false, discoverLoading: false },
+      props: { tonight, forecast: null, lunar,
+               tonightLoading: false, forecastLoading: false, lunarLoading: false },
     })
     expect(w.find('.card-hourly').exists()).toBe(false)
   })
 
   it('hides sections whose data failed to arrive (no error text)', () => {
     const w = mount(OverviewView, {
-      props: { tonight, forecast: null, discover: null,
-               tonightLoading: false, forecastLoading: false, discoverLoading: false },
+      props: { tonight, forecast: null, lunar: null,
+               tonightLoading: false, forecastLoading: false, lunarLoading: false },
     })
     expect(w.find('.card-hourly').exists()).toBe(false)
-    expect(w.find('.card-discoveries').exists()).toBe(false)
+    expect(w.find('.card-lunar').exists()).toBe(false)
     expect(w.find('.card-conditions').exists()).toBe(true)
     expect(w.text()).not.toContain('failed')
   })

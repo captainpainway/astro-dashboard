@@ -27,8 +27,11 @@ export function starAltAz(raHours, decDeg, date, observer) {
   return { alt: altitude, az: azimuth }
 }
 
+/** Moon's elongation phase angle: 0 new, 90 first quarter, 180 full, 270 last quarter. */
+export const moonPhaseAngle = (date) => MoonPhase(date)
+
 /** True from new Moon to full Moon. */
-export const moonIsWaxing = (date) => MoonPhase(date) < 180
+export const moonIsWaxing = (date) => moonPhaseAngle(date) < 180
 
 /** Moon illuminated fraction (0 new, 1 full). */
 export const moonIllumination = (date) => Illumination(Body.Moon, date).phase_fraction

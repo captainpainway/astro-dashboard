@@ -1,15 +1,6 @@
 const COMPASS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
 /**
- * VSX detail-page URL for a star's AAVSO OID (e.g. 10875985).
- * VSX keys its detail pages by OID, not AUID — there is no AUID-based URL.
- * Returns null when no OID is known so callers can fall back to plain text.
- */
-export function vsxUrl(oid) {
-  return oid ? `https://vsx.aavso.org/index.php?view=detail.top&oid=${oid}` : null
-}
-
-/**
  * Observing site label, e.g. "Big Bend National Park, TX · 29.33°N 103.21°W".
  * Falls back to just the name when coordinates are missing; '' for no location.
  */
@@ -76,17 +67,9 @@ export function compass(az) {
   return COMPASS[Math.round(az / 22.5) % 16]
 }
 
-export function fmtRa(raHours) {
-  if (raHours == null) return '—'
-  const h = Math.floor(raHours)
-  const m = Math.round((raHours - h) * 60)
-  return `${h}h ${m}m`
-}
-
-export function fmtDec(dec) {
-  if (dec == null) return '—'
-  return `${dec >= 0 ? '+' : ''}${dec.toFixed(1)}°`
-}
+/** Why the lunar list is empty tonight. */
+export const lunarEmpty = (moon) => ((moon?.maxAlt ?? 0) < 10
+  ? "the Moon stays below 10° during tonight's window" : 'the Moon is too close to new to show features')
 
 const EMOJI_RULES = [
   [/thunder|lightning/i, '⛈️'],

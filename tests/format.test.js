@@ -1,16 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fmtTime, fmtDateTime, pct, compass, timeline, fmtRa, fmtDec, weatherEmoji, vsxUrl, fmtLocation } from '../src/format'
-
-describe('vsxUrl', () => {
-  it('builds a VSX detail URL from an OID', () => {
-    expect(vsxUrl('10875985')).toBe('https://vsx.aavso.org/index.php?view=detail.top&oid=10875985')
-  })
-  it('returns null without an OID so callers render plain text', () => {
-    expect(vsxUrl(null)).toBeNull()
-    expect(vsxUrl('')).toBeNull()
-    expect(vsxUrl(undefined)).toBeNull()
-  })
-})
+import { fmtTime, fmtDateTime, pct, compass, timeline, weatherEmoji, fmtLocation, lunarEmpty } from '../src/format'
 
 describe('fmtTime', () => {
   it('formats ISO local times as h:mm AM/PM', () => {
@@ -50,19 +39,10 @@ describe('compass', () => {
   it('handles null', () => expect(compass(null)).toBe('—'))
 })
 
-describe('fmtRa / fmtDec (discover coordinates)', () => {
-  it('formats decimal RA hours as h m', () => {
-    expect(fmtRa(5.35)).toBe('5h 21m')
-    expect(fmtRa(18.42)).toBe('18h 25m')
-  })
-  it('formats declination with sign and one decimal', () => {
-    expect(fmtDec(23.64)).toBe('+23.6°')
-    expect(fmtDec(-22.42)).toBe('-22.4°')
-  })
-  it('handles null', () => {
-    expect(fmtRa(null)).toBe('—')
-    expect(fmtDec(null)).toBe('—')
-  })
+describe('lunarEmpty', () => {
+  it('says the Moon is down when it never clears 10°', () => expect(lunarEmpty({ maxAlt: 4 })).toMatch(/below 10°/))
+  it('says too close to new otherwise', () => expect(lunarEmpty({ maxAlt: 40 })).toMatch(/too close to new/))
+  it('copes with no data', () => expect(lunarEmpty(null)).toMatch(/below 10°/))
 })
 
 describe('weatherEmoji (NWS short forecast → icon)', () => {

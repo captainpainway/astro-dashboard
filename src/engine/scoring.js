@@ -19,7 +19,7 @@ const TYPE_TO_CLASS = {
 const PHASE_NAMES = ['New Moon', 'Crescent', 'Quarter', 'Gibbous', 'Full Moon']
 
 /** "Waning Gibbous (82% illuminated)": nearest quarter-phase name, direction from the Moon's elongation. */
-function moonNote(date) {
+export function moonNote(date) {
   const phase = moonIllumination(date)
   const i = Math.round(phase * 4)
   const waxing = moonIsWaxing(date)

@@ -3,13 +3,14 @@ import { mount, flushPromises } from '@vue/test-utils'
 import App from '../src/App.vue'
 import { DEMO_LOCATION } from '../src/composables/useLocation'
 
-// Tonight, forecast and outlook are computed in the browser; stub them at the api boundary.
-const engine = vi.hoisted(() => ({ tonight: vi.fn(), forecast: vi.fn(), outlook: vi.fn() }))
+// Tonight, forecast, outlook and lunar are computed in the browser; stub them at the api boundary.
+const engine = vi.hoisted(() => ({ tonight: vi.fn(), forecast: vi.fn(), outlook: vi.fn(), lunar: vi.fn() }))
 vi.mock('../src/api', async (importOriginal) => ({
   ...(await importOriginal()),
   fetchTonight: (opts) => engine.tonight(opts),
   fetchForecast: (opts) => engine.forecast(opts),
   fetchOutlook: (opts) => engine.outlook(opts),
+  fetchLunar: (opts) => engine.lunar(opts),
 }))
 
 // Fixture mirrors the live GET /tonight response (window mode)
@@ -89,16 +90,15 @@ const forecastFixture = {
   errors: [],
 }
 
-const discoverFixture = {
+const lunarFixture = {
   generatedAt: '2026-08-31T02:41:03+00:00',
   night: windowFixture.night,
-  targets: [
-    { star: { name: 'V1452 Tau', auid: '000-BQP-885', oid: '10875985', constellation: 'Tau', varType: 'N',
-              periodDays: null, maxMag: 8.7, minMag: 23.4, magBand: 'V',
-              raHours: 5.35, decDegrees: 23.64 },
-      score: 55.8, maxAlt: 47.1, bestTime: '2026-08-31T05:00:00-04:00',
-      window: { start: '2026-08-31T02:45:00-04:00', end: '2026-08-31T05:00:00-04:00' },
-      azAtBest: 85, chartId: null, chartUrl: null },
+  moon: { illum: 0.46, waxing: true, maxAlt: 40, note: 'First Quarter (46% illuminated)' },
+  features: [
+    { id: 'aristoteles', name: 'Aristoteles', tier: 'binoculars', kind: 'place', type: 'Crater', ageDays: 7,
+      score: 83, sunAlt: 7.2, moonAlt: 30, bestTime: '2026-08-31T01:00:00-04:00', reason: 'terminator, Sun 7°' },
+    { id: 'mare-imbrium', name: 'Mare Imbrium', tier: 'eyes', kind: 'place', type: 'Mare', ageDays: null,
+      score: 70, sunAlt: 11, moonAlt: 30, bestTime: '2026-08-31T01:00:00-04:00', reason: 'terminator, Sun 11°' },
   ],
   errors: [],
 }
@@ -146,10 +146,6 @@ const outlookFixture = {
   errors: [],
 }
 
-function mockFetchJson(fixture) {
-  return vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(fixture) })
-}
-
 async function mountOnTonightView(fixture = windowFixture) {
   engine.tonight.mockResolvedValue(fixture)
   const w = mount(App)
@@ -160,13 +156,13 @@ async function mountOnTonightView(fixture = windowFixture) {
 }
 
 beforeEach(() => {
-  vi.stubGlobal('fetch', mockFetchJson(discoverFixture)) // discover is the only server call left (Phase 4)
   engine.tonight.mockReset().mockResolvedValue(windowFixture)
   engine.forecast.mockReset().mockResolvedValue(forecastFixture)
   engine.outlook.mockReset().mockResolvedValue(outlookFixture)
+  engine.lunar.mockReset().mockResolvedValue(lunarFixture)
 })
 
-/** Mount the app on the home view with all three data sources wired. */
+/** Mount the app on the home view with every data source wired. */
 async function mountHome() {
   const w = mount(App)
   await flushPromises()
@@ -179,13 +175,12 @@ describe('App integration', () => {
     await flushPromises()
     expect(w.find('.card-conditions').exists()).toBe(true)
     expect(w.find('.card-hourly').exists()).toBe(true)
-    expect(w.find('.card-discoveries').exists()).toBe(true)
+    expect(w.find('.card-lunar').exists()).toBe(true)
     expect(w.find('.card-picks').text()).toContain('SS Cyg')
     // all three loaded on mount; the forecast for the visitor's location
-    const urls = fetch.mock.calls.map(c => String(c[0]))
     expect(engine.tonight).toHaveBeenCalledWith({ at: null, include: null, location: DEMO_LOCATION })
     expect(engine.forecast).toHaveBeenCalledWith({ date: undefined, location: DEMO_LOCATION })
-    expect(urls.some(u => u.includes('/api/discover'))).toBe(true)
+    expect(engine.lunar).toHaveBeenCalledWith({ location: DEMO_LOCATION })
   })
 
   it('home header shows the observing location instead of the observing window', async () => {
@@ -255,7 +250,7 @@ describe('App integration', () => {
 
   it('home view: fetch failures show inline errors, not a blank page', async () => {
     engine.tonight.mockRejectedValue(new Error('Failed to fetch'))
-    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')))
+    engine.lunar.mockRejectedValue(new Error('Failed to fetch'))
     const w = mount(App)
     await flushPromises()
     expect(w.text()).toContain('failed to load:')
@@ -357,5 +352,18 @@ describe('App integration', () => {
     expect(row.text()).toContain('9:11 PM')
     expect(row.text()).toContain('5:50 AM')
     expect(row.text()).toContain('fully dark')
+  })
+
+  it('lunar view: lists features and filters by tier', async () => {
+    const w = mount(App)
+    await flushPromises()
+    await w.findAll('.view-switch button').find(b => b.text() === 'lunar').trigger('click')
+    await flushPromises()
+    expect(w.findAll('.lunar tr.data-row')).toHaveLength(2)
+    expect(w.find('.lunar').text()).toContain('First Quarter (46% illuminated)')
+    await w.findAll('.lunar .tabs button').find(b => b.text().startsWith('binoculars')).trigger('click')
+    expect(w.findAll('.lunar tr.data-row')).toHaveLength(1)
+    expect(w.find('.lunar').text()).toContain('Aristoteles')
+    expect(w.find('.lunar').text()).not.toContain('Mare Imbrium')
   })
 })

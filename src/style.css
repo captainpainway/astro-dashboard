@@ -163,8 +163,6 @@ button { font: inherit; cursor: pointer; }
 .show-more { border-radius: 999px; padding: 0.3rem 0.9rem; }
 a { color: var(--accent); }
 a:hover { text-decoration: underline; }
-.discover .vsx-link { color: var(--accent); }
-.discover .chart-link { color: var(--accent); }
 .badge { padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.75rem; background: var(--glass-bg-2); color: var(--muted); }
 .score-wrap { display: flex; align-items: center; gap: 0.6rem; }
 /* Number first at a fixed width so the column lines up; bars share a full-width track so lengths compare */
@@ -284,7 +282,7 @@ a:hover { text-decoration: underline; }
 .ov-hours { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .outlook .ov-hours { margin-top: 0.5rem; }
 .hour-chip.not-dark { opacity: 0.55; }
-.discover { margin-top: 0.75rem; }
+.lunar { margin-top: 0.75rem; }
 
 /* Night times — sunset/sunrise + twilight boundaries (NightTimes.vue) */
 .tw-card { margin: 0; }
@@ -480,7 +478,7 @@ a:hover { text-decoration: underline; }
   .bento .card-best { order: 3; }
   .bento .card-hourly { order: 4; }
   .bento .card-night { order: 5; }
-  .bento .card-discoveries { order: 6; }
+  .bento .card-lunar { order: 6; }
   .ov-stat-value { font-size: 1.2rem; }
   /* Outlook hour chips: one swipeable row instead of many wrapped rows */
   .outlook .ov-hours { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity;

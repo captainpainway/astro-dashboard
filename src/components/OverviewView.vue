@@ -1,17 +1,17 @@
 <script setup>
 import { computed } from 'vue'
-import { fmtTime, weatherEmoji } from '../format'
+import { fmtTime, lunarEmpty, weatherEmoji } from '../format'
 import { ratingStyle, normalizeRating } from '../ratings'
 import NightTimes from './NightTimes.vue'
 
 const props = defineProps({
   tonight: { type: Object, default: null },
   forecast: { type: Object, default: null },
-  discover: { type: Object, default: null },
+  lunar: { type: Object, default: null },
   twilight: { type: Object, default: null },
   tonightLoading: { type: Boolean, default: false },
   forecastLoading: { type: Boolean, default: false },
-  discoverLoading: { type: Boolean, default: false },
+  lunarLoading: { type: Boolean, default: false },
 })
 
 const INSTRUMENT_LABELS = { dob_8inch: '8" Dobsonian', dwarf_mini: 'Dwarf Mini' }
@@ -35,15 +35,10 @@ const bestWindow = computed(() => {
   return dark.reduce((a, b) => (b.score > (a?.score ?? -Infinity) ? b : a), null)
 })
 
-const topDiscovery = computed(() => {
-  const scored = (props.discover?.targets ?? []).filter((t) => t.score != null && t.score > 0)
-  return scored.length ? { top: scored[0], more: scored.length - 1 } : null
+const topLunar = computed(() => {
+  const f = props.lunar?.features ?? []
+  return f.length ? { top: f[0], more: f.length - 1 } : null
 })
-
-const fmtMagRange = (star) => {
-  if (star.maxMag == null || star.minMag == null) return '—'
-  return `${star.maxMag}–${star.minMag} ${star.magBand ?? ''}`.trim()
-}
 </script>
 
 <template>
@@ -107,25 +102,21 @@ const fmtMagRange = (star) => {
       </p>
     </article>
 
-    <!-- Fresh discoveries -->
-    <article v-if="discover" class="panel ov-card tile-sm card-discoveries">
-      <h2>fresh discoveries</h2>
-      <template v-if="topDiscovery">
+    <!-- Lunar highlight -->
+    <article v-if="lunar" class="panel ov-card tile-sm card-lunar">
+      <h2>lunar highlight</h2>
+      <template v-if="topLunar">
         <div class="ov-pick-main">
-          <span class="ov-pick-name">{{ topDiscovery.top.star.name }}</span>
-          <span class="badge">{{ topDiscovery.top.star.varType }}</span>
+          <span class="ov-pick-name">{{ topLunar.top.name }}</span>
+          <span class="badge">{{ topLunar.top.tier }}</span>
         </div>
-        <p class="muted small">
-          {{ fmtMagRange(topDiscovery.top.star) }} ·
-          best {{ fmtTime(topDiscovery.top.bestTime) }} ·
-          score {{ topDiscovery.top.score.toFixed(0) }}
-        </p>
-        <p v-if="topDiscovery.more > 0" class="muted small ov-foot">+{{ topDiscovery.more }} more</p>
+        <p class="muted small">{{ topLunar.top.reason }} · best {{ fmtTime(topLunar.top.bestTime) }}</p>
+        <p v-if="topLunar.more > 0" class="muted small ov-foot">+{{ topLunar.more }} more</p>
       </template>
-      <p v-else class="muted small">no under-observed stars found</p>
+      <p v-else class="muted small">{{ lunarEmpty(lunar.moon) }}</p>
     </article>
-    <article v-else-if="discoverLoading" class="panel ov-card tile-sm card-loading">
-      <p class="muted">loading discover…</p>
+    <article v-else-if="lunarLoading" class="panel ov-card tile-sm card-loading">
+      <p class="muted">loading lunar…</p>
     </article>
 
     <!-- Night times: tall column, times listed vertically -->

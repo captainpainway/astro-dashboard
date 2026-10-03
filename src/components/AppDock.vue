@@ -5,7 +5,7 @@ export const ITEMS = [
   { key: 'tonight', d: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z' },
   { key: 'forecast', d: 'M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 9.5 4.25 4.25 0 0 0 7 18z' },
   { key: 'outlook', d: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4' },
-  { key: 'discover', d: 'M12 3l2.2 6.8H21l-5.5 4 2.1 6.7L12 16.4l-5.6 4.1 2.1-6.7L3 9.8h6.8z' },
+  { key: 'lunar', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 3c-4 3-4 15 0 18' },
 ]
 </script>
 
