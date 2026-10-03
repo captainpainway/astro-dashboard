@@ -1,5 +1,9 @@
 const COMPASS = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
 
+/** "29.33°N 103.21°W" for decimal degrees (east-positive longitude, also used for selenographic points). */
+export const fmtCoords = (lat, lon) => `${Math.abs(lat).toFixed(2)}°${lat < 0 ? 'S' : 'N'} ` +
+                                       `${Math.abs(lon).toFixed(2)}°${lon < 0 ? 'W' : 'E'}`
+
 /**
  * Observing site label, e.g. "Big Bend National Park, TX · 29.33°N 103.21°W".
  * Falls back to just the name when coordinates are missing; '' for no location.
@@ -8,8 +12,7 @@ export function fmtLocation(loc) {
   if (!loc) return ''
   const { name, latitude: lat, longitude: lon } = loc
   if (lat == null || lon == null) return name ?? ''
-  const coords = `${Math.abs(lat).toFixed(2)}°${lat < 0 ? 'S' : 'N'} ` +
-                 `${Math.abs(lon).toFixed(2)}°${lon < 0 ? 'W' : 'E'}`
+  const coords = fmtCoords(lat, lon)
   return name ? `${name} · ${coords}` : coords
 }
 

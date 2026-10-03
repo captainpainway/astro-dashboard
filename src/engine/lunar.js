@@ -80,7 +80,7 @@ export function buildLunar(location, now = new Date()) {
       if (!best || score > best.score) best = { score, sunAlt, moonAlt: s.moonAlt, t: s.t }
     }
     return best && { id: f.id, name: f.name, tier: f.tier, kind: 'place', type: f.type, ageDays: f.ageDays,
-                     score: round1(best.score), sunAlt: round1(best.sunAlt), moonAlt: round1(best.moonAlt),
+                     lat: f.lat, lon: f.lon, score: round1(best.score), sunAlt: round1(best.sunAlt), moonAlt: round1(best.moonAlt),
                      bestTime: toLocalIso(best.t, tz), reason: reasonFor(f, best.sunAlt) }
   }
 

@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import LunarView from '../src/components/LunarView.vue'
 
 const feature = (over = {}) => ({
-  id: 'copernicus', name: 'Copernicus', tier: 'binoculars', kind: 'place', type: 'Crater', ageDays: 10,
+  id: 'copernicus', name: 'Copernicus', tier: 'binoculars', kind: 'place', type: 'Crater', ageDays: 10, lat: 9.62, lon: -20.08,
   score: 80, sunAlt: 10.4, moonAlt: 41.2, bestTime: '2026-08-31T01:00:00-04:00', reason: 'terminator, Sun 10°', ...over,
 })
 const features = [
@@ -48,6 +48,7 @@ describe('LunarView', () => {
     await w.findAll('tr.data-row')[1].trigger('click')
     expect(w.find('.detail-row').text()).toContain('Crater')
     expect(w.find('.detail-row').text()).toContain('~10 days old')
+    expect(w.find('.detail-row').text()).toContain('9.62°N 20.08°W')
     expect(w.find('.detail-row').text()).toContain('Moon 41° up')
     await w.findAll('tr.data-row')[1].trigger('click')
     expect(w.find('.detail-row').exists()).toBe(false)

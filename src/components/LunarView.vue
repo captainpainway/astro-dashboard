@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { fmtTime, lunarEmpty } from '../format'
+import { fmtCoords, fmtTime, lunarEmpty } from '../format'
 import { useRowAnimation } from '../composables/useRowAnimation'
 
 const props = defineProps({
@@ -64,7 +64,7 @@ const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
             <tr v-if="expandedId === f.id" :key="`${f.id}:detail`" class="detail-row">
               <td colspan="7">
                 <p class="notes">
-                  {{ f.type ?? 'phase-based feature, no fixed place' }}<template v-if="f.ageDays"> · AL group ~{{ f.ageDays }} days old</template>
+                  {{ f.type ?? 'phase-based feature, no fixed place' }}<template v-if="f.lat != null"> · {{ fmtCoords(f.lat, f.lon) }}</template><template v-if="f.ageDays"> · AL group ~{{ f.ageDays }} days old</template>
                 </p>
                 <p class="muted small">Moon {{ deg(f.moonAlt) }} up at its best time</p>
               </td>

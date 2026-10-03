@@ -172,6 +172,7 @@ describe('buildLunar (places)', () => {
     expect(r.features.slice(0, 8).every((f) => f.sunAlt > 0 && f.sunAlt < 20)).toBe(true)
     expect(r.features.slice(0, 10).map((f) => f.name)).toContain('Aristoteles')
     expect(r.features[0].reason).toMatch(/^terminator, Sun \d+°$/)
+    expect(r.features[0]).toMatchObject({ lat: expect.any(Number), lon: expect.any(Number) })
     sorted(r)
   })
 
