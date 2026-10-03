@@ -7,14 +7,14 @@ describe('AppDock', () => {
 
   it('renders one button per page, labelled by text only', () => {
     const w = mount(AppDock, { props: { modelValue: 'home' } })
-    expect(items(w).map((b) => b.text())).toEqual(['home', 'tonight', 'forecast', 'outlook', 'lunar'])
+    expect(items(w).map((b) => b.text())).toEqual(['home', 'tonight', 'hourly', 'forecast', 'lunar'])
   })
 
   it('marks the current page active', () => {
-    const w = mount(AppDock, { props: { modelValue: 'outlook' } })
+    const w = mount(AppDock, { props: { modelValue: 'outlook' } }) // the outlook view is labelled "forecast"
     const active = items(w).filter((b) => b.classes().includes('active'))
     expect(active).toHaveLength(1)
-    expect(active[0].text()).toBe('outlook')
+    expect(active[0].text()).toBe('forecast')
     expect(active[0].attributes('aria-current')).toBe('page')
   })
 
@@ -31,7 +31,7 @@ describe('AppDock', () => {
   it('emits the chosen view on click', async () => {
     const w = mount(AppDock, { props: { modelValue: 'home' } })
     await items(w)[2].trigger('click')
-    expect(w.emitted('update:modelValue')).toEqual([['forecast']])
+    expect(w.emitted('update:modelValue')).toEqual([['forecast']]) // the third button is "hourly", whose view id is still 'forecast'
   })
 
   it('refresh emits, and is disabled while loading', async () => {

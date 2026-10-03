@@ -108,7 +108,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
       <LocationPicker v-if="pickerOpen" :location="location" :is-demo="isDemo" :error="locationError" :resolving="resolving"
                       @set="setCoordinates" @locate="locateMe" @reset="reset" />
       <p v-if="error" class="error">failed to load: {{ error }}</p>
-      <p v-if="forecast.error.value" class="error">forecast failed: {{ forecast.error.value }}</p>
+      <p v-if="forecast.error.value" class="error">hourly failed: {{ forecast.error.value }}</p>
       <p v-if="lunar.error.value" class="error">lunar failed: {{ lunar.error.value }}</p>
       <OverviewView :tonight="data" :forecast="forecast.data.value" :lunar="lunar.data.value"
                    :twilight="data?.twilight ?? forecast.data.value?.twilight ?? null"
@@ -139,7 +139,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
     <template v-else-if="view === 'outlook'">
       <AppHeader :night="null" :at-local="null"
                  :generated-at="outlook.data.value?.generatedAt ?? ''" />
-      <p v-if="outlook.error.value" class="error">outlook failed: {{ outlook.error.value }}</p>
+      <p v-if="outlook.error.value" class="error">forecast failed: {{ outlook.error.value }}</p>
       <ErrorsBanner v-if="outlook.data.value" :errors="outlook.data.value.errors" />
       <OutlookView :nights="outlook.data.value?.nights ?? []"
                    :loading="outlook.loading.value" />

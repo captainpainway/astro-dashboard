@@ -137,7 +137,7 @@ const topLunar = computed(() => {
       </div>
     </article>
     <article v-else-if="forecastLoading" class="panel ov-card tile-strip card-loading">
-      <p class="muted">loading forecast…</p>
+      <p class="muted">loading hourly…</p>
     </article>
   </section>
 </template>

@@ -282,7 +282,7 @@ describe('App integration', () => {
     await flushPromises()
     // not loaded on mount
     expect(engine.outlook).not.toHaveBeenCalled()
-    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
     await flushPromises()
     expect(engine.outlook).toHaveBeenCalledWith({ nights: undefined, location: DEMO_LOCATION })
     const panels = w.findAll('.outlook-night')
@@ -299,7 +299,7 @@ describe('App integration', () => {
   it('outlook view: refresh refetches, errors surface inline, banner shows errors[]', async () => {
     const w = mount(App)
     await flushPromises()
-    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
     await flushPromises()
     // refresh button still triggers an outlook reload
     engine.outlook.mockClear()
@@ -310,7 +310,7 @@ describe('App integration', () => {
     engine.outlook.mockRejectedValue(new Error('Failed to fetch'))
     await w.find('.refresh').trigger('click')
     await flushPromises()
-    expect(w.text()).toContain('outlook failed:')
+    expect(w.text()).toContain('forecast failed:')
     expect(w.findAll('.outlook-night')).toHaveLength(2)
   })
 
@@ -331,7 +331,7 @@ describe('App integration', () => {
 
   it('forecast view: shows the night-times card and marks daylight hours', async () => {
     const w = await mountHome()
-    await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
+    await w.findAll('.view-switch button').find(b => b.text() === 'hourly').trigger('click')
     await flushPromises()
     expect(w.find('.tw-card').exists()).toBe(true)
     expect(w.find('.tw-card').text()).toContain('7:27 PM')
@@ -349,7 +349,7 @@ describe('App integration', () => {
   it('outlook view: each night row carries its own twilight times', async () => {
     const w = mount(App)
     await flushPromises()
-    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
     await flushPromises()
     // Only night 1 carries twilight in the fixture (night 2 is beyond the data).
     expect(w.findAll('.outlook-night .tw-card')).toHaveLength(1)
@@ -384,7 +384,7 @@ describe('App integration', () => {
     expect(engine.forecast).toHaveBeenCalledTimes(1)
     expect(engine.lunar).toHaveBeenCalledTimes(1)
     expect(engine.outlook).not.toHaveBeenCalled() // never opened, so no 12-hour forecast fetch
-    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
     await flushPromises()
     expect(engine.outlook).toHaveBeenCalledTimes(1) // first visit loads it
     await w.find('.refresh').trigger('click')
@@ -435,7 +435,7 @@ describe('App integration', () => {
 
   it('reloads the outlook for a new location once it has been opened', async () => {
     const w = await mountHome()
-    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
     await flushPromises()
     engine.outlook.mockClear()
     await w.findAll('.view-switch button').find(b => b.text() === 'home').trigger('click')
