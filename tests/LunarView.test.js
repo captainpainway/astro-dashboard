@@ -274,19 +274,19 @@ describe('LunarView moon map', () => {
     expect(dots(w)[0].attributes('style')).toBe(northUp)
   })
 
-  it('notes in the sky view when the Moon is below the horizon, and only then', async () => {
+  it('in the sky view says the Moon is below the horizon, or else gives its altitude and azimuth', async () => {
     stubGl()
     vi.useFakeTimers({ toFake: ['Date'] })
     const times = moonVisibleTimes(location, new Date('2026-10-03T23:00:00Z'))
     const sky = async (now) => {
       vi.setSystemTime(now)
       const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)] })
-      expect(w.find('[role="status"]').exists()).toBe(false) // north-up: no note
+      expect(w.find('[role="status"]').exists()).toBe(false) // north-up: nothing
       await w.findAll('[aria-label="orientation"] button')[1].trigger('click')
-      return w.find('[role="status"]')
+      return w.find('[role="status"]').text()
     }
-    expect((await sky(new Date(times[0].date - 2 * 3_600_000))).text()).toContain('below the horizon')
-    expect((await sky(times[3].date)).exists()).toBe(false)
+    expect(await sky(new Date(times[0].date - 2 * 3_600_000))).toContain('below the horizon')
+    expect(await sky(times[3].date)).toMatch(/^Moon altitude \d+° · azimuth \d+° [NESW]{1,3}$/)
   })
 
   it('turns the Moon gradually, not in one jump, when the orientation changes', async () => {

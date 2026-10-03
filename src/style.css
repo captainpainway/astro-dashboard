@@ -151,7 +151,7 @@ button { font: inherit; cursor: pointer; }
 .moon-tip-item { display: block; }
 .moon-tip-item + .moon-tip-item { margin-top: 0.4rem; }
 .moon-tip-item > * { display: block; }
-.moon-tip { position: absolute; transform-origin: 0 100%; /* GSAP owns `transform` (MoonMap.vue) */ padding: 0.25rem 0.6rem; border-radius: 8px;
+.moon-tip { position: absolute; z-index: 6; /* above .controls (5), which the top dots' tips overlap */ transform-origin: 0 100%; /* GSAP owns `transform` (MoonMap.vue) */ padding: 0.25rem 0.6rem; border-radius: 8px;
   white-space: nowrap; pointer-events: none; background: var(--glass-bg-menu); border: 1px solid var(--glass-edge); font-size: 0.85rem; }
 /* Target list sits on a denser glass panel than the tiles: long rows of small text need more contrast than the blur alone gives */
 .targets-panel { padding: 0.5rem 0.75rem; background: var(--glass-bg-dense); }

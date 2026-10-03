@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { gsap } from 'gsap'
-import { fmtCoords, fmtTime } from '../format'
+import { compass, fmtCoords, fmtTime } from '../format'
 import { moonView, moonVisibleTimes, project, rotateBasis, skyRotation, sunVector, viewBasis } from '../engine/moonview'
 import { altaz, observerFor } from '../engine/astro'
 import { toLocalIso } from '../engine/time'
@@ -29,7 +29,7 @@ const skyAngle = computed(() => (orientation.value === 'sky' ? skyRotation(date.
 const spin = reactive({ angle: 0 })
 const basis = computed(() => rotateBasis(viewBasis(view.value.earth), spin.angle))
 
-const belowHorizon = computed(() => altaz('moon', date.value, observerFor(props.location)).alt < 0)
+const moonPos = computed(() => altaz('moon', date.value, observerFor(props.location)))
 const passTimes = moonVisibleTimes(props.location, now,
   props.night && { start: new Date(props.night.startUtc), end: new Date(props.night.endUtc) })
 const stamp = (d) => fmtTime(toLocalIso(d, props.location.timezone))
@@ -185,7 +185,10 @@ onBeforeUnmount(() => {
       <button :class="{ active: orientation === 'sky' }" @click="orientation = 'sky'">sky view</button>
     </div>
     <GlassSelect v-if="orientation === 'sky'" v-model="when" aria-label="time" :options="timeOptions" />
-    <span v-if="orientation === 'sky' && belowHorizon" class="muted small" role="status">The Moon is below the horizon at this time, so it isn't visible.</span>
+    <span v-if="orientation === 'sky'" class="muted small" role="status">
+      <template v-if="moonPos.alt < 0">The Moon is below the horizon at this time, so it isn't visible.</template>
+      <template v-else>Moon altitude {{ moonPos.alt.toFixed(0) }}° · azimuth {{ moonPos.az.toFixed(0) }}° {{ compass(moonPos.az) }}</template>
+    </span>
     <div class="btn-group zoom" role="group" aria-label="zoom">
       <button aria-label="smallest" :disabled="zoom <= ZOOM_MIN" @click="zoom = ZOOM_MIN">min</button>
       <button aria-label="zoom out" :disabled="zoom <= ZOOM_MIN" @click="zoom -= 10">−</button>
