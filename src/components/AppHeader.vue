@@ -1,6 +1,7 @@
 <script setup>
 import { fmtTime, fmtDateTime, fmtLocation } from '../format'
 
+const emit = defineEmits(['change-location'])
 defineProps({
   night: { type: Object, default: null },
   atLocal: { type: String, default: null },
@@ -16,6 +17,7 @@ defineProps({
         <h1>Astronomer's Dashboard</h1>
         <p v-if="location" class="muted location">
           {{ fmtLocation(location) }}
+          <button class="show-more location-change" @click="emit('change-location')">change</button>
         </p>
         <p v-if="atLocal" class="muted">Sky at {{ fmtTime(atLocal) }}</p>
         <p v-else-if="night" class="muted">

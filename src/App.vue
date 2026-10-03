@@ -4,7 +4,7 @@ import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
 import { useLunar } from './composables/useLunar'
 import { useOutlook } from './composables/useOutlook'
-import { useLocation } from './composables/useLocation'
+import { DEMO_LOCATION, useLocation } from './composables/useLocation'
 import AppHeader from './components/AppHeader.vue'
 import AppDock from './components/AppDock.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
@@ -17,9 +17,12 @@ import OverviewView from './components/OverviewView.vue'
 import OutlookView from './components/OutlookView.vue'
 import NightTimes from './components/NightTimes.vue'
 import { clearWeatherCache } from './api'
+import LocationPicker from './components/LocationPicker.vue'
 import { isDisplayable } from './format'
 
-const { location } = useLocation()
+const { location, error: locationError, resolving, setCoordinates, locateMe, reset } = useLocation()
+const isDemo = computed(() => location.value === DEMO_LOCATION)
+const pickerOpen = ref(false)
 const { data, loading, error, load } = useTonight(location)
 const forecast = useForecast(location)
 const lunar = useLunar(location)
@@ -40,13 +43,6 @@ function setView(v) {
   })
 }
 
-async function loadAll() {
-  await Promise.all([
-    load(requestParams.value),
-    forecast.load(),
-    lunar.load(),
-  ])
-}
 watch(view, (v) => {
   if (v === 'forecast' && !forecast.loaded.value && !forecast.loading.value) forecast.load()
   if (v === 'outlook' && !outlook.loaded.value && !outlook.loading.value) outlook.load()
@@ -79,20 +75,26 @@ const instrumentLabels = {
   dwarf_mini: 'Dwarf Mini',
 }
 
-/** Refresh button: drop cached weather (and the browser's copy), then reload everything on screen. */
-async function refresh() {
-  clearWeatherCache(true)
-  await Promise.all([
+/** Reload everything on screen: tonight, forecast, lunar, and the outlook once it has been opened. */
+function reloadAll() {
+  return Promise.all([
     load(requestParams.value),
     forecast.load(),
     lunar.load(),
     outlook.loaded.value ? outlook.load() : null, // the 12-hour forecast is only fetched once the outlook was opened
   ])
 }
+/** Refresh button: drop cached weather (and the browser's copy), then reload. */
+async function refresh() {
+  clearWeatherCache(true)
+  await reloadAll()
+}
 const dockLoading = computed(() =>
   loading.value || forecast.loading.value || outlook.loading.value || lunar.loading.value)
-onMounted(loadAll)
+onMounted(reloadAll)
 watch(requestParams, () => load(requestParams.value))
+// A new place means new NWS URLs; clearing restarts the "Generated @" stamp.
+watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll() })
 </script>
 
 <template>
@@ -102,7 +104,9 @@ watch(requestParams, () => load(requestParams.value))
 
     <template v-if="view === 'home'">
       <AppHeader :night="null" :at-local="null" :location="location"
-                 :generated-at="data?.generatedAt ?? ''" />
+                 :generated-at="data?.generatedAt ?? ''" @change-location="pickerOpen = !pickerOpen" />
+      <LocationPicker v-if="pickerOpen" :location="location" :is-demo="isDemo" :error="locationError" :resolving="resolving"
+                      @set="setCoordinates" @locate="locateMe" @reset="reset" />
       <p v-if="error" class="error">failed to load: {{ error }}</p>
       <p v-if="forecast.error.value" class="error">forecast failed: {{ forecast.error.value }}</p>
       <p v-if="lunar.error.value" class="error">lunar failed: {{ lunar.error.value }}</p>
@@ -126,6 +130,7 @@ watch(requestParams, () => load(requestParams.value))
         ({{ visibleCount(ins) }})
       </button>
     </nav>
+    <p v-if="data" class="muted small equipment">Targets are ranked for an 8″ Dobsonian and a Dwarf Mini.</p>
     <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :sort-key="sortKey" />
     <p v-else-if="data && !loading" class="muted">no targets match the current filters</p>
     <p v-if="loading && !data" class="muted">loading tonight's plan…</p>

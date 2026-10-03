@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import App from '../src/App.vue'
 import { DEMO_LOCATION } from '../src/composables/useLocation'
+import points from './fixtures/nws-points.json'
 
 // Tonight, forecast, outlook and lunar are computed in the browser; stub them at the api boundary.
 const engine = vi.hoisted(() => ({ tonight: vi.fn(), forecast: vi.fn(), outlook: vi.fn(), lunar: vi.fn(), clear: vi.fn() }))
@@ -162,6 +163,9 @@ beforeEach(() => {
   engine.outlook.mockReset().mockResolvedValue(outlookFixture)
   engine.lunar.mockReset().mockResolvedValue(lunarFixture)
   engine.clear.mockReset()
+  localStorage.clear() // a chosen location is saved here
+  // NWS point lookups for locations chosen in the picker
+  vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(points) })))
 })
 
 /** Mount the app on the home view with every data source wired. */
@@ -395,5 +399,65 @@ describe('App integration', () => {
     await flushPromises()
     expect(engine.clear).not.toHaveBeenCalled()
     expect(engine.tonight.mock.calls.at(-1)[0].include).not.toContain('moon')
+  })
+
+  const typeCoords = async (w, text) => {
+    await w.find('input[aria-label="latitude and longitude"]').setValue(text)
+    await w.find('form.lp-coords').trigger('submit')
+    await flushPromises()
+  }
+
+  it('home header "change" opens the location picker', async () => {
+    const w = await mountHome()
+    expect(w.find('.location-picker').exists()).toBe(false)
+    await w.find('.location-change').trigger('click')
+    expect(w.find('.location-picker').exists()).toBe(true)
+    await w.find('.location-change').trigger('click')
+    expect(w.find('.location-picker').exists()).toBe(false)
+  })
+
+  it('choosing a location reloads every view for it, clears the weather cache once, and closes the picker', async () => {
+    const w = await mountHome()
+    await w.find('.location-change').trigger('click')
+    for (const m of [engine.tonight, engine.forecast, engine.outlook, engine.lunar]) m.mockClear()
+    engine.clear.mockClear()
+    await typeCoords(w, '47.61, -122.33')
+    for (const m of [engine.tonight, engine.forecast, engine.lunar]) {
+      expect(m).toHaveBeenCalledTimes(1)
+      expect(m.mock.calls[0][0].location).toMatchObject({ latitude: 47.61, longitude: -122.33 })
+    }
+    expect(engine.outlook).not.toHaveBeenCalled() // never opened
+    expect(engine.clear).toHaveBeenCalledTimes(1)
+    expect(engine.clear).toHaveBeenCalledWith()
+    expect(w.find('.location-picker').exists()).toBe(false)
+    expect(JSON.parse(localStorage.getItem('astrodash.location')).latitude).toBe(47.61)
+  })
+
+  it('reloads the outlook for a new location once it has been opened', async () => {
+    const w = await mountHome()
+    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await flushPromises()
+    engine.outlook.mockClear()
+    await w.findAll('.view-switch button').find(b => b.text() === 'home').trigger('click')
+    await w.find('.location-change').trigger('click')
+    await typeCoords(w, '25.76, -80.19')
+    expect(engine.outlook).toHaveBeenCalledTimes(1)
+    expect(engine.outlook.mock.calls[0][0].location.latitude).toBe(25.76)
+  })
+
+  it('a failed lookup shows the reason in the picker and keeps the current location', async () => {
+    const w = await mountHome()
+    await w.find('.location-change').trigger('click')
+    fetch.mockReturnValue(Promise.resolve({ ok: false, status: 404, statusText: 'Not Found', json: () => Promise.resolve({}) }))
+    engine.tonight.mockClear()
+    await typeCoords(w, '51.51, -0.13')
+    expect(w.find('[role="alert"]').text()).toMatch(/US only/)
+    expect(w.find('.location-picker').exists()).toBe(true)
+    expect(engine.tonight).not.toHaveBeenCalled()
+  })
+
+  it('tonight view says which instruments the targets are ranked for', async () => {
+    const w = await mountOnTonightView()
+    expect(w.find('.equipment').text()).toBe('Targets are ranked for an 8″ Dobsonian and a Dwarf Mini.')
   })
 })
