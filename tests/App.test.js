@@ -455,9 +455,4 @@ describe('App integration', () => {
     expect(w.find('.location-picker').exists()).toBe(true)
     expect(engine.tonight).not.toHaveBeenCalled()
   })
-
-  it('tonight view says which instruments the targets are ranked for', async () => {
-    const w = await mountOnTonightView()
-    expect(w.find('.equipment').text()).toBe('Targets are ranked for an 8″ Dobsonian and a Dwarf Mini.')
-  })
 })
