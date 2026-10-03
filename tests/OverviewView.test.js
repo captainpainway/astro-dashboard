@@ -38,9 +38,9 @@ const forecast = {
   night: { startLocal: '2026-08-30T19:00:00-04:00', endLocal: '2026-08-31T07:00:00-04:00', timezone: 'America/New_York' },
   hours: [
     { time: '2026-08-30T20:00:00-04:00', isDark: true, score: 30, rating: 'poor',
-      tempF: 78, skyCover: 90, shortForecast: 'Cloudy', reasons: ['cloudy (90%)'] },
+      tempF: 78, windMph: 4, skyCover: 90, shortForecast: 'Cloudy', reasons: ['cloudy (90%)'] },
     { time: '2026-08-31T02:00:00-04:00', isDark: true, score: 80, rating: 'ideal',
-      tempF: 74, skyCover: 5, shortForecast: 'Clear', reasons: ['clear (5%)', 'calm'] },
+      tempF: 74, windMph: 8, skyCover: 5, shortForecast: 'Clear', reasons: ['clear (5%)', 'calm'] },
     { time: '2026-08-31T03:00:00-04:00', isDark: false, score: 99, rating: 'ideal',
       tempF: 72, skyCover: 4, shortForecast: 'Sunny', reasons: [] },
   ],
@@ -63,10 +63,26 @@ describe('OverviewView', () => {
   it('renders conditions card with rating chip and key numbers', () => {
     const w = mount(OverviewView, { props: allProps })
     const card = w.find('.card-conditions')
+    // from the dark hourly rows: cloud (90 + 5) / 2, coldest temp, mean wind, rated by mean score (30 + 80) / 2
     expect(card.text()).toContain('Good')
-    expect(card.text()).toContain('46%')
-    expect(card.text()).toContain('75°F')
-    expect(card.text()).toContain('Mostly cloudy')
+    expect(card.text()).toContain('48%')
+    expect(card.text()).toContain('74°F')
+    expect(card.text()).toContain('6 mph')
+    expect(card.text()).toContain('Mostly cloudy') // the current observation
+  })
+
+  it('rates the night from the mean dark-hour score, so one great hour does not make it a great night', () => {
+    const hour = (h, score, isDark = true) => ({ ...forecast.hours[0], time: `2026-08-31T0${h}:00:00-04:00`, score, isDark })
+    const hours = [hour(0, 10), hour(1, 10), hour(2, 5), hour(3, 70), hour(4, 99, false)] // one great dark hour (70)
+    const w = mount(OverviewView, { props: { ...allProps, tonight: { ...tonight, weather: { ...tonight.weather,
+      summary: { ...tonight.weather.summary, rating: 'great' } } }, forecast: { ...forecast, hours } } })
+    expect(w.find('.ov-hero-rating').text()).toBe('Bad night') // mean of 10, 10, 5, 70 is 23.75 (the 99 is not a dark hour), though the weather averages say great
+  })
+
+  it('falls back to the weather-average rating when the forecast has no dark hours', () => {
+    const w = mount(OverviewView, { props: { ...allProps, forecast: null } })
+    expect(w.find('.ov-hero-rating').text()).toBe('Good night')
+    expect(w.find('.card-conditions').text()).toContain('46%') // the tonight page's weather averages
   })
 
   it('picks the highest displayable-score target per instrument, labeled by instrument', () => {
@@ -185,7 +201,7 @@ describe('OverviewView', () => {
   it('shows a dash, not NaN, when average wind is missing', () => {
     const t = { ...tonight, weather: { ...tonight.weather,
       summary: { ...tonight.weather.summary, windMphAvg: null } } }
-    const w = mount(OverviewView, { props: { ...allProps, tonight: t } })
+    const w = mount(OverviewView, { props: { ...allProps, tonight: t, forecast: null } })
     expect(w.find('.card-conditions').text()).not.toContain('NaN')
     expect(w.find('.card-conditions').text()).toContain('— mph')
   })

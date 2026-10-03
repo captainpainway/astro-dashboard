@@ -1,5 +1,5 @@
 import { altitude, moonIllumination, observerFor, twilightEvents } from './astro'
-import { cloudPenalty, deduct, precipPenalty, scoreToRating, tempPenalty, windPenalty } from './rating'
+import { cloudPenalty, deduct, precipPenalty, rateConditions, scoreToRating, tempPenalty, windPenalty } from './rating'
 import { fetchGridpoint, fetchHourly, pointProps, weatherFetchedAt } from './nws'
 import { addDays, localDate, toLocalIso, zonedTime } from './time'
 
@@ -75,16 +75,42 @@ export function buildHours({ periods, start, end, sky, observer, moonIllum }) {
     })
 }
 
-/** The night of `date` (default: today in `tz`) as 'YYYY-MM-DD'. */
-function forecastDay(now, date, tz) {
+/** The night of `date` as 'YYYY-MM-DD'; by default tonight: the night in progress until its sunrise, else today's. */
+function forecastDay(location, now, date) {
   if (date != null && !(/^\d{4}-\d{2}-\d{2}$/.test(date) && addDays(date, 0) === date)) {
     throw new Error(`Invalid date '${date}'. Use YYYY-MM-DD.`)
   }
-  return date ?? localDate(now, tz)
+  if (date != null) return date
+  const today = localDate(now, location.timezone)
+  const last = addDays(today, -1)
+  const sunrise = twilightEvents(location, last).sunrise
+  return sunrise && now < new Date(sunrise) ? last : today
+}
+
+/**
+ * One summary of a night from its hourly rows, shared by every view that shows a night so they agree: weather averages
+ * over the dark hours (all hours if none is dark), rated by the mean of those hours' scores. null without sky-cover
+ * data, since an hour with unknown cloud scores as clear.
+ */
+export function summarizeHours(hours) {
+  const dark = hours.filter((h) => h.isDark)
+  const use = dark.length ? dark : hours
+  const vals = (key) => use.map((h) => h[key]).filter((v) => v != null)
+  const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null)
+  const cloud = vals('skyCover')
+  if (!cloud.length) return null
+  const [temps, rain] = [vals('tempF'), vals('precipProb')]
+  const cloudCover = mean(cloud)
+  const windMph = mean(vals('windMph'))
+  const tempF = temps.length ? Math.min(...temps) : null
+  const precipProb = rain.length ? Math.max(...rain) : null
+  const score = mean(vals('score').map((v) => Math.max(v, 0))) // hour scores are unclamped; a night's isn't
+  const { reasons } = rateConditions(cloudCover, windMph, tempF, precipProb)
+  return { cloudCover, tempF, windMph, precipProb, score, rating: scoreToRating(score), reasons }
 }
 
 const HOUR = 3_600_000
-const floorHour = (d) => Math.floor(d / HOUR) * HOUR // NWS periods start on the hour
+export const floorHour = (d) => Math.floor(d / HOUR) * HOUR // NWS periods start on the hour
 
 /** Sunset to the next sunrise; 19:00 to 07:00 local where the Sun doesn't set or rise that night. */
 function forecastWindow(day, twilight, tz) {
@@ -107,7 +133,7 @@ function flagDaylight(hours, twilight) {
 /** Client-side take on astro-cli GET /forecast: hourly conditions from sunset to sunrise. */
 export async function buildForecast(location, { date } = {}, now = new Date()) {
   const tz = location.timezone
-  const day = forecastDay(now, date, tz)
+  const day = forecastDay(location, now, date)
   const twilight = twilightEvents(location, day)
   const { start, end } = forecastWindow(day, twilight, tz)
   const errors = []

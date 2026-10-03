@@ -1,5 +1,5 @@
 import { altitude, moonIllumination, observerFor, twilightEvents } from './astro'
-import { buildHours, parseWindMph, round1 } from './forecast'
+import { buildHours, floorHour, parseWindMph, round1, summarizeHours } from './forecast'
 import { fetchGridpoint, fetchHourly, fetchNightPeriods, pointProps, weatherFetchedAt } from './nws'
 import { rateConditions } from './rating'
 import { localDate, toLocalIso } from './time'
@@ -57,21 +57,37 @@ export async function buildOutlook(location, { nights = 7 } = {}) {
       : [null, null]
     elevationM ??= grid?.elevationM == null ? null : Math.round(grid.elevationM)
 
+    // Each night runs from sunset to sunrise (the NWS period's own hours where the Sun doesn't set or rise).
+    const twilightByDay = new Map()
+    const spans = periods.map((p) => {
+      const periodStart = Date.parse(p.startTime)
+      const periodEnd = Date.parse(p.endTime)
+      if (Number.isNaN(periodStart) || Number.isNaN(periodEnd)) return null
+      const day = localDate(new Date(periodStart), tz)
+      // A period already under way after midnight belongs to the evening before.
+      const nightDay = localDate(new Date(periodStart - 12 * HOUR), tz)
+      if (!twilightByDay.has(nightDay)) twilightByDay.set(nightDay, twilightEvents(location, nightDay))
+      const twilight = twilightByDay.get(nightDay)
+      return { p, day, twilight,
+               start: twilight.sunset ? Date.parse(twilight.sunset) : periodStart,
+               end: twilight.sunrise ? Date.parse(twilight.sunrise) : periodEnd }
+    }).filter(Boolean)
+
     // One Moon altitude curve over the whole span, sampled like astro-cli (30 min).
     const moonCurve = []
-    if (periods.length) {
-      const last = Date.parse(periods.at(-1).endTime) + HOUR
-      for (let t = Date.parse(periods[0].startTime) - HOUR; t <= last; t += MOON_STEP) {
+    if (spans.length) {
+      const last = Math.max(...spans.map((n) => n.end)) + HOUR
+      for (let t = Math.min(...spans.map((n) => n.start)) - HOUR; t <= last; t += MOON_STEP) {
         moonCurve.push([t, altitude('moon', new Date(t), observer)])
       }
     }
-    const twilightByDay = new Map()
 
-    for (const p of periods) {
-      const start = Date.parse(p.startTime)
-      const end = Date.parse(p.endTime)
-      if (Number.isNaN(start) || Number.isNaN(end)) continue
-
+    for (const { p, day, twilight, start, end } of spans) {
+      // The night's numbers and rating come from its hourly rows (as on the home page); the NWS period's own
+      // cloud, temperature, wind and rain only stand in where there is no hourly data with sky cover.
+      const hours = hourly ? buildHours({ periods: hourly, start: floorHour(start), end: floorHour(end) + HOUR,
+                                          sky: grid?.skyCover, observer, moonIllum: moonIllumination(new Date((start + end) / 2)) }) : []
+      const summary = summarizeHours(hours)
       let cloudCover = gridCloudForWindow(grid?.skyCover, start, end)
       let cloudSource = cloudCover != null ? 'grid' : ''
       if (cloudCover == null) {
@@ -82,33 +98,28 @@ export async function buildOutlook(location, { nights = 7 } = {}) {
       const samples = moonCurve.filter(([t]) => t >= start && t < end)
       const up = samples.filter(([, alt]) => alt > 0).length
       const moonIllum = moonIllumination(new Date((start + end) / 2))
-      const day = localDate(new Date(start), tz)
-      if (!twilightByDay.has(day)) twilightByDay.set(day, twilightEvents(location, day))
-
-      const tempF = tempToF(p)
-      const windMph = parseWindMph(p.windSpeed)
-      const precipProb = p.probabilityOfPrecipitation?.value ?? null
-      const { score, rating, reasons } = rateConditions(cloudCover, windMph, tempF, precipProb)
+      const period = { tempF: tempToF(p), windMph: parseWindMph(p.windSpeed), precipProb: p.probabilityOfPrecipitation?.value ?? null }
+      const night = summary ?? { cloudCover, ...period, ...rateConditions(cloudCover, period.windMph, period.tempF, period.precipProb) }
       rows.push({
         date: day,
         label: p.name ?? '',
         start: toLocalIso(new Date(start), tz),
         end: toLocalIso(new Date(end), tz),
-        tempF,
-        windMph,
+        tempF: night.tempF,
+        windMph: night.windMph,
         windDir: p.windDirection ?? '',
-        cloudCover,
-        cloudSource,
-        precipProb,
+        cloudCover: night.cloudCover,
+        cloudSource: summary ? 'grid' : cloudSource,
+        precipProb: night.precipProb,
         shortForecast: p.shortForecast ?? '',
         moonIllum,
         moonUpFraction: samples.length ? up / samples.length : null,
         darkHours: samples.length ? (samples.length - up) * ((end - start) / HOUR / samples.length) : null,
-        rating,
-        reasons,
-        score: round1(score),
-        hours: hourly ? buildHours({ periods: hourly, start, end, sky: grid?.skyCover, observer, moonIllum }) : [],
-        twilight: twilightByDay.get(day),
+        rating: night.rating,
+        reasons: night.reasons,
+        score: round1(night.score),
+        hours,
+        twilight,
       })
     }
   } catch (e) {

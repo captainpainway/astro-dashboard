@@ -47,7 +47,7 @@ describe('OutlookView', () => {
     expect(text).toContain('5 mph NE')
     expect(text).toContain('19%') // precip
     expect(text).toContain('73% · up 75%') // moon illum · moonUpFraction
-    expect(text).toContain('2.5h')
+    expect(text).toContain('2h 30m')
     expect(text).toContain('moon up ~8h of 10h (73%)')
   })
 
@@ -105,7 +105,7 @@ describe('OutlookView', () => {
     const glance = w.find('summary .outlook-glance').text()
     expect(glance).toContain('47%')
     expect(glance).toContain('73%')
-    expect(glance).toContain('2.5h moonless')
+    expect(glance).toContain('2h 30m moonless')
   })
 
   it('renders one strip segment per hour with rating classes and best marker', () => {

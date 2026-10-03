@@ -1,7 +1,7 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { gsap } from 'gsap'
-import { fmtTime, fmtDate, weatherEmoji } from '../format'
+import { fmtMinutes, fmtTime, fmtDate, weatherEmoji } from '../format'
 import { ratingStyle, normalizeRating } from '../ratings'
 import NightTimes from './NightTimes.vue'
 
@@ -109,7 +109,7 @@ const pct = (v) => (v != null ? Math.round(v) + '%' : '—')
           <span class="muted small">{{ fmtDate(night.date) }} · {{ fmtTime(night.start) }} – {{ fmtTime(night.end) }}</span>
           <span class="outlook-glance muted small">
             ☁️ {{ pct(night.cloudCover) }} · 🌙 {{ Math.round((night.moonIllum ?? 0) * 100) }}%<template
-              v-if="night.darkHours != null"> · {{ night.darkHours }}h moonless</template>
+              v-if="night.darkHours != null"> · {{ fmtMinutes(Math.round(night.darkHours * 60)) }} moonless</template>
           </span>
           <div v-if="night.hours?.length" class="outlook-strip" aria-hidden="true">
             <span v-for="h in night.hours" :key="h.time"
@@ -138,7 +138,7 @@ const pct = (v) => (v != null ? Math.round(v) + '%' : '—')
             <div><dt>wind</dt><dd>{{ night.windMph != null ? `${Math.round(night.windMph)} mph ${night.windDir ?? ''}`.trim() : '—' }}</dd></div>
             <div><dt>rain</dt><dd>{{ night.precipProb != null ? night.precipProb + '%' : '—' }}</dd></div>
             <div><dt>moon</dt><dd>{{ Math.round((night.moonIllum ?? 0) * 100) }}% · up {{ Math.round((night.moonUpFraction ?? 0) * 100) }}%</dd></div>
-            <div><dt>moonless</dt><dd>{{ night.darkHours != null ? night.darkHours + 'h' : '—' }}</dd></div>
+            <div><dt>moonless</dt><dd>{{ night.darkHours != null ? fmtMinutes(Math.round(night.darkHours * 60)) : '—' }}</dd></div>
           </dl>
 
           <p v-if="night.shortForecast" class="muted small outlook-forecast">{{ night.shortForecast }}</p>

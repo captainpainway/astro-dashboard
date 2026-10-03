@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fmtTime, fmtDateTime, pct, compass, timeline, weatherEmoji, fmtLocation, lunarEmpty } from '../src/format'
+import { fmtTime, fmtDateTime, pct, compass, timeline, weatherEmoji, fmtLocation, lunarEmpty, fmtMinutes } from '../src/format'
 
 describe('fmtTime', () => {
   it('formats ISO local times as h:mm AM/PM', () => {
@@ -102,5 +102,13 @@ describe('fmtLocation', () => {
   })
   it('returns an empty string for no location', () => {
     expect(fmtLocation(null)).toBe('')
+  })
+})
+
+describe('fmtMinutes', () => {
+  it('formats whole minutes as hours and minutes, or minutes alone under an hour', () => {
+    expect(fmtMinutes(317)).toBe('5h 17m')
+    expect(fmtMinutes(125)).toBe('2h 05m')
+    expect(fmtMinutes(45)).toBe('45m')
   })
 })

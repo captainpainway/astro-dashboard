@@ -46,7 +46,11 @@ export function fmtDuration(startIso, endIso) {
   if (!startIso || !endIso) return null
   const ms = new Date(endIso).getTime() - new Date(startIso).getTime()
   if (!Number.isFinite(ms) || ms <= 0) return null
-  const totalMinutes = Math.round(ms / 60000)
+  return fmtMinutes(Math.round(ms / 60000))
+}
+
+/** Whole minutes as '9h 07m', or '45m' under an hour. */
+export function fmtMinutes(totalMinutes) {
   const h = Math.floor(totalMinutes / 60)
   const m = totalMinutes % 60
   return h ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}m`

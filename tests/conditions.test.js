@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { buildForecast } from '../src/engine/forecast'
+import { buildForecast, summarizeHours } from '../src/engine/forecast'
 import { clearWeatherCache } from '../src/engine/nws'
 import { buildOutlook } from '../src/engine/outlook'
 import { buildTonight } from '../src/engine/tonight'
@@ -66,8 +66,23 @@ describe('buildForecast', () => {
   })
 })
 
+describe('summarizeHours', () => {
+  const hour = (score, over = {}) => ({ isDark: true, skyCover: 100, tempF: 60, windMph: 5, precipProb: 10, score, ...over })
+
+  it('never scores a night below zero, even when its hours do', () => {
+    const n = summarizeHours([hour(-40), hour(-15), hour(10)])
+    expect(n.score).toBeCloseTo(10 / 3)
+    expect(n.rating).toBe('bad')
+  })
+
+  it('averages the dark hours only, and is null without any sky cover', () => {
+    expect(summarizeHours([hour(80), hour(60), hour(5, { isDark: false })]).score).toBe(70)
+    expect(summarizeHours([hour(80, { skyCover: null })])).toBeNull()
+  })
+})
+
 describe('buildOutlook', () => {
-  it('matches astro-cli for 7 nights', async () => {
+  it('matches astro-cli for 7 nights, but runs each night from sunset to sunrise instead of the NWS period', async () => {
     const got = await buildOutlook(BIG_BEND, { nights: 7 })
     expect(got.errors).toEqual([])
     expect(got.location).toEqual(outlookWant.location)
@@ -75,11 +90,45 @@ describe('buildOutlook', () => {
     expect(got.nights).toHaveLength(outlookWant.nights.length)
     got.nights.forEach((n, i) => {
       const want = outlookWant.nights[i]
-      expectRow(n, want, NIGHT_TOL)
+      // what the NWS night period itself says
+      for (const k of ['date', 'label', 'windDir', 'shortForecast']) expect(n[k], k).toEqual(want[k])
       expectTwilight(n.twilight, want.twilight)
-      expect(n.hours).toHaveLength(want.hours.length)
-      n.hours.forEach((h, j) => expectRow(h, want.hours[j], HOUR_TOL))
+      expect([n.start, n.end]).toEqual([n.twilight.sunset, n.twilight.sunrise])
+      // hours: the one containing sunset through the one containing sunrise
+      const [sunset, sunrise] = [Date.parse(n.start), Date.parse(n.end)]
+      const [first, last] = [Date.parse(n.hours[0].time), Date.parse(n.hours.at(-1).time)]
+      // (tonight's hourly data starts at 20:00 in the fixture, after the 19:00 hour has gone)
+      if (i === 0) expect(first).toBeGreaterThanOrEqual(Math.floor(sunset / 3_600_000) * 3_600_000)
+      else expect(first <= sunset && sunset < first + 3_600_000, `${n.date} first hour ${n.hours[0].time} vs sunset ${n.start}`).toBe(true)
+      expect(last <= sunrise && sunrise < last + 3_600_000, `${n.date} last hour ${n.hours.at(-1).time} vs sunrise ${n.end}`).toBe(true)
+      expect(n.hours.length).toBeGreaterThanOrEqual(want.hours.length)
+      // hours astro-cli also lists agree with it, bar the moon-dependent score, which shifts with the new window midpoint
+      const core = ({ reasons, score, rating, moonIllum, ...rest }) => rest
+      n.hours.forEach((h) => {
+        const w = want.hours.find((x) => x.time === h.time)
+        if (w) expectRow(core(h), core(w), HOUR_TOL)
+      })
     })
+  })
+
+  it("rates tonight from its hours, and the hourly forecast's summary of the same night is identical", async () => {
+    const outlook = await buildOutlook(BIG_BEND, { nights: 7 })
+    const tonight = outlook.nights[0]
+    const forecast = await buildForecast(BIG_BEND, { date: tonight.twilight.date })
+    const want = summarizeHours(forecast.hours)
+    expect(want).not.toBeNull()
+    expect({ cloudCover: tonight.cloudCover, tempF: tonight.tempF, windMph: tonight.windMph, precipProb: tonight.precipProb,
+             score: tonight.score, rating: tonight.rating, reasons: tonight.reasons })
+      .toEqual({ cloudCover: want.cloudCover, tempF: want.tempF, windMph: want.windMph, precipProb: want.precipProb,
+                 score: Math.round(want.score * 10) / 10, rating: want.rating, reasons: want.reasons })
+  })
+
+  it('falls back to the NWS period when there is no hourly forecast', async () => {
+    vi.stubGlobal('fetch', nwsFetch(['hourly']))
+    const got = await buildOutlook(BIG_BEND, { nights: 7 })
+    expect(got.nights[0].hours).toEqual([])
+    expect(got.nights[0].rating).toBe(outlookWant.nights[0].rating) // as astro-cli rated it from the period
+    expect(got.nights[0].tempF).toBe(outlookWant.nights[0].tempF)
   })
 
   it('degrades to no nights plus an error when the 12-hour forecast fails', async () => {

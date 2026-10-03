@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { summarizeHours } from '../engine/forecast'
 import { fmtTime, lunarEmpty, weatherEmoji } from '../format'
 import { ratingStyle, normalizeRating } from '../ratings'
 import NightTimes from './NightTimes.vue'
@@ -16,7 +17,13 @@ const props = defineProps({
 
 const INSTRUMENT_LABELS = { dob_8inch: '8" Dobsonian', dwarf_mini: 'Dwarf Mini' }
 
-const conditions = computed(() => props.tonight?.weather?.summary ?? null)
+// Tonight's conditions come from the hourly rows, the same summary the forecast tab shows for tonight; the
+// tonight page's weather averages stand in until the hourly forecast arrives.
+const conditions = computed(() => {
+  const n = summarizeHours(props.forecast?.hours ?? [])
+  return n ? { rating: n.rating, cloudCoverAvg: n.cloudCover, temperatureF: n.tempF, windMphAvg: n.windMph }
+    : props.tonight?.weather?.summary ?? null
+})
 const current = computed(() => props.tonight?.weather?.current ?? null)
 
 const picks = computed(() => {
@@ -52,7 +59,7 @@ const topLunar = computed(() => {
         </span>
         <dl class="ov-stats">
           <div><dt>cloud avg</dt><dd class="ov-stat-value">{{ Math.round(conditions.cloudCoverAvg ?? 0) }}%</dd></div>
-          <div><dt>temp</dt><dd class="ov-stat-value">{{ conditions.temperatureF ?? '—' }}°F</dd></div>
+          <div><dt>temp</dt><dd class="ov-stat-value">{{ conditions.temperatureF != null ? Math.round(conditions.temperatureF) : '—' }}°F</dd></div>
           <div>
             <dt>wind avg</dt>
             <dd class="ov-stat-value">{{ conditions.windMphAvg != null ? Math.round(conditions.windMphAvg) : '—' }} mph</dd>
