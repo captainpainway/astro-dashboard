@@ -21,6 +21,9 @@ const showAll = ref(false)
 const visible = computed(() => (showAll.value ? shown.value : shown.value.slice(0, LIMIT)))
 const table = ref(null)
 const { onBeforeEnter, onEnter, onLeave } = useRowAnimation(table, visible)
+const mode = ref('list') // 'list' | 'map'
+const mapFailed = ref(false) // no WebGL or texture: stay on the list and hide the toggle
+const view = computed(() => (mapFailed.value ? 'list' : mode.value))
 const mapStamp = ref(0) // new lunar data (refresh) remounts the map so it re-reads "now"
 watch(() => props.moon, () => { mapStamp.value++ })
 const tierLabel = computed(() => TIERS.find((t) => t.key === tier.value).label)
@@ -30,16 +33,19 @@ const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
 <template>
   <section class="lunar">
     <p v-if="moon" class="muted small">{{ moon.note }}</p>
+    <nav v-if="!mapFailed" class="tabs view-toggle" aria-label="view">
+      <button v-for="v in ['list', 'map']" :key="v" :class="{ active: view === v }" @click="mode = v">{{ v }}</button>
+    </nav>
     <nav class="tabs" aria-label="instrument tier">
       <button v-for="t in TIERS" :key="t.key" :class="{ active: tier === t.key }" @click="tier = t.key">
         {{ t.label }} ({{ count(t.key) }})
       </button>
     </nav>
-    <MoonMap :key="mapStamp" :features="shown" />
+    <MoonMap v-if="view === 'map'" :key="mapStamp" :features="shown" @failed="mapFailed = true" />
     <p v-if="loading && !features.length" class="muted">loading lunar features…</p>
     <p v-else-if="!features.length" class="muted">{{ lunarEmpty(moon) }}</p>
     <p v-else-if="!shown.length" class="muted">no {{ tierLabel }} features are well placed tonight</p>
-    <div v-else class="targets-panel panel">
+    <div v-else-if="view === 'list'" class="targets-panel panel">
       <table ref="table" class="targets">
         <thead>
           <tr>

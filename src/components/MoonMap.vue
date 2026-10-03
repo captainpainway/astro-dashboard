@@ -1,15 +1,17 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { moonView, project, sunVector, viewBasis } from '../engine/moonview'
 // NASA SVS CGI Moon Kit (public domain): LROC color map, 2048x1024 equirectangular.
 import textureUrl from '../assets/moon-2k.jpg'
 
 const props = defineProps({ features: { type: Array, required: true } })
+const emit = defineEmits(['failed'])
 
 const SIZE = 768
 const view = moonView(new Date()) // read once: the map shows the Moon as it is now
 const basis = viewBasis(view.earth)
 const failed = ref(typeof WebGLRenderingContext === 'undefined')
+watch(failed, (v) => { if (v) emit('failed') }, { immediate: true }) // lets the page fall back to the list
 const canvas = ref(null)
 const selectedId = ref(null)
 

@@ -74,7 +74,7 @@ describe('LunarView', () => {
   it('shows the Moon note and a count per tier tab', () => {
     const w = mountView()
     expect(w.text()).toContain('First Quarter (46% illuminated)')
-    expect(w.findAll('.tabs button').map((b) => b.text())).toEqual(
+    expect(w.findAll('nav[aria-label="instrument tier"] button').map((b) => b.text())).toEqual(
       ['all (3)', 'eyes-only (1)', 'binoculars (1)', 'telescope (1)'])
   })
 
@@ -109,29 +109,88 @@ describe('LunarView', () => {
   })
 })
 
+const stubGl = () => {
+  vi.stubGlobal('WebGLRenderingContext', function () {})
+  const gl = new Proxy({}, { get: () => () => ({}) }) // every GL call is a no-op
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(gl)
+}
+afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers() })
+const toggle = (w, label) => w.findAll('.view-toggle button').find((b) => b.text() === label)
+const mountMap = async (props) => {
+  const w = mountView(props)
+  await toggle(w, 'map').trigger('click')
+  return w
+}
+
+describe('LunarView list/map toggle', () => {
+  it('opens on the list: table shown, no map, list button active', () => {
+    stubGl()
+    const w = mountView()
+    expect(w.findAll('.view-toggle button').map((b) => b.text())).toEqual(['list', 'map'])
+    expect(toggle(w, 'list').classes()).toContain('active')
+    expect(w.find('.targets-panel').exists()).toBe(true)
+    expect(w.find('.moon-map').exists()).toBe(false)
+  })
+
+  it('swaps the table for the map and back, keeping the Moon note and the tier filter', async () => {
+    stubGl()
+    const w = mountView({ features: [feature({ id: 'a', name: 'Alpha', lat: 10, lon: 20, tier: 'eyes' }),
+                                     feature({ id: 'b', name: 'Beta', lat: -30, lon: -60, tier: 'telescope' })] })
+    await toggle(w, 'map').trigger('click')
+    expect(w.find('.targets-panel').exists()).toBe(false)
+    expect(w.findAll('.moon-dot')).toHaveLength(2)
+    expect(w.text()).toContain('First Quarter')
+    await tab(w, 'telescope').trigger('click')
+    expect(w.findAll('.moon-dot')).toHaveLength(1)
+    await toggle(w, 'list').trigger('click')
+    expect(w.find('.moon-map').exists()).toBe(false)
+    expect(w.findAll('tr.data-row')).toHaveLength(1)
+  })
+
+  it('keeps an expanded row open across a toggle', async () => {
+    stubGl()
+    const w = mountView()
+    await w.findAll('tr.data-row')[1].trigger('click')
+    await toggle(w, 'map').trigger('click')
+    await toggle(w, 'list').trigger('click')
+    expect(w.find('.detail-row').exists()).toBe(true)
+  })
+
+  it('falls back to the list and drops the toggle when WebGL is missing', async () => {
+    const w = await mountMap() // jsdom has no WebGLRenderingContext
+    expect(w.find('.moon-map').exists()).toBe(false)
+    expect(w.findAll('tr.data-row')).toHaveLength(3)
+    expect(w.find('.view-toggle').exists()).toBe(false)
+  })
+
+  it('falls back to the list and drops the toggle when the texture fails to load', async () => {
+    stubGl()
+    vi.stubGlobal('Image', class { set src(_) { queueMicrotask(() => this.onerror?.()) } })
+    const w = await mountMap()
+    await flushPromises()
+    expect(w.find('.moon-map').exists()).toBe(false)
+    expect(w.findAll('tr.data-row')).toHaveLength(3)
+    expect(w.find('.view-toggle').exists()).toBe(false)
+  })
+})
+
 describe('LunarView moon map', () => {
-  const stubGl = () => {
-    vi.stubGlobal('WebGLRenderingContext', function () {})
-    const gl = new Proxy({}, { get: () => () => ({}) }) // every GL call is a no-op
-    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(gl)
-  }
-  afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers() })
   const dots = (w) => w.findAll('.moon-dot')
   const atPlace = (id, name, lat, lon, over = {}) => feature({ id, name, lat, lon, ...over })
   const spread = [atPlace('mare-imbrium', 'Mare Imbrium', 30, -20, { tier: 'eyes' }),
     atPlace('copernicus', 'Copernicus', 9.6, -20, { tier: 'binoculars' }),
     atPlace('rupes-recta', 'Rupes Recta', -22, -8, { tier: 'telescope' })]
 
-  it('draws one dot per near-side feature, labelled with its name', () => {
+  it('draws one dot per near-side feature, labelled with its name', async () => {
     stubGl()
-    const w = mountView({ features: [atPlace('a', 'Alpha', 10, 20), atPlace('b', 'Beta', -30, -60)] })
+    const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20), atPlace('b', 'Beta', -30, -60)] })
     expect(w.find('.moon-map canvas').exists()).toBe(true)
     expect(dots(w).map((d) => d.attributes('aria-label'))).toEqual(['Alpha', 'Beta'])
   })
 
-  it('gives no dot to far-side features or phase rows, but does to lat 0 / lon 0', () => {
+  it('gives no dot to far-side features or phase rows, but does to lat 0 / lon 0', async () => {
     stubGl()
-    const w = mountView({ features: [
+    const w = await mountMap({ features: [
       atPlace('far', 'Far side', 10, 180), atPlace('mid', 'Centre', 0, 0),
       feature({ id: 'p', name: 'Man in the Moon', kind: 'phase', lat: undefined, lon: undefined })] })
     expect(dots(w).map((d) => d.attributes('aria-label'))).toEqual(['Centre'])
@@ -139,7 +198,7 @@ describe('LunarView moon map', () => {
 
   it('follows the tier filter', async () => {
     stubGl()
-    const w = mountView({ features: spread })
+    const w = await mountMap({ features: spread })
     expect(dots(w)).toHaveLength(3)
     await tab(w, 'binoculars').trigger('click')
     expect(dots(w)).toHaveLength(1)
@@ -147,7 +206,7 @@ describe('LunarView moon map', () => {
 
   it('opens a tooltip with the feature name on click, and closes it on outside click or Esc', async () => {
     stubGl()
-    const w = mountView({ features: [atPlace('a', 'Alpha', 10, 20), atPlace('b', 'Beta', -30, -60)] })
+    const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20), atPlace('b', 'Beta', -30, -60)] })
     expect(w.find('.moon-tip').exists()).toBe(false)
     await dots(w)[1].trigger('click')
     expect(w.find('.moon-tip').text()).toBe('Beta')
@@ -163,31 +222,17 @@ describe('LunarView moon map', () => {
 
   it('closes the tooltip when the tier filter removes its feature', async () => {
     stubGl()
-    const w = mountView({ features: spread })
+    const w = await mountMap({ features: spread })
     await dots(w)[0].trigger('click') // Mare Imbrium (eyes)
     expect(w.find('.moon-tip').exists()).toBe(true)
     await tab(w, 'telescope').trigger('click')
     expect(w.find('.moon-tip').exists()).toBe(false)
   })
 
-  it('renders no map and no dots without WebGL, and the table still works', () => {
-    const w = mountView() // jsdom has no WebGLRenderingContext
-    expect(w.find('.moon-map').exists()).toBe(false)
-    expect(w.findAll('tr.data-row')).toHaveLength(3)
-  })
-
-  it('hides the whole map when the texture fails to load', async () => {
-    stubGl()
-    vi.stubGlobal('Image', class { set src(_) { queueMicrotask(() => this.onerror?.()) } })
-    const w = mountView()
-    await flushPromises()
-    expect(w.find('.moon-map').exists()).toBe(false)
-  })
-
   it('merges features at the same spot into one dot that names them all', async () => {
     stubGl()
-    const w = mountView({ features: [atPlace('a', 'Clavius', -58.4, -14.4), atPlace('b', 'Clavius craterlets', -58.4, -14.4),
-                                     atPlace('c', 'Copernicus', 9.6, -20)] })
+    const w = await mountMap({ features: [atPlace('a', 'Clavius', -58.4, -14.4), atPlace('b', 'Clavius craterlets', -58.4, -14.4),
+                                          atPlace('c', 'Copernicus', 9.6, -20)] })
     expect(dots(w).map((d) => d.attributes('aria-label'))).toEqual(['Clavius · Clavius craterlets', 'Copernicus'])
     await dots(w)[0].trigger('click')
     expect(w.find('.moon-tip').text()).toBe('Clavius · Clavius craterlets')
@@ -197,7 +242,7 @@ describe('LunarView moon map', () => {
     stubGl()
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2026-10-10T00:00:00Z'))
-    const w = mountView({ features: [atPlace('a', 'Near limb', 0, 60)], moon: { note: 'a' } })
+    const w = await mountMap({ features: [atPlace('a', 'Near limb', 0, 60)], moon: { note: 'a' } })
     const before = dots(w)[0].attributes('style')
     vi.setSystemTime(new Date('2026-10-17T00:00:00Z')) // libration has moved a few degrees
     await w.setProps({ moon: { note: 'b' } })
