@@ -180,6 +180,7 @@ onBeforeUnmount(() => {
 <template>
   <template v-if="!failed">
   <section class="controls panel moon-controls">
+    <div class="moon-controls-main">
     <div class="btn-group" role="group" aria-label="orientation">
       <button :class="{ active: orientation === 'north' }" @click="orientation = 'north'">north up</button>
       <button :class="{ active: orientation === 'sky' }" @click="orientation = 'sky'">sky view</button>
@@ -189,6 +190,7 @@ onBeforeUnmount(() => {
       <template v-if="moonPos.alt < 0">The Moon is below the horizon at this time, so it isn't visible.</template>
       <template v-else>Moon altitude {{ moonPos.alt.toFixed(0) }}° · azimuth {{ moonPos.az.toFixed(0) }}° {{ compass(moonPos.az) }}</template>
     </span>
+    </div>
     <div class="btn-group zoom" role="group" aria-label="zoom">
       <button aria-label="smallest" :disabled="zoom <= ZOOM_MIN" @click="zoom = ZOOM_MIN">min</button>
       <button aria-label="zoom out" :disabled="zoom <= ZOOM_MIN" @click="zoom -= 10">−</button>

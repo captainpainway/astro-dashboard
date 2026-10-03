@@ -127,8 +127,7 @@ button { font: inherit; cursor: pointer; }
 .error { color: var(--bad); }
 .tabs { display: flex; gap: 0.5rem; margin: 0.75rem 0 0 0; }
 .tabs button { border-radius: 12px; padding: 0.5rem 1rem; color: var(--muted); }
-/* Joined pill button group (tonight/at time, list/map); the lunar view toggle sits on the right of its panel */
-.view-toggle, .zoom { margin-left: auto; }
+/* Joined pill button group (tonight/at time, list/map); in a space-between .controls row it sits right, or left once wrapped */
 .btn-group { display: flex; }
 .btn-group > button { border-radius: 0; }
 .btn-group > button:first-child { border-radius: 999px 0 0 999px; }
@@ -136,7 +135,8 @@ button { font: inherit; cursor: pointer; }
 .btn-group > button + button { margin-left: -1px; }
 .btn-group > button.active { position: relative; z-index: 1; }
 /* Orientation toggle and time dropdown above the map */
-.moon-controls { justify-content: flex-start; margin-top: 0.75rem; }
+.moon-controls { margin-top: 0.75rem; }
+.moon-controls-main { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
 /* Square stage so the dots' percentages land on the disc */
 .btn-group > button:disabled { opacity: 0.4; cursor: default; }
 .moon-map { position: relative; --zoom: 1; width: calc(min(100%, 1024px) * var(--zoom)); aspect-ratio: 1; margin: 0.75rem auto; }
