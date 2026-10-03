@@ -33,16 +33,16 @@ const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
 <template>
   <section class="lunar">
     <p v-if="moon" class="muted small">{{ moon.note }}</p>
-    <div class="lunar-bar">
-      <nav class="tabs" aria-label="instrument tier">
-        <button v-for="t in TIERS" :key="t.key" :class="{ active: tier === t.key }" @click="tier = t.key">
+    <section class="controls panel">
+      <div class="chips" role="group" aria-label="instrument tier">
+        <button v-for="t in TIERS" :key="t.key" :class="{ chip: true, active: tier === t.key }" @click="tier = t.key">
           {{ t.label }} ({{ count(t.key) }})
         </button>
-      </nav>
-      <nav v-if="!mapFailed" class="tabs view-toggle" aria-label="view">
+      </div>
+      <div v-if="!mapFailed" class="mode view-toggle" role="group" aria-label="view">
         <button v-for="v in ['list', 'map']" :key="v" :class="{ active: view === v }" @click="mode = v">{{ v }}</button>
-      </nav>
-    </div>
+      </div>
+    </section>
     <MoonMap v-if="view === 'map'" :key="mapStamp" :features="shown" @failed="mapFailed = true" />
     <p v-if="loading && !features.length" class="muted">loading lunar features…</p>
     <p v-else-if="!features.length" class="muted">{{ lunarEmpty(moon) }}</p>

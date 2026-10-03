@@ -127,12 +127,11 @@ button { font: inherit; cursor: pointer; }
 .error { color: var(--bad); }
 .tabs { display: flex; gap: 0.5rem; margin: 0.75rem 0; }
 .tabs button { border-radius: 12px; padding: 0.5rem 1rem; color: var(--muted); }
-/* Lunar page: tier tabs on the left, list/map as a joined button group on the right */
-.lunar-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 1rem; }
-.view-toggle { gap: 0; margin-left: auto; }
+/* Lunar controls panel: tier chips on the left, list/map as a joined pill group on the right */
+.controls .view-toggle { gap: 0; margin-left: auto; }
 .view-toggle button { border-radius: 0; }
-.view-toggle button:first-child { border-radius: 12px 0 0 12px; }
-.view-toggle button:last-child { border-radius: 0 12px 12px 0; }
+.view-toggle button:first-child { border-radius: 999px 0 0 999px; }
+.view-toggle button:last-child { border-radius: 0 999px 999px 0; }
 .view-toggle button + button { margin-left: -1px; }
 .view-toggle button.active { position: relative; z-index: 1; }
 /* Square stage so the dots' percentages land on the disc */

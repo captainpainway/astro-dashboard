@@ -13,7 +13,7 @@ const features = [
 ]
 const moon = { maxAlt: 40, note: 'First Quarter (46% illuminated)' }
 const mountView = (props) => mount(LunarView, { props: { features, moon, loading: false, ...props } })
-const tab = (w, label) => w.findAll('.tabs button').find((b) => b.text().startsWith(label))
+const tab = (w, label) => w.findAll('[aria-label="instrument tier"] button').find((b) => b.text().startsWith(label))
 
 describe('LunarView', () => {
   it('renders one row per feature with name, reason, rounded Sun altitude and best time, but no Moon column', () => {
@@ -74,7 +74,7 @@ describe('LunarView', () => {
   it('shows the Moon note and a count per tier tab', () => {
     const w = mountView()
     expect(w.text()).toContain('First Quarter (46% illuminated)')
-    expect(w.findAll('nav[aria-label="instrument tier"] button').map((b) => b.text())).toEqual(
+    expect(w.findAll('[aria-label="instrument tier"] button').map((b) => b.text())).toEqual(
       ['all (3)', 'eyes-only (1)', 'binoculars (1)', 'telescope (1)'])
   })
 

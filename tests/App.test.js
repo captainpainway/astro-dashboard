@@ -367,7 +367,7 @@ describe('App integration', () => {
     await flushPromises()
     expect(w.findAll('.lunar tr.data-row')).toHaveLength(2)
     expect(w.find('.lunar').text()).toContain('First Quarter (46% illuminated)')
-    await w.findAll('.lunar .tabs button').find(b => b.text().startsWith('binoculars')).trigger('click')
+    await w.findAll('.lunar .chips button').find(b => b.text().startsWith('binoculars')).trigger('click')
     expect(w.findAll('.lunar tr.data-row')).toHaveLength(1)
     expect(w.find('.lunar').text()).toContain('Aristoteles')
     expect(w.find('.lunar').text()).not.toContain('Mare Imbrium')
