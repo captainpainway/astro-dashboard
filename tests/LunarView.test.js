@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
 import LunarView from '../src/components/LunarView.vue'
 
 const feature = (over = {}) => ({
@@ -106,5 +106,78 @@ describe('LunarView', () => {
   it('shows loading text while empty and loading, and copes with no Moon data', () => {
     expect(mountView({ features: [], loading: true }).text()).toContain('loading lunar features')
     expect(() => mountView({ moon: null })).not.toThrow()
+  })
+})
+
+describe('LunarView moon map', () => {
+  const stubGl = () => {
+    vi.stubGlobal('WebGLRenderingContext', function () {})
+    const gl = new Proxy({}, { get: () => () => ({}) }) // every GL call is a no-op
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(gl)
+  }
+  afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
+  const dots = (w) => w.findAll('.moon-dot')
+  const atPlace = (id, name, lat, lon, over = {}) => feature({ id, name, lat, lon, ...over })
+
+  it('draws one dot per near-side feature, labelled with its name', () => {
+    stubGl()
+    const w = mountView({ features: [atPlace('a', 'Alpha', 10, 20), atPlace('b', 'Beta', -30, -60)] })
+    expect(w.find('.moon-map canvas').exists()).toBe(true)
+    expect(dots(w).map((d) => d.attributes('aria-label'))).toEqual(['Alpha', 'Beta'])
+  })
+
+  it('gives no dot to far-side features or phase rows, but does to lat 0 / lon 0', () => {
+    stubGl()
+    const w = mountView({ features: [
+      atPlace('far', 'Far side', 10, 180), atPlace('mid', 'Centre', 0, 0),
+      feature({ id: 'p', name: 'Man in the Moon', kind: 'phase', lat: undefined, lon: undefined })] })
+    expect(dots(w).map((d) => d.attributes('aria-label'))).toEqual(['Centre'])
+  })
+
+  it('follows the tier filter', async () => {
+    stubGl()
+    const w = mountView()
+    expect(dots(w)).toHaveLength(3)
+    await tab(w, 'binoculars').trigger('click')
+    expect(dots(w)).toHaveLength(1)
+  })
+
+  it('opens a tooltip with the feature name on click, and closes it on outside click or Esc', async () => {
+    stubGl()
+    const w = mountView({ features: [atPlace('a', 'Alpha', 10, 20), atPlace('b', 'Beta', -30, -60)] })
+    expect(w.find('.moon-tip').exists()).toBe(false)
+    await dots(w)[1].trigger('click')
+    expect(w.find('.moon-tip').text()).toBe('Beta')
+    document.dispatchEvent(new MouseEvent('click'))
+    await flushPromises()
+    expect(w.find('.moon-tip').exists()).toBe(false)
+    await dots(w)[0].trigger('click')
+    expect(w.find('.moon-tip').text()).toBe('Alpha')
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await flushPromises()
+    expect(w.find('.moon-tip').exists()).toBe(false)
+  })
+
+  it('closes the tooltip when the tier filter removes its feature', async () => {
+    stubGl()
+    const w = mountView()
+    await dots(w)[0].trigger('click') // Mare Imbrium (eyes)
+    expect(w.find('.moon-tip').exists()).toBe(true)
+    await tab(w, 'telescope').trigger('click')
+    expect(w.find('.moon-tip').exists()).toBe(false)
+  })
+
+  it('renders no map and no dots without WebGL, and the table still works', () => {
+    const w = mountView() // jsdom has no WebGLRenderingContext
+    expect(w.find('.moon-map').exists()).toBe(false)
+    expect(w.findAll('tr.data-row')).toHaveLength(3)
+  })
+
+  it('hides the whole map when the texture fails to load', async () => {
+    stubGl()
+    vi.stubGlobal('Image', class { set src(_) { queueMicrotask(() => this.onerror?.()) } })
+    const w = mountView()
+    await flushPromises()
+    expect(w.find('.moon-map').exists()).toBe(false)
   })
 })

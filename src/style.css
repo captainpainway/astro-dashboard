@@ -127,6 +127,14 @@ button { font: inherit; cursor: pointer; }
 .error { color: var(--bad); }
 .tabs { display: flex; gap: 0.5rem; margin: 0.75rem 0; }
 .tabs button { border-radius: 12px; padding: 0.5rem 1rem; color: var(--muted); }
+/* Square stage so the dots' percentages land on the disc */
+.moon-map { position: relative; width: min(100%, 420px); aspect-ratio: 1; margin: 0.75rem auto; }
+.moon-map canvas { width: 100%; height: 100%; display: block; }
+.moon-dot { position: absolute; width: 14px; height: 14px; padding: 0; transform: translate(-50%, -50%); border-radius: 50%;
+  border: 1.5px solid #fff; background: rgba(122, 162, 255, .55); cursor: pointer; }
+.moon-dot:hover, .moon-dot:focus-visible, .moon-dot.active { background: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
+.moon-tip { position: absolute; transform: translate(-50%, calc(-100% - 14px)); padding: 0.25rem 0.6rem; border-radius: 8px;
+  white-space: nowrap; pointer-events: none; background: var(--glass-bg-menu); border: 1px solid var(--glass-edge); font-size: 0.85rem; }
 /* Target list sits on a denser glass panel than the tiles: long rows of small text need more contrast than the blur alone gives */
 .targets-panel { padding: 0.5rem 0.75rem; background: var(--glass-bg-dense); }
 .targets { width: 100%; border-collapse: collapse; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
