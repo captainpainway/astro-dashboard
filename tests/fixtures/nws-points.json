@@ -1,0 +1,112 @@
+{
+    "@context": [
+        "https://geojson.org/geojson-ld/geojson-context.jsonld",
+        {
+            "@version": "1.1",
+            "wx": "https://api.weather.gov/ontology#",
+            "s": "https://schema.org/",
+            "geo": "http://www.opengis.net/ont/geosparql#",
+            "unit": "http://codes.wmo.int/common/unit/",
+            "@vocab": "https://api.weather.gov/ontology#",
+            "geometry": {
+                "@id": "s:GeoCoordinates",
+                "@type": "geo:wktLiteral"
+            },
+            "city": "s:addressLocality",
+            "state": "s:addressRegion",
+            "distance": {
+                "@id": "s:Distance",
+                "@type": "s:QuantitativeValue"
+            },
+            "bearing": {
+                "@type": "s:QuantitativeValue"
+            },
+            "value": {
+                "@id": "s:value"
+            },
+            "unitCode": {
+                "@id": "s:unitCode",
+                "@type": "@id"
+            },
+            "forecastOffice": {
+                "@type": "@id"
+            },
+            "forecastGridData": {
+                "@type": "@id"
+            },
+            "publicZone": {
+                "@type": "@id"
+            },
+            "county": {
+                "@type": "@id"
+            }
+        }
+    ],
+    "id": "https://api.weather.gov/points/29.33,-103.21",
+    "type": "Feature",
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -103.21,
+            29.33
+        ]
+    },
+    "properties": {
+        "@id": "https://api.weather.gov/points/29.33,-103.21",
+        "@type": "wx:Point",
+        "cwa": "MAF",
+        "type": "land",
+        "forecastOffice": "https://api.weather.gov/offices/MAF",
+        "gridId": "MAF",
+        "gridX": 74,
+        "gridY": 18,
+        "forecast": "https://api.weather.gov/gridpoints/MAF/74,18/forecast",
+        "forecastHourly": "https://api.weather.gov/gridpoints/MAF/74,18/forecast/hourly",
+        "forecastGridData": "https://api.weather.gov/gridpoints/MAF/74,18",
+        "observationStations": "https://api.weather.gov/gridpoints/MAF/74,18/stations",
+        "relativeLocation": {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -103.5426087,
+                    29.3355535
+                ]
+            },
+            "properties": {
+                "city": "Study Butte",
+                "state": "TX",
+                "distance": {
+                    "unitCode": "wmoUnit:m",
+                    "value": 29892.563743857
+                },
+                "bearing": {
+                    "unitCode": "wmoUnit:degree_(angle)",
+                    "value": 91
+                }
+            }
+        },
+        "forecastZone": "https://api.weather.gov/zones/forecast/TXZ279",
+        "county": "https://api.weather.gov/zones/county/TXC043",
+        "fireWeatherZone": "https://api.weather.gov/zones/fire/TXZ279",
+        "timeZone": "America/Chicago",
+        "radarStation": "KDFX",
+        "astronomicalData": {
+            "sunrise": "2026-10-02T07:46:43-05:00",
+            "sunset": "2026-10-02T19:37:25-05:00",
+            "transit": "2026-10-02T13:42:04-05:00",
+            "civilTwilightBegin": "2026-10-02T07:23:04-05:00",
+            "civilTwilightEnd": "2026-10-02T20:01:05-05:00",
+            "nauticalTwilightBegin": "2026-10-02T06:55:32-05:00",
+            "nauticalTwilightEnd": "2026-10-02T20:28:37-05:00",
+            "astronomicalTwilightBegin": "2026-10-02T06:27:56-05:00",
+            "astronomicalTwilightEnd": "2026-10-02T20:56:13-05:00"
+        },
+        "nwr": {
+            "transmitter": "KJY69",
+            "sameCode": "048043",
+            "areaBroadcast": "https://api.weather.gov/radio/KJY69/broadcast",
+            "pointBroadcast": "https://api.weather.gov/points/29.33,-103.21/radio"
+        }
+    }
+}

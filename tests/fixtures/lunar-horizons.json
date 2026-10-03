@@ -1,0 +1,16 @@
+{
+ "meta": {
+  "source": "JPL Horizons API: COMMAND='301' CENTER='500@399' QUANTITIES='14,15' (observer and Sun sub-points on the Moon)",
+  "frame": "MOON_ME, east-longitude positive, degrees",
+  "fetched": "2026-10-02"
+ },
+ "cases": [
+  {"utc": "2026-10-10T00:00:00Z", "obsLon": 4.958093, "obsLat": 4.328069, "sunLon": 193.022356, "sunLat": -1.188787},
+  {"utc": "2026-10-15T00:00:00Z", "obsLon": 2.087534, "obsLat": 6.482798, "sunLon": 131.947345, "sunLat": -1.272016},
+  {"utc": "2026-10-20T00:00:00Z", "obsLon": 355.773122, "obsLat": 1.92561, "sunLon": 70.992565, "sunLat": -1.329104},
+  {"utc": "2026-10-25T00:00:00Z", "obsLon": 354.659222, "obsLat": -4.925198, "sunLon": 10.19428, "sunLat": -1.387223},
+  {"utc": "2026-10-30T00:00:00Z", "obsLon": 1.567191, "obsLat": -5.576015, "sunLon": 309.453451, "sunLat": -1.438742},
+  {"utc": "2026-11-04T00:00:00Z", "obsLon": 5.577131, "obsLat": 1.3982, "sunLon": 248.597665, "sunLat": -1.487871},
+  {"utc": "2026-11-09T00:00:00Z", "obsLon": 4.22829, "obsLat": 6.403736, "sunLon": 187.608894, "sunLat": -1.537981}
+ ]
+}

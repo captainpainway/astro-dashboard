@@ -1,6 +1,6 @@
 # Client-Side Port — Requirements & Plan
 
-Status: **Draft for the next planning session** — no code written. Implement directly on the current branch, `logic-port` (no new branch or worktree). The worktree rule in the global `CLAUDE.md` applies to work under `~/Dev/git/`, not personal projects under `~/Programming/`.
+Status: **Phase 0 done** (fixtures in `tests/fixtures/`, `src/engine/lunar.js` `subsolarPoint`; measured error vs Horizons 0.004°, AE vs skyfield sun/moon alt/az 0.0015°; tests assert 0.01°). Implement directly on the current branch, `logic-port` (no new branch or worktree). The worktree rule in the global `CLAUDE.md` applies to work under `~/Dev/git/`, not personal projects under `~/Programming/`.
 
 ## 1. Goal
 

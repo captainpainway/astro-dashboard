@@ -1,0 +1,215 @@
+{
+ "meta": {
+  "source": "astro-cli (skyfield + DE421, no refraction)",
+  "exported": "2026-10-02"
+ },
+ "cases": [
+  {
+   "site": {
+    "name": "Big Bend",
+    "lat": 29.33,
+    "lon": -103.21,
+    "elevationM": 1140,
+    "tz": "America/Chicago"
+   },
+   "date": "2026-03-20",
+   "events": {
+    "date_local": "2026-03-20",
+    "sunset": "2026-03-20T20:04:18.531006-05:00",
+    "sunrise": "2026-03-21T07:55:20.170579-05:00",
+    "civil_dusk": "2026-03-20T20:28:02.585242-05:00",
+    "civil_dawn": "2026-03-21T07:31:37.666325-05:00",
+    "nautical_dusk": "2026-03-20T20:55:42.432927-05:00",
+    "nautical_dawn": "2026-03-21T07:03:59.342631-05:00",
+    "astro_dusk": "2026-03-20T21:23:35.320092-05:00",
+    "astro_dawn": "2026-03-21T06:36:07.737535-05:00",
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  },
+  {
+   "site": {
+    "name": "Big Bend",
+    "lat": 29.33,
+    "lon": -103.21,
+    "elevationM": 1140,
+    "tz": "America/Chicago"
+   },
+   "date": "2026-06-21",
+   "events": {
+    "date_local": "2026-06-21",
+    "sunset": "2026-06-21T20:55:27.854692-05:00",
+    "sunrise": "2026-06-22T06:54:11.988504-05:00",
+    "civil_dusk": "2026-06-21T21:22:40.973414-05:00",
+    "civil_dawn": "2026-06-22T06:26:58.872961-05:00",
+    "nautical_dusk": "2026-06-21T21:55:42.070172-05:00",
+    "nautical_dawn": "2026-06-22T05:53:57.779864-05:00",
+    "astro_dusk": "2026-06-21T22:30:56.871375-05:00",
+    "astro_dawn": "2026-06-22T05:18:42.982041-05:00",
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  },
+  {
+   "site": {
+    "name": "Big Bend",
+    "lat": 29.33,
+    "lon": -103.21,
+    "elevationM": 1140,
+    "tz": "America/Chicago"
+   },
+   "date": "2026-12-21",
+   "events": {
+    "date_local": "2026-12-21",
+    "sunset": "2026-12-21T17:59:02.030745-06:00",
+    "sunrise": "2026-12-22T07:43:32.747809-06:00",
+    "civil_dusk": "2026-12-21T18:25:13.093718-06:00",
+    "civil_dawn": "2026-12-22T07:17:21.726437-06:00",
+    "nautical_dusk": "2026-12-21T18:54:54.346418-06:00",
+    "nautical_dawn": "2026-12-22T06:47:40.512441-06:00",
+    "astro_dusk": "2026-12-21T19:23:59.821803-06:00",
+    "astro_dawn": "2026-12-22T06:18:35.067955-06:00",
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  },
+  {
+   "site": {
+    "name": "Seattle",
+    "lat": 47.61,
+    "lon": -122.33,
+    "elevationM": 50,
+    "tz": "America/Los_Angeles"
+   },
+   "date": "2026-03-20",
+   "events": {
+    "date_local": "2026-03-20",
+    "sunset": "2026-03-20T19:22:20.830413-07:00",
+    "sunrise": "2026-03-21T07:09:48.839119-07:00",
+    "civil_dusk": "2026-03-20T19:53:07.348380-07:00",
+    "civil_dawn": "2026-03-21T06:39:06.132196-07:00",
+    "nautical_dusk": "2026-03-20T20:29:22.057083-07:00",
+    "nautical_dawn": "2026-03-21T06:02:55.027939-07:00",
+    "astro_dusk": "2026-03-20T21:06:45.334234-07:00",
+    "astro_dawn": "2026-03-21T05:25:34.683060-07:00",
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  },
+  {
+   "site": {
+    "name": "Seattle",
+    "lat": 47.61,
+    "lon": -122.33,
+    "elevationM": 50,
+    "tz": "America/Los_Angeles"
+   },
+   "date": "2026-06-21",
+   "events": {
+    "date_local": "2026-06-21",
+    "sunset": "2026-06-21T21:10:50.460001-07:00",
+    "sunrise": "2026-06-22T05:11:48.748855-07:00",
+    "civil_dusk": "2026-06-21T21:51:35.544224-07:00",
+    "civil_dawn": "2026-06-22T04:31:03.649786-07:00",
+    "nautical_dusk": "2026-06-21T22:48:02.754981-07:00",
+    "nautical_dawn": "2026-06-22T03:34:36.425190-07:00",
+    "astro_dusk": "2026-06-22T00:19:19.057363-07:00",
+    "astro_dawn": "2026-06-22T02:03:20.111421-07:00",
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  },
+  {
+   "site": {
+    "name": "Seattle",
+    "lat": 47.61,
+    "lon": -122.33,
+    "elevationM": 50,
+    "tz": "America/Los_Angeles"
+   },
+   "date": "2026-12-21",
+   "events": {
+    "date_local": "2026-12-21",
+    "sunset": "2026-12-21T16:20:16.967624-08:00",
+    "sunrise": "2026-12-22T07:55:18.042528-08:00",
+    "civil_dusk": "2026-12-21T16:56:22.575069-08:00",
+    "civil_dawn": "2026-12-22T07:19:12.578756-08:00",
+    "nautical_dusk": "2026-12-21T17:35:44.145040-08:00",
+    "nautical_dawn": "2026-12-22T06:39:51.126225-08:00",
+    "astro_dusk": "2026-12-21T18:13:18.871414-08:00",
+    "astro_dawn": "2026-12-22T06:02:16.485025-08:00",
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  },
+  {
+   "site": {
+    "name": "Fairbanks",
+    "lat": 64.84,
+    "lon": -147.72,
+    "elevationM": 140,
+    "tz": "America/Anchorage"
+   },
+   "date": "2026-03-20",
+   "events": {
+    "date_local": "2026-03-20",
+    "sunset": "2026-03-20T20:07:48.745115-08:00",
+    "sunrise": "2026-03-21T07:46:38.597910-08:00",
+    "civil_dusk": "2026-03-20T20:57:04.295368-08:00",
+    "civil_dawn": "2026-03-21T06:57:33.949831-08:00",
+    "nautical_dusk": "2026-03-20T21:57:37.840978-08:00",
+    "nautical_dawn": "2026-03-21T05:57:09.819056-08:00",
+    "astro_dusk": "2026-03-20T23:07:54.762221-08:00",
+    "astro_dawn": "2026-03-21T04:47:00.017911-08:00",
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  },
+  {
+   "site": {
+    "name": "Fairbanks",
+    "lat": 64.84,
+    "lon": -147.72,
+    "elevationM": 140,
+    "tz": "America/Anchorage"
+   },
+   "date": "2026-06-21",
+   "events": {
+    "date_local": "2026-06-21",
+    "sunset": "2026-06-22T00:47:49.513250-08:00",
+    "sunrise": "2026-06-22T02:57:59.353368-08:00",
+    "civil_dusk": null,
+    "civil_dawn": null,
+    "nautical_dusk": null,
+    "nautical_dawn": null,
+    "astro_dusk": null,
+    "astro_dawn": null,
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  },
+  {
+   "site": {
+    "name": "Fairbanks",
+    "lat": 64.84,
+    "lon": -147.72,
+    "elevationM": 140,
+    "tz": "America/Anchorage"
+   },
+   "date": "2026-12-21",
+   "events": {
+    "date_local": "2026-12-21",
+    "sunset": "2026-12-21T14:39:48.156738-09:00",
+    "sunrise": "2026-12-22T10:58:54.413580-09:00",
+    "civil_dusk": "2026-12-21T16:05:30.851998-09:00",
+    "civil_dawn": "2026-12-22T09:33:14.015592-09:00",
+    "nautical_dusk": "2026-12-21T17:17:24.843083-09:00",
+    "nautical_dawn": "2026-12-22T08:21:20.790948-09:00",
+    "astro_dusk": "2026-12-21T18:19:11.506663-09:00",
+    "astro_dawn": "2026-12-22T07:19:34.501536-09:00",
+    "midnight_sun": false,
+    "polar_night": false
+   }
+  }
+ ]
+}

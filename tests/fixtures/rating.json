@@ -1,0 +1,2052 @@
+{
+ "meta": {
+  "source": "astro-cli (skyfield + DE421, no refraction)",
+  "exported": "2026-10-02"
+ },
+ "cases": [
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": null,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": null,
+    "rating": "unknown",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 100.0,
+    "rating": "ideal",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 100.0,
+    "rating": "ideal",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 70.0,
+    "rating": "great",
+    "reasons": [
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 95.0,
+    "rating": "ideal",
+    "reasons": [
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 95.0,
+    "rating": "ideal",
+    "reasons": [
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 65.0,
+    "rating": "good",
+    "reasons": [
+     "rain likely (60%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 100.0,
+    "rating": "ideal",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 100.0,
+    "rating": "ideal",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 70.0,
+    "rating": "great",
+    "reasons": [
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 100.0,
+    "rating": "ideal",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 100.0,
+    "rating": "ideal",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 70.0,
+    "rating": "great",
+    "reasons": [
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 95.0,
+    "rating": "ideal",
+    "reasons": [
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 95.0,
+    "rating": "ideal",
+    "reasons": [
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 65.0,
+    "rating": "good",
+    "reasons": [
+     "rain likely (60%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 100.0,
+    "rating": "ideal",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 100.0,
+    "rating": "ideal",
+    "reasons": []
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 70.0,
+    "rating": "great",
+    "reasons": [
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 94.0,
+    "rating": "ideal",
+    "reasons": [
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 94.0,
+    "rating": "ideal",
+    "reasons": [
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 64.0,
+    "rating": "good",
+    "reasons": [
+     "rain likely (60%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 89.0,
+    "rating": "ideal",
+    "reasons": [
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 89.0,
+    "rating": "ideal",
+    "reasons": [
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 59.0,
+    "rating": "good",
+    "reasons": [
+     "rain likely (60%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 94.0,
+    "rating": "ideal",
+    "reasons": [
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 94.0,
+    "rating": "ideal",
+    "reasons": [
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 0,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 64.0,
+    "rating": "good",
+    "reasons": [
+     "rain likely (60%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 92.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 92.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 62.0,
+    "rating": "good",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 87.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 87.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 57.0,
+    "rating": "good",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 92.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 92.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 62.0,
+    "rating": "good",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 92.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 92.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 62.0,
+    "rating": "good",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 87.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 87.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 57.0,
+    "rating": "good",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 92.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 92.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 62.0,
+    "rating": "good",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 86.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 86.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 56.0,
+    "rating": "good",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 81.0,
+    "rating": "great",
+    "reasons": [
+     "few clouds (15%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 81.0,
+    "rating": "great",
+    "reasons": [
+     "few clouds (15%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 51.0,
+    "rating": "fair",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 86.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 86.0,
+    "rating": "ideal",
+    "reasons": [
+     "few clouds (15%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 15,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 56.0,
+    "rating": "good",
+    "reasons": [
+     "few clouds (15%)",
+     "rain likely (60%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 75.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 75.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 45.0,
+    "rating": "fair",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 70.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 70.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 40.0,
+    "rating": "fair",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 75.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 75.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 45.0,
+    "rating": "fair",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 75.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 75.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 45.0,
+    "rating": "fair",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 70.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 70.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 40.0,
+    "rating": "fair",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 75.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 75.0,
+    "rating": "great",
+    "reasons": [
+     "partly cloudy (40%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 45.0,
+    "rating": "fair",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 69.0,
+    "rating": "good",
+    "reasons": [
+     "partly cloudy (40%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 69.0,
+    "rating": "good",
+    "reasons": [
+     "partly cloudy (40%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 39.0,
+    "rating": "poor",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 64.0,
+    "rating": "good",
+    "reasons": [
+     "partly cloudy (40%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 64.0,
+    "rating": "good",
+    "reasons": [
+     "partly cloudy (40%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 34.0,
+    "rating": "poor",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 69.0,
+    "rating": "good",
+    "reasons": [
+     "partly cloudy (40%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 69.0,
+    "rating": "good",
+    "reasons": [
+     "partly cloudy (40%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 40,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 39.0,
+    "rating": "poor",
+    "reasons": [
+     "partly cloudy (40%)",
+     "rain likely (60%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 25.0,
+    "rating": "poor",
+    "reasons": [
+     "overcast (80%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 25.0,
+    "rating": "poor",
+    "reasons": [
+     "overcast (80%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 20.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 20.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 25.0,
+    "rating": "poor",
+    "reasons": [
+     "overcast (80%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 25.0,
+    "rating": "poor",
+    "reasons": [
+     "overcast (80%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": null,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 25.0,
+    "rating": "poor",
+    "reasons": [
+     "overcast (80%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 25.0,
+    "rating": "poor",
+    "reasons": [
+     "overcast (80%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 20.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 20.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 25.0,
+    "rating": "poor",
+    "reasons": [
+     "overcast (80%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 25.0,
+    "rating": "poor",
+    "reasons": [
+     "overcast (80%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 3,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": null
+   },
+   "out": {
+    "score": 19.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 19.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": null,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": null
+   },
+   "out": {
+    "score": 14.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 14.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": 20,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)",
+     "breezy (15 mph)",
+     "cold (20\u00b0F)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": null
+   },
+   "out": {
+    "score": 19.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 10
+   },
+   "out": {
+    "score": 19.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "breezy (15 mph)"
+    ]
+   }
+  },
+  {
+   "in": {
+    "cloud": 80,
+    "wind": 15,
+    "tempF": 60,
+    "precipProb": 60
+   },
+   "out": {
+    "score": 0.0,
+    "rating": "bad",
+    "reasons": [
+     "overcast (80%)",
+     "rain likely (60%)",
+     "breezy (15 mph)"
+    ]
+   }
+  }
+ ]
+}
