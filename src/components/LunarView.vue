@@ -32,16 +32,18 @@ const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
 
 <template>
   <section class="lunar">
-    <p v-if="moon" class="muted small">{{ moon.note }}</p>
-    <section class="controls panel">
-      <div class="chips" role="group" aria-label="instrument tier">
-        <button v-for="t in TIERS" :key="t.key" :class="{ chip: true, active: tier === t.key }" @click="tier = t.key">
-          {{ t.label }} ({{ count(t.key) }})
-        </button>
-      </div>
-      <div v-if="!mapFailed" class="btn-group view-toggle" role="group" aria-label="view">
-        <button v-for="v in ['list', 'map']" :key="v" :class="{ active: view === v }" @click="mode = v">{{ v }}</button>
-      </div>
+    <section class="panel">
+        <div class="controls">
+          <div class="chips" role="group" aria-label="instrument tier">
+            <button v-for="t in TIERS" :key="t.key" :class="{ chip: true, active: tier === t.key }" @click="tier = t.key">
+              {{ t.label }} ({{ count(t.key) }})
+            </button>
+          </div>
+          <div v-if="!mapFailed" class="btn-group view-toggle" role="group" aria-label="view">
+            <button v-for="v in ['list', 'map']" :key="v" :class="{ active: view === v }" @click="mode = v">{{ v }}</button>
+          </div>
+        </div>
+        <p v-if="moon" class="muted small lunar-status">{{ moon.note }}</p>
     </section>
     <MoonMap v-if="view === 'map'" :key="mapStamp" :features="shown" @failed="mapFailed = true" />
     <p v-if="loading && !features.length" class="muted">loading lunar features…</p>

@@ -122,7 +122,9 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
     <ErrorsBanner v-if="data" :errors="data.errors" />
     <ControlsBar v-if="data" v-model:mode="mode" v-model:at-time="atTime"
                  v-model:active-classes="activeClasses" v-model:sort-key="sortKey" />
-    <NightTimes v-if="data?.twilight" :twilight="data.twilight" compact />
+    <div class="panel">
+        <NightTimes v-if="data?.twilight" :twilight="data.twilight" compact />
+    </div>
     <nav v-if="data && instruments.length > 1" class="tabs">
       <button v-for="ins in instruments" :key="ins" :class="{ active: ins === activeInstrument }"
               @click="instrument = ins">
@@ -130,7 +132,6 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
         ({{ visibleCount(ins) }})
       </button>
     </nav>
-    <p v-if="data" class="muted small equipment">Targets are ranked for an 8″ Dobsonian and a Dwarf Mini.</p>
     <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :sort-key="sortKey" />
     <p v-else-if="data && !loading" class="muted">no targets match the current filters</p>
     <p v-if="loading && !data" class="muted">loading tonight's plan…</p>
