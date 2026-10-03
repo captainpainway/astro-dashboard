@@ -195,7 +195,7 @@ describe('App integration', () => {
     const w = await mountOnTonightView()
     expect(w.text()).toContain("Astronomer's Dashboard")
     expect(w.text()).toContain('observing window 9:00 PM – 5:00 AM')
-    expect(w.find('.app-header').text()).not.toContain('Big Bend National Park, TX') // location is home-only
+    expect(w.find('.app-header').text()).not.toContain('Big Bend') // location is home-only
     expect(w.text()).toContain('SS Cyg')
     // both instrument tabs render with counts
     const tabs = w.findAll('.tabs button')

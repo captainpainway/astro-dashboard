@@ -4,6 +4,7 @@ import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
 import { useDiscover } from './composables/useDiscover'
 import { useOutlook } from './composables/useOutlook'
+import { useLocation } from './composables/useLocation'
 import AppHeader from './components/AppHeader.vue'
 import AppDock from './components/AppDock.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
@@ -21,6 +22,7 @@ const { data, loading, error, load } = useTonight()
 const forecast = useForecast()
 const discover = useDiscover()
 const outlook = useOutlook()
+const { location } = useLocation()
 
 const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'discover'
 
@@ -100,7 +102,7 @@ watch(requestParams, refresh)
   <main class="page" :class="{ 'page-wide': view === 'home' }">
 
     <template v-if="view === 'home'">
-      <AppHeader :night="null" :at-local="null" :location="data?.location ?? null"
+      <AppHeader :night="null" :at-local="null" :location="location"
                  :generated-at="data?.generatedAt ?? ''" />
       <p v-if="error" class="error">failed to load: {{ error }}</p>
       <p v-if="forecast.error.value" class="error">forecast failed: {{ forecast.error.value }}</p>

@@ -1,6 +1,6 @@
 # Client-Side Port — Requirements & Plan
 
-Status: **Phase 0 done** (fixtures in `tests/fixtures/`, `src/engine/lunar.js` `subsolarPoint`; measured error vs Horizons 0.004°, AE vs skyfield sun/moon alt/az 0.0015°; tests assert 0.01°). Implement directly on the current branch, `logic-port` (no new branch or worktree). The worktree rule in the global `CLAUDE.md` applies to work under `~/Dev/git/`, not personal projects under `~/Programming/`.
+Status: **Phase 0 done** (fixtures in `tests/fixtures/`, `src/engine/lunar.js` `subsolarPoint`; measured error vs Horizons 0.004°, AE vs skyfield sun/moon alt/az 0.0015°; tests assert 0.01°). **Phase 1 done** (`src/engine/nws.js` `resolvePoint`, `src/composables/useLocation.js`; no picker UI until Phase 5; user locations get `elevationM` from the gridpoint in Phase 2; until Phase 2 the header shows the chosen location while data still comes from the server). Implement directly on the current branch, `logic-port` (no new branch or worktree). The worktree rule in the global `CLAUDE.md` applies to work under `~/Dev/git/`, not personal projects under `~/Programming/`.
 
 ## 1. Goal
 
