@@ -248,10 +248,11 @@ describe('LunarView moon map', () => {
 
   it('starts north-up; the sky view adds a time dropdown (now, moonrise to moonset) and turns the Moon', async () => {
     stubGl()
+    reduceMotion()
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2026-10-03T23:00:00Z'))
     const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)] })
-    const modes = () => w.findAll('.moon-controls .btn-group button')
+    const modes = () => w.findAll('[aria-label="orientation"] button')
     expect(modes().map((b) => b.text())).toEqual(['north up', 'sky view'])
     expect(modes()[0].classes()).toContain('active')
     expect(w.find('.moon-controls .glass-select').exists()).toBe(false)
@@ -281,11 +282,44 @@ describe('LunarView moon map', () => {
       vi.setSystemTime(now)
       const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)] })
       expect(w.find('[role="status"]').exists()).toBe(false) // north-up: no note
-      await w.findAll('.moon-controls .btn-group button')[1].trigger('click')
+      await w.findAll('[aria-label="orientation"] button')[1].trigger('click')
       return w.find('[role="status"]')
     }
     expect((await sky(new Date(times[0].date - 2 * 3_600_000))).text()).toContain('below the horizon')
     expect((await sky(times[3].date)).exists()).toBe(false)
+  })
+
+  it('turns the Moon gradually, not in one jump, when the orientation changes', async () => {
+    stubGl()
+    const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)] })
+    const style = () => dots(w)[0].attributes('style')
+    const northUp = style()
+    await w.findAll('[aria-label="orientation"] button')[1].trigger('click')
+    expect(style()).toBe(northUp) // the turn has begun, not finished
+    await vi.waitFor(() => expect(style()).not.toBe(northUp), { timeout: 3000 })
+    const mid = style()
+    await vi.waitFor(() => expect(style()).not.toBe(mid), { timeout: 3000 }) // still moving after the first change
+  })
+
+  it('zooms the Moon out in 10% steps to 50% and back, or jumps to either end, disabling buttons at the limits', async () => {
+    stubGl()
+    reduceMotion()
+    const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)] })
+    const btn = (label) => w.find(`.zoom [aria-label="${label}"]`)
+    const zoom = () => w.find('.moon-map').attributes('style')
+    expect(zoom() ?? '').not.toContain('--zoom') // starts at the stylesheet's full width
+    expect(['zoom in', 'full size'].map((l) => btn(l).attributes('disabled'))).not.toContain(undefined)
+    await btn('zoom out').trigger('click')
+    expect(zoom()).toContain('--zoom: 0.9')
+    for (let i = 0; i < 4; i++) await btn('zoom out').trigger('click')
+    expect(zoom()).toContain('--zoom: 0.5')
+    expect(['zoom out', 'smallest'].map((l) => btn(l).attributes('disabled'))).not.toContain(undefined)
+    await btn('zoom in').trigger('click')
+    expect(zoom()).toContain('--zoom: 0.6')
+    await btn('full size').trigger('click')
+    expect(zoom()).toContain('--zoom: 1')
+    await btn('smallest').trigger('click')
+    expect(zoom()).toContain('--zoom: 0.5')
   })
 
   it('limits the sky-view times to the observing window', async () => {
@@ -295,7 +329,7 @@ describe('LunarView moon map', () => {
     const times = moonVisibleTimes(location, new Date())
     const night = { startUtc: times[2].date.toISOString(), endUtc: times[6].date.toISOString() }
     const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)], night })
-    await w.findAll('.moon-controls .btn-group button')[1].trigger('click')
+    await w.findAll('[aria-label="orientation"] button')[1].trigger('click')
     await w.find('.glass-select-trigger').trigger('click')
     const opts = w.findAll('[role="option"]').map((o) => o.text())
     expect(opts).toHaveLength(1 + 5) // now + five half-hour marks

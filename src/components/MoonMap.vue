@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { gsap } from 'gsap'
 import { fmtCoords, fmtTime } from '../format'
 import { moonView, moonVisibleTimes, project, rotateBasis, skyRotation, sunVector, viewBasis } from '../engine/moonview'
@@ -18,14 +18,16 @@ const emit = defineEmits(['failed'])
 
 const SIZE = 1024
 const now = new Date() // read once: "now" is when the map was mounted or refreshed
+const ZOOM_MIN = 50 // percent of the full width; below this the dots crowd the disc
+const zoom = ref(100)
 const orientation = ref('north') // 'north' | 'sky'
 const when = ref('now') // 'now' or epoch ms of a time in the Moon's pass; only used in the sky orientation
 const date = computed(() => (orientation.value === 'sky' && when.value !== 'now' ? new Date(Number(when.value)) : now))
 const view = computed(() => moonView(date.value))
-const basis = computed(() => {
-  const north = viewBasis(view.value.earth)
-  return orientation.value === 'sky' ? rotateBasis(north, skyRotation(date.value, props.location)) : north
-})
+// How far the Moon is turned from north-up, in radians. `spin.angle` is what's drawn; it glides to `skyAngle` (see below).
+const skyAngle = computed(() => (orientation.value === 'sky' ? skyRotation(date.value, props.location) : 0))
+const spin = reactive({ angle: 0 })
+const basis = computed(() => rotateBasis(viewBasis(view.value.earth), spin.angle))
 
 const belowHorizon = computed(() => altaz('moon', date.value, observerFor(props.location)).alt < 0)
 const passTimes = moonVisibleTimes(props.location, now,
@@ -142,6 +144,21 @@ function tipOut(el, done) {
   gsap.to(el, { opacity: 0, scale: 0.6, y: -8, duration: 0.15, ease: 'power2.in', onComplete: done })
 }
 
+// Turn the Moon the short way round to the new angle; the dots and the canvas follow `spin.angle` frame by frame.
+watch(skyAngle, (to) => {
+  const target = spin.angle + Math.atan2(Math.sin(to - spin.angle), Math.cos(to - spin.angle))
+  if (reduceMotion()) spin.angle = target
+  else gsap.to(spin, { angle: target, duration: 0.8, ease: 'power2.inOut', overwrite: true })
+})
+
+// The stage's width is --zoom (see style.css); tweening the variable resizes the Moon and its dots smoothly.
+const stage = ref(null)
+watch(zoom, (z) => {
+  const to = { '--zoom': z / 100 }
+  if (reduceMotion()) gsap.set(stage.value, to)
+  else gsap.to(stage.value, { ...to, duration: 0.45, ease: 'power3.out', overwrite: true })
+})
+
 const close = () => { selectedId.value = null }
 const onKey = (e) => { if (e.key === 'Escape') close() }
 
@@ -169,8 +186,14 @@ onBeforeUnmount(() => {
     </div>
     <GlassSelect v-if="orientation === 'sky'" v-model="when" aria-label="time" :options="timeOptions" />
     <span v-if="orientation === 'sky' && belowHorizon" class="muted small" role="status">The Moon is below the horizon at this time, so it isn't visible.</span>
+    <div class="btn-group zoom" role="group" aria-label="zoom">
+      <button aria-label="smallest" :disabled="zoom <= ZOOM_MIN" @click="zoom = ZOOM_MIN">min</button>
+      <button aria-label="zoom out" :disabled="zoom <= ZOOM_MIN" @click="zoom -= 10">−</button>
+      <button aria-label="zoom in" :disabled="zoom >= 100" @click="zoom += 10">+</button>
+      <button aria-label="full size" :disabled="zoom >= 100" @click="zoom = 100">max</button>
+    </div>
   </section>
-  <div class="moon-map">
+  <div ref="stage" class="moon-map">
     <canvas ref="canvas" :width="SIZE" :height="SIZE" />
     <button v-for="d in dots" :key="d.id" class="moon-dot" :class="{ active: d.id === selectedId }"
             :style="dotStyle(d)" :aria-label="d.items.map((f) => f.name).join(', ')" @mouseenter="selectedId = d.id" @mouseleave="close"
