@@ -44,8 +44,10 @@ function toggleClass(c) {
 <template>
   <section class="controls panel">
     <div class="mode">
-      <button :class="{ active: mode === 'window' }" @click="setMode('window')">tonight</button>
-      <button :class="{ active: mode === 'instant' }" @click="setMode('instant')">at time</button>
+      <div class="btn-group">
+        <button :class="{ active: mode === 'window' }" @click="setMode('window')">tonight</button>
+        <button :class="{ active: mode === 'instant' }" @click="setMode('instant')">at time</button>
+      </div>
       <GlassSelect v-if="mode === 'instant'" class="time-select" aria-label="time" :options="TIMES"
                    :model-value="atTime" @update:model-value="setAtTime" />
     </div>

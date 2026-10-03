@@ -82,19 +82,19 @@ button { font: inherit; cursor: pointer; }
 .controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
 .controls .mode, .controls .chips, .glass-select { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
 /* Glass controls — frosted pills shared by the mode/class chips, instrument tabs and form inputs */
-.chips button, .mode > button, .tabs button, .show-more, .glass-select-trigger {
+.chips button, .btn-group > button, .tabs button, .show-more, .glass-select-trigger {
   background: var(--glass-control); color: var(--text);
   -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border); border-top-color: var(--glass-edge);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 2px 8px rgba(0, 0, 0, .2);
   transition: background .15s, border-color .15s, color .15s, box-shadow .15s; }
-.chips button, .mode > button { border-radius: 999px; padding: 0.3rem 0.9rem; }
-.chips button:hover:not(.active), .mode > button:hover:not(.active), .tabs button:hover:not(.active), .show-more:hover {
+.chips button, .btn-group > button { border-radius: 999px; padding: 0.3rem 0.9rem; }
+.chips button:hover:not(.active), .btn-group > button:hover:not(.active), .tabs button:hover:not(.active), .show-more:hover {
   background: var(--glass-control-hover); color: var(--text); }
-.chips button.active, .mode > button.active, .tabs button.active {
+.chips button.active, .btn-group > button.active, .tabs button.active {
   background: rgba(122, 162, 255, .2); border-color: rgba(122, 162, 255, .55); color: #b9ccff;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12), 0 0 14px rgba(122, 162, 255, .25); }
-.chips button:focus-visible, .mode > button:focus-visible, .tabs button:focus-visible, .show-more:focus-visible,
+.chips button:focus-visible, .btn-group > button:focus-visible, .tabs button:focus-visible, .show-more:focus-visible,
 .glass-select-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Lift the controls above later panels so the open glass-select menus overlap them; stays under the dock (z 10) */
 .controls { position: relative; z-index: 5; }
@@ -127,13 +127,14 @@ button { font: inherit; cursor: pointer; }
 .error { color: var(--bad); }
 .tabs { display: flex; gap: 0.5rem; margin: 0.75rem 0; }
 .tabs button { border-radius: 12px; padding: 0.5rem 1rem; color: var(--muted); }
-/* Lunar controls panel: tier chips on the left, list/map as a joined pill group on the right */
-.controls .view-toggle { gap: 0; margin-left: auto; }
-.view-toggle button { border-radius: 0; }
-.view-toggle button:first-child { border-radius: 999px 0 0 999px; }
-.view-toggle button:last-child { border-radius: 0 999px 999px 0; }
-.view-toggle button + button { margin-left: -1px; }
-.view-toggle button.active { position: relative; z-index: 1; }
+/* Joined pill button group (tonight/at time, list/map); the lunar view toggle sits on the right of its panel */
+.view-toggle { margin-left: auto; }
+.btn-group { display: flex; }
+.btn-group > button { border-radius: 0; }
+.btn-group > button:first-child { border-radius: 999px 0 0 999px; }
+.btn-group > button:last-child { border-radius: 0 999px 999px 0; }
+.btn-group > button + button { margin-left: -1px; }
+.btn-group > button.active { position: relative; z-index: 1; }
 /* Square stage so the dots' percentages land on the disc */
 .moon-map { position: relative; width: min(100%, 420px); aspect-ratio: 1; margin: 0.75rem auto; }
 .moon-map canvas { width: 100%; height: 100%; display: block; }
@@ -403,7 +404,7 @@ a:hover { text-decoration: underline; }
   animation-timing-function: cubic-bezier(.34, 1.35, .64, 1); }
 
 @media (prefers-reduced-motion: reduce) {
-  .dock-item, .data-row, .chips button, .mode > button, .tabs button, .show-more, .glass-select-trigger { transition: none; }
+  .dock-item, .data-row, .chips button, .btn-group > button, .tabs button, .show-more, .glass-select-trigger { transition: none; }
   .bento .card-loading, .refresh.spinning .dock-icon, .glass-select-menu { animation: none; }
   .glass-select-trigger::after { transition: none; }
   .outlook-chevron, .outlook-chevron svg { transition: none; }

@@ -39,7 +39,7 @@ const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
           {{ t.label }} ({{ count(t.key) }})
         </button>
       </div>
-      <div v-if="!mapFailed" class="mode view-toggle" role="group" aria-label="view">
+      <div v-if="!mapFailed" class="btn-group view-toggle" role="group" aria-label="view">
         <button v-for="v in ['list', 'map']" :key="v" :class="{ active: view === v }" @click="mode = v">{{ v }}</button>
       </div>
     </section>
