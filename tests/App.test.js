@@ -1,6 +1,15 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import App from '../src/App.vue'
+import { DEMO_LOCATION } from '../src/composables/useLocation'
+
+// Forecast and outlook are computed in the browser; stub them at the api boundary.
+const engine = vi.hoisted(() => ({ forecast: vi.fn(), outlook: vi.fn() }))
+vi.mock('../src/api', async (importOriginal) => ({
+  ...(await importOriginal()),
+  fetchForecast: (opts) => engine.forecast(opts),
+  fetchOutlook: (opts) => engine.outlook(opts),
+}))
 
 // Fixture mirrors the live GET /tonight response (window mode)
 const windowFixture = {
@@ -149,12 +158,15 @@ async function mountOnTonightView(fixture = windowFixture) {
   return w
 }
 
-beforeEach(() => { vi.stubGlobal('fetch', mockFetchJson(windowFixture)) })
+beforeEach(() => {
+  vi.stubGlobal('fetch', mockFetchJson(windowFixture))
+  engine.forecast.mockReset().mockResolvedValue(forecastFixture)
+  engine.outlook.mockReset().mockResolvedValue(outlookFixture)
+})
 
-/** Mount the app on the home view with all three endpoint fixtures wired. */
+/** Mount the app on the home view with all three data sources wired. */
 async function mountHome() {
   vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
-    if (String(url).includes('/api/forecast')) return { ok: true, json: () => Promise.resolve(forecastFixture) }
     if (String(url).includes('/api/discover')) return { ok: true, json: () => Promise.resolve(discoverFixture) }
     return { ok: true, json: () => Promise.resolve(windowFixture) }
   }))
@@ -164,9 +176,8 @@ async function mountHome() {
 }
 
 describe('App integration', () => {
-  it('home view renders overview cards from all three endpoints', async () => {
+  it('home view renders overview cards from all three data sources', async () => {
     vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
-      if (String(url).includes('/api/forecast')) return { ok: true, json: () => Promise.resolve(forecastFixture) }
       if (String(url).includes('/api/discover')) return { ok: true, json: () => Promise.resolve(discoverFixture) }
       return { ok: true, json: () => Promise.resolve(windowFixture) }
     }))
@@ -176,10 +187,10 @@ describe('App integration', () => {
     expect(w.find('.card-hourly').exists()).toBe(true)
     expect(w.find('.card-discoveries').exists()).toBe(true)
     expect(w.find('.card-picks').text()).toContain('SS Cyg')
-    // all three endpoints fetched on mount
+    // all three loaded on mount; the forecast for the visitor's location
     const urls = fetch.mock.calls.map(c => String(c[0]))
     expect(urls.some(u => u.includes('/api/tonight'))).toBe(true)
-    expect(urls.some(u => u.includes('/api/forecast'))).toBe(true)
+    expect(engine.forecast).toHaveBeenCalledWith({ date: undefined, location: DEMO_LOCATION })
     expect(urls.some(u => u.includes('/api/discover'))).toBe(true)
   })
 
@@ -277,18 +288,13 @@ describe('App integration', () => {
   })
 
   it('outlook view: lazy-loads on tab switch and renders nights with hourly chips', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
-      if (String(url).includes('/api/outlook')) return { ok: true, json: () => Promise.resolve(outlookFixture) }
-      return { ok: true, json: () => Promise.resolve(windowFixture) }
-    }))
     const w = mount(App)
     await flushPromises()
-    fetch.mockClear()
-    // not fetched on mount
-    expect(fetch.mock.calls.some(c => String(c[0]).includes('/api/outlook'))).toBe(false)
+    // not loaded on mount
+    expect(engine.outlook).not.toHaveBeenCalled()
     await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
     await flushPromises()
-    expect(fetch.mock.calls.at(-1)[0]).toBe('/api/outlook')
+    expect(engine.outlook).toHaveBeenCalledWith({ nights: undefined, location: DEMO_LOCATION })
     const panels = w.findAll('.outlook-night')
     expect(panels).toHaveLength(2)
     expect(panels[0].text()).toContain('Tonight')
@@ -301,26 +307,17 @@ describe('App integration', () => {
   })
 
   it('outlook view: refresh refetches, errors surface inline, banner shows errors[]', async () => {
-    let fail = false
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
-      if (String(url).includes('/api/outlook')) {
-        if (fail) return Promise.reject(new Error('Failed to fetch'))
-        return { ok: true, json: () => Promise.resolve(outlookFixture) }
-      }
-      return { ok: true, json: () => Promise.resolve(windowFixture) }
-    }))
     const w = mount(App)
     await flushPromises()
     await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
     await flushPromises()
-    // refresh button still triggers an outlook refetch
-    fetch.mockClear()
+    // refresh button still triggers an outlook reload
+    engine.outlook.mockClear()
     await w.find('.refresh').trigger('click')
     await flushPromises()
-    expect(fetch.mock.calls.some(c => String(c[0]).includes('/api/outlook'))).toBe(true)
+    expect(engine.outlook).toHaveBeenCalled()
     // a failed refresh shows the inline error, keeps rendered nights
-    fail = true
-    fetch.mockClear()
+    engine.outlook.mockRejectedValue(new Error('Failed to fetch'))
     await w.find('.refresh').trigger('click')
     await flushPromises()
     expect(w.text()).toContain('outlook failed:')
@@ -360,12 +357,6 @@ describe('App integration', () => {
   })
 
   it('outlook view: each night row carries its own twilight times', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
-      if (String(url).includes('/api/outlook')) {
-        return { ok: true, json: () => Promise.resolve(outlookFixture) }
-      }
-      return { ok: true, json: () => Promise.resolve(windowFixture) }
-    }))
     const w = mount(App)
     await flushPromises()
     await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')

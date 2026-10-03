@@ -19,10 +19,10 @@ import NightTimes from './components/NightTimes.vue'
 import { isDisplayable } from './format'
 
 const { data, loading, error, load } = useTonight()
-const forecast = useForecast()
-const discover = useDiscover()
-const outlook = useOutlook()
 const { location } = useLocation()
+const forecast = useForecast(location)
+const discover = useDiscover()
+const outlook = useOutlook(location)
 
 const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'discover'
 

@@ -1,3 +1,6 @@
+import { buildForecast } from './engine/forecast'
+import { buildOutlook } from './engine/outlook'
+
 const BASE = '/api'
 
 export function buildTonightQuery({ at, include } = {}) {
@@ -9,33 +12,11 @@ export function buildTonightQuery({ at, include } = {}) {
   return parts.length ? `?${parts.join('&')}` : ''
 }
 
-export function buildForecastQuery({ date } = {}) {
-  return date ? `?date=${date}` : ''
-}
+/** Hourly conditions for one night, computed in the browser for `location`. */
+export const fetchForecast = ({ date, location } = {}) => buildForecast(location, { date })
 
-export async function fetchForecast(opts = {}) {
-  const res = await fetch(`${BASE}/forecast${buildForecastQuery(opts)}`)
-  if (!res.ok) {
-    let detail = `${res.status} ${res.statusText}`
-    try { const body = await res.json(); if (body?.detail) detail = String(body.detail) } catch { /* keep status text */ }
-    throw new Error(detail)
-  }
-  return res.json()
-}
-
-export function buildOutlookQuery({ nights } = {}) {
-  return nights ? `?nights=${nights}` : ''
-}
-
-export async function fetchOutlook(opts = {}) {
-  const res = await fetch(`${BASE}/outlook${buildOutlookQuery(opts)}`)
-  if (!res.ok) {
-    let detail = `${res.status} ${res.statusText}`
-    try { const body = await res.json(); if (body?.detail) detail = String(body.detail) } catch { /* keep status text */ }
-    throw new Error(detail)
-  }
-  return res.json()
-}
+/** One rated row per upcoming night, computed in the browser for `location`. */
+export const fetchOutlook = ({ nights, location } = {}) => buildOutlook(location, { nights })
 
 export function buildDiscoverQuery({ limit, charts } = {}) {
   const parts = []

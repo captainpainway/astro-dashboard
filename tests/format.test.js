@@ -17,6 +17,10 @@ describe('fmtTime', () => {
     expect(fmtTime('2026-08-31T00:30:00-04:00')).toBe('12:30 AM')
     expect(fmtTime('2026-08-30T21:00:00-04:00')).toBe('9:00 PM')
   })
+  it("shows the site's wall-clock time from the ISO offset, not the viewer's timezone", () => {
+    expect(fmtTime('2026-10-03T19:36:52-05:00')).toBe('7:36 PM')
+    expect(fmtTime('2026-10-04T12:05:00-07:00')).toBe('12:05 PM')
+  })
   it('returns em-dash for empty input', () => {
     expect(fmtTime(null)).toBe('—')
   })

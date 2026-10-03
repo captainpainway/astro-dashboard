@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import * as Astronomy from 'astronomy-engine'
 import { subsolarPoint } from '../src/engine/lunar'
+import { rateConditions } from '../src/engine/rating'
+import { twilightEvents } from '../src/engine/astro'
+import { expectTwilight } from './parity'
 import altaz from './fixtures/altaz.json'
 import rating from './fixtures/rating.json'
 import twilight from './fixtures/twilight.json'
@@ -35,6 +38,23 @@ describe('astronomy-engine vs skyfield (altaz fixture)', () => {
       expect(Math.abs(hor.altitude - bodies[name].alt)).toBeLessThan(0.01)
       expect(Math.abs(angleDiff(hor.azimuth, bodies[name].az))).toBeLessThan(0.01)
     }
+  })
+})
+
+describe('rateConditions vs astro-cli', () => {
+  it('matches every rating fixture case exactly', () => {
+    for (const { in: i, out } of rating.cases) {
+      expect(rateConditions(i.cloud, i.wind, i.tempF, i.precipProb), JSON.stringify(i)).toEqual(out)
+    }
+  })
+})
+
+describe('twilightEvents vs skyfield', () => {
+  const camel = (k) => (k === 'date_local' ? 'date' : k.replace(/_(\w)/g, (_, c) => c.toUpperCase()))
+  it.each(twilight.cases)('$site.name $date within 2 minutes', ({ site, date, events }) => {
+    const loc = { latitude: site.lat, longitude: site.lon, elevationM: site.elevationM, timezone: site.tz }
+    const want = Object.fromEntries(Object.entries(events).map(([k, v]) => [camel(k), v]))
+    expectTwilight(twilightEvents(loc, date), want)
   })
 })
 

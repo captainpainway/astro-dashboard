@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { resolvePoint } from '../src/engine/nws'
+import { expandDurationSeries, resolvePoint } from '../src/engine/nws'
 import points from './fixtures/nws-points.json'
 
 const respond = (status, body = {}) => ({ ok: status < 400, status, statusText: 'x', json: () => Promise.resolve(body) })
@@ -22,6 +22,16 @@ describe('resolvePoint', () => {
   it('reports other NWS failures with the status', async () => {
     fetch.mockReturnValue(respond(500))
     await expect(resolvePoint(29.33, -103.21)).rejects.toThrow(/500/)
+  })
+
+  it('expands ISO-duration series into hourly buckets, including day durations', () => {
+    const s = expandDurationSeries([
+      { validTime: '2026-10-03T00:00:00+00:00/PT2H', value: 40 },
+      { validTime: '2026-10-03T02:00:00+00:00/P1DT1H', value: 90 },
+    ])
+    expect(s.size).toBe(27)
+    expect(s.get(Date.parse('2026-10-03T01:00:00Z'))).toBe(40)
+    expect(s.get(Date.parse('2026-10-04T02:00:00Z'))).toBe(90)
   })
 
   it.each([[91, 0], [0, 181], [NaN, 0], ['29', -103]])('rejects invalid coordinates %s,%s without fetching', async (lat, lon) => {

@@ -28,8 +28,11 @@ export function isDisplayable(t) {
 }
 
 export function fmtTime(iso) {
-  if (!iso) return '—'
-  return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  // Site-local times carry the site's offset; show that wall clock, not the viewer's timezone.
+  const m = iso && /T(\d{2}):(\d{2})/.exec(iso)
+  if (!m) return '—'
+  const hour = Number(m[1])
+  return `${hour % 12 || 12}:${m[2]} ${hour < 12 ? 'AM' : 'PM'}`
 }
 
 /** Date + time, e.g. "Sep 23, 5:52 PM" — for timestamps that may be stale. */
