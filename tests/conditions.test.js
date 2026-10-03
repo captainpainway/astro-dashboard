@@ -1,9 +1,12 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { buildForecast } from '../src/engine/forecast'
 import { buildOutlook } from '../src/engine/outlook'
-import { BIG_BEND, expectRow, expectTwilight, nwsFetch } from './parity'
+import { buildTonight } from '../src/engine/tonight'
+import { BIG_BEND, expectPlan, expectRow, expectTwilight, nwsFetch } from './parity'
 import forecastWant from './fixtures/forecast-expected.json'
 import outlookWant from './fixtures/outlook-expected.json'
+import tonight from './fixtures/tonight-expected.json'
+import grid from './fixtures/nws-forecastGridData.json'
 
 const HOUR_TOL = { sunAlt: 0.15, moonAlt: 0.15, moonIllum: 1e-3, score: 0.15 }
 const NIGHT_TOL = { moonIllum: 1e-3, moonUpFraction: 0.05, darkHours: 0.5, score: 0.15 }
@@ -76,5 +79,77 @@ describe('buildOutlook', () => {
     expect(got.errors).toEqual([])
     expect(got.nights.every((n) => n.cloudSource !== 'grid')).toBe(true)
     expect(got.nights.some((n) => n.cloudSource === 'text')).toBe(true)
+  })
+})
+
+describe('buildTonight', () => {
+  const NOW = new Date('2026-10-03T15:00:00-05:00')
+
+  it('matches astro-cli for tonight (window mode)', async () => {
+    const got = await buildTonight(BIG_BEND, {}, NOW)
+    const want = tonight.window
+    expect(got.errors).toEqual([])
+    expect(got.mode).toBe('window')
+    expect(got.location).toEqual(want.location)
+    expect(got.night).toEqual(want.night)
+    expectTwilight(got.twilight, want.twilight)
+    expectRow(got.weather.summary, want.weather.summary, { score: 1e-6 })
+    expect(got.weather.current).toEqual(want.weather.current)
+    expectPlan(got.instruments, want.instruments)
+  })
+
+  it('matches astro-cli at 22:30 (instant mode)', async () => {
+    const got = await buildTonight(BIG_BEND, { at: '22:30' }, NOW)
+    const want = tonight.instant
+    expect(got.errors).toEqual([])
+    expect(got.mode).toBe('instant')
+    expect(got.at).toEqual(want.at)
+    expect(got.weather).toEqual(want.weather)
+    expectTwilight(got.twilight, want.twilight)
+    expectPlan(got.instruments, want.instruments, { interference: false })
+  })
+
+  it('degrades: hourly failure nulls the weather sections but still ranks targets', async () => {
+    vi.stubGlobal('fetch', nwsFetch(['hourly']))
+    const got = await buildTonight(BIG_BEND, {}, NOW)
+    expect(got.weather.summary).toBeNull()
+    expect(got.weather.current).not.toBeNull()
+    expect(got.errors).toEqual(['weather: NWS 500 Server Error'])
+    expect(got.instruments.dob_8inch.length).toBeGreaterThan(0)
+    const instant = await buildTonight(BIG_BEND, { at: '22:30' }, NOW)
+    expect(instant.weather.atTime).toBeNull()
+  })
+
+  it('gives an all-null summary when no hourly period falls in the night window', async () => {
+    const got = await buildTonight(BIG_BEND, {}, new Date('2027-01-01T12:00:00Z'))
+    expect(got.weather.summary).toEqual({ cloudCoverAvg: null, temperatureF: null, windMphAvg: null,
+                                          precipProbAvg: null, rating: null, score: null, reasons: [] })
+  })
+
+  it('reports "No stations" when NWS lists no observation stations', async () => {
+    const base = nwsFetch()
+    vi.stubGlobal('fetch', vi.fn(async (url) => (String(url).endsWith('/stations')
+      ? { ok: true, status: 200, json: async () => ({ features: [] }) } : base(url))))
+    const got = await buildTonight(BIG_BEND, {}, NOW)
+    expect(got.weather.current).toEqual({ cloudCover: null, temperatureF: null, windMph: null,
+                                          description: 'No stations', station: null, timestamp: null })
+    expect(got.errors).toEqual([])
+  })
+
+  it('fills a missing elevation from the gridpoint', async () => {
+    const got = await buildTonight({ ...BIG_BEND, elevationM: null }, {}, NOW)
+    expect(got.location.elevationM).toBe(Math.round(grid.properties.elevation.value))
+  })
+
+  it('rejects a malformed time and unknown classes with a readable error', async () => {
+    await expect(buildTonight(BIG_BEND, { at: '25:00' }, NOW)).rejects.toThrow("Invalid time '25:00'")
+    await expect(buildTonight(BIG_BEND, { include: ['planet', 'comet'] }, NOW)).rejects.toThrow('Unknown target class')
+  })
+
+  it('treats an empty include like no filter, and a filter as a filter', async () => {
+    expect((await buildTonight(BIG_BEND, { include: [] }, NOW)).instruments.dwarf_mini.length).toBeGreaterThan(0)
+    const only = await buildTonight(BIG_BEND, { include: ['cluster'] }, NOW)
+    expect(only.instruments.dob_8inch).toEqual([])
+    expect(new Set(only.instruments.dwarf_mini.map((t) => t.targetClass))).toEqual(new Set(['cluster']))
   })
 })

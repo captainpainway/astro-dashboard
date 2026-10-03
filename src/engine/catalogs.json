@@ -1,0 +1,1374 @@
+{
+ "messier": [
+  {
+   "id": "M1",
+   "name": null,
+   "type": "planetary_nebula",
+   "raHours": 5.567,
+   "decDegrees": 22.0,
+   "magnitude": 8.4,
+   "notes": "Crab nebula. Remnant of a supernova in the year 1054."
+  },
+  {
+   "id": "M2",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 21.55,
+   "decDegrees": -0.817,
+   "magnitude": 6.5,
+   "notes": ""
+  },
+  {
+   "id": "M3",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 13.7,
+   "decDegrees": 28.367,
+   "magnitude": 6.4,
+   "notes": "1000 stars approx. 40,000 ly distant. 500 variable stars."
+  },
+  {
+   "id": "M4",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 16.383,
+   "decDegrees": -26.517,
+   "magnitude": 5.9,
+   "notes": ""
+  },
+  {
+   "id": "M5",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 15.3,
+   "decDegrees": 2.067,
+   "magnitude": 5.8,
+   "notes": ""
+  },
+  {
+   "id": "M6",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 17.667,
+   "decDegrees": -32.253,
+   "magnitude": 4.2,
+   "notes": "Butterfly cluster"
+  },
+  {
+   "id": "M7",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 17.883,
+   "decDegrees": -34.793,
+   "magnitude": 3.3,
+   "notes": ""
+  },
+  {
+   "id": "M8",
+   "name": null,
+   "type": "diffuse_nebula",
+   "raHours": 18.05,
+   "decDegrees": -24.387,
+   "magnitude": 5.8,
+   "notes": "Lagoon nebula"
+  },
+  {
+   "id": "M9",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 17.317,
+   "decDegrees": -18.5,
+   "magnitude": 7.9,
+   "notes": ""
+  },
+  {
+   "id": "M10",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 16.95,
+   "decDegrees": -4.1,
+   "magnitude": 6.6,
+   "notes": ""
+  },
+  {
+   "id": "M11",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 18.85,
+   "decDegrees": -6.27,
+   "magnitude": 5.8,
+   "notes": "Wild duck cluster"
+  },
+  {
+   "id": "M12",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 16.783,
+   "decDegrees": -1.933,
+   "magnitude": 6.6,
+   "notes": ""
+  },
+  {
+   "id": "M13",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 16.683,
+   "decDegrees": 36.45,
+   "magnitude": 5.9,
+   "notes": "Hercules cluster. 100,000 stars"
+  },
+  {
+   "id": "M14",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 17.617,
+   "decDegrees": -3.233,
+   "magnitude": 7.6,
+   "notes": ""
+  },
+  {
+   "id": "M15",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 21.483,
+   "decDegrees": 12.167,
+   "magnitude": 6.4,
+   "notes": ""
+  },
+  {
+   "id": "M16",
+   "name": null,
+   "type": "diffuse_nebula",
+   "raHours": 18.3,
+   "decDegrees": -13.807,
+   "magnitude": 6.0,
+   "notes": "Eagle nebula"
+  },
+  {
+   "id": "M17",
+   "name": null,
+   "type": "diffuse_nebula",
+   "raHours": 18.333,
+   "decDegrees": -16.172,
+   "magnitude": 7.0,
+   "notes": "Omega nebula"
+  },
+  {
+   "id": "M18",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 18.317,
+   "decDegrees": -17.102,
+   "magnitude": 6.9,
+   "notes": ""
+  },
+  {
+   "id": "M19",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 17.033,
+   "decDegrees": -26.267,
+   "magnitude": 7.2,
+   "notes": ""
+  },
+  {
+   "id": "M20",
+   "name": null,
+   "type": "diffuse_nebula",
+   "raHours": 18.033,
+   "decDegrees": -22.972,
+   "magnitude": 8.5,
+   "notes": "Trifid nebula"
+  },
+  {
+   "id": "M21",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 18.067,
+   "decDegrees": -22.49,
+   "magnitude": 5.9,
+   "notes": ""
+  },
+  {
+   "id": "M22",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 18.6,
+   "decDegrees": -23.9,
+   "magnitude": 5.1,
+   "notes": "Excellent."
+  },
+  {
+   "id": "M23",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 17.95,
+   "decDegrees": -18.985,
+   "magnitude": 5.5,
+   "notes": ""
+  },
+  {
+   "id": "M24",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 18.28,
+   "decDegrees": -18.55,
+   "magnitude": 4.5,
+   "notes": ""
+  },
+  {
+   "id": "M25",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 18.517,
+   "decDegrees": -19.117,
+   "magnitude": 4.6,
+   "notes": ""
+  },
+  {
+   "id": "M26",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 18.75,
+   "decDegrees": -9.383,
+   "magnitude": 8.0,
+   "notes": ""
+  },
+  {
+   "id": "M27",
+   "name": null,
+   "type": "planetary_nebula",
+   "raHours": 19.983,
+   "decDegrees": 22.717,
+   "magnitude": 8.1,
+   "notes": "Dumbbell nebula"
+  },
+  {
+   "id": "M28",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 18.4,
+   "decDegrees": -24.867,
+   "magnitude": 6.9,
+   "notes": ""
+  },
+  {
+   "id": "M29",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 20.383,
+   "decDegrees": 38.523,
+   "magnitude": 6.6,
+   "notes": ""
+  },
+  {
+   "id": "M30",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 21.667,
+   "decDegrees": -23.167,
+   "magnitude": 7.5,
+   "notes": ""
+  },
+  {
+   "id": "M31",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 0.7,
+   "decDegrees": 41.267,
+   "magnitude": 3.4,
+   "notes": "Andromeda galaxy"
+  },
+  {
+   "id": "M32",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 0.7,
+   "decDegrees": 40.85,
+   "magnitude": 8.2,
+   "notes": ""
+  },
+  {
+   "id": "M33",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 1.55,
+   "decDegrees": 30.65,
+   "magnitude": 5.7,
+   "notes": "Pinwheel galaxy"
+  },
+  {
+   "id": "M34",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 2.7,
+   "decDegrees": 42.762,
+   "magnitude": 5.2,
+   "notes": ""
+  },
+  {
+   "id": "M35",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 6.133,
+   "decDegrees": 24.333,
+   "magnitude": 5.1,
+   "notes": ""
+  },
+  {
+   "id": "M36",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 5.6,
+   "decDegrees": 34.14,
+   "magnitude": 6.0,
+   "notes": ""
+  },
+  {
+   "id": "M37",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 5.867,
+   "decDegrees": 32.553,
+   "magnitude": 5.6,
+   "notes": ""
+  },
+  {
+   "id": "M38",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 5.467,
+   "decDegrees": 35.855,
+   "magnitude": 6.4,
+   "notes": ""
+  },
+  {
+   "id": "M39",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 21.517,
+   "decDegrees": 48.433,
+   "magnitude": 4.6,
+   "notes": ""
+  },
+  {
+   "id": "M40",
+   "name": null,
+   "type": "dbl",
+   "raHours": 12.367,
+   "decDegrees": 58.067,
+   "magnitude": 8.0,
+   "notes": "Two separated faint stars - each same brightness"
+  },
+  {
+   "id": "M41",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 6.767,
+   "decDegrees": -20.757,
+   "magnitude": 4.5,
+   "notes": ""
+  },
+  {
+   "id": "M42",
+   "name": null,
+   "type": "diffuse_nebula",
+   "raHours": 5.583,
+   "decDegrees": -5.383,
+   "magnitude": 4.0,
+   "notes": "Great Orion nebula"
+  },
+  {
+   "id": "M43",
+   "name": null,
+   "type": "diffuse_nebula",
+   "raHours": 5.583,
+   "decDegrees": -5.27,
+   "magnitude": 9.0,
+   "notes": ""
+  },
+  {
+   "id": "M44",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 8.667,
+   "decDegrees": 19.667,
+   "magnitude": 3.1,
+   "notes": "Beehive cluster.  358 stars approx. 500 ly distant"
+  },
+  {
+   "id": "M45",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 3.783,
+   "decDegrees": 24.117,
+   "magnitude": 1.2,
+   "notes": "Pleiades"
+  },
+  {
+   "id": "M46",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 7.683,
+   "decDegrees": -14.81,
+   "magnitude": 6.1,
+   "notes": ""
+  },
+  {
+   "id": "M47",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 7.6,
+   "decDegrees": -14.483,
+   "magnitude": 4.4,
+   "notes": ""
+  },
+  {
+   "id": "M48",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 8.217,
+   "decDegrees": -5.75,
+   "magnitude": 5.8,
+   "notes": ""
+  },
+  {
+   "id": "M49",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 12.483,
+   "decDegrees": 8.0,
+   "magnitude": 8.4,
+   "notes": ""
+  },
+  {
+   "id": "M50",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 7.033,
+   "decDegrees": -8.333,
+   "magnitude": 5.9,
+   "notes": ""
+  },
+  {
+   "id": "M51",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 13.483,
+   "decDegrees": 47.183,
+   "magnitude": 8.1,
+   "notes": "Whirlpool galaxy"
+  },
+  {
+   "id": "M52",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 23.4,
+   "decDegrees": 61.593,
+   "magnitude": 6.9,
+   "notes": ""
+  },
+  {
+   "id": "M53",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 13.2,
+   "decDegrees": 18.167,
+   "magnitude": 7.7,
+   "notes": ""
+  },
+  {
+   "id": "M54",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 18.917,
+   "decDegrees": -30.467,
+   "magnitude": 7.7,
+   "notes": ""
+  },
+  {
+   "id": "M55",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 19.65,
+   "decDegrees": -30.95,
+   "magnitude": 7.0,
+   "notes": ""
+  },
+  {
+   "id": "M56",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 19.267,
+   "decDegrees": 30.183,
+   "magnitude": 8.2,
+   "notes": ""
+  },
+  {
+   "id": "M57",
+   "name": null,
+   "type": "planetary_nebula",
+   "raHours": 18.883,
+   "decDegrees": 33.017,
+   "magnitude": 9.0,
+   "notes": "Ring nebula.  Looks like smoke ring."
+  },
+  {
+   "id": "M58",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.617,
+   "decDegrees": 11.817,
+   "magnitude": 9.8,
+   "notes": ""
+  },
+  {
+   "id": "M59",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 12.7,
+   "decDegrees": 11.633,
+   "magnitude": 9.8,
+   "notes": ""
+  },
+  {
+   "id": "M60",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 12.717,
+   "decDegrees": 11.55,
+   "magnitude": 8.8,
+   "notes": ""
+  },
+  {
+   "id": "M61",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.35,
+   "decDegrees": 4.467,
+   "magnitude": 9.7,
+   "notes": ""
+  },
+  {
+   "id": "M62",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 17.017,
+   "decDegrees": -30.1,
+   "magnitude": 6.6,
+   "notes": ""
+  },
+  {
+   "id": "M63",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 13.25,
+   "decDegrees": 42.017,
+   "magnitude": 8.6,
+   "notes": "Sunflower galaxy"
+  },
+  {
+   "id": "M64",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.933,
+   "decDegrees": 21.667,
+   "magnitude": 8.5,
+   "notes": "Black eye galaxy"
+  },
+  {
+   "id": "M65",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 11.3,
+   "decDegrees": 13.083,
+   "magnitude": 9.3,
+   "notes": "Leo's triplet"
+  },
+  {
+   "id": "M66",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 11.333,
+   "decDegrees": 12.983,
+   "magnitude": 9.0,
+   "notes": "Leo's triplet"
+  },
+  {
+   "id": "M67",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 8.85,
+   "decDegrees": 11.8,
+   "magnitude": 6.9,
+   "notes": ""
+  },
+  {
+   "id": "M68",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 12.65,
+   "decDegrees": -26.733,
+   "magnitude": 8.2,
+   "notes": ""
+  },
+  {
+   "id": "M69",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 18.517,
+   "decDegrees": -32.333,
+   "magnitude": 7.7,
+   "notes": ""
+  },
+  {
+   "id": "M70",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 18.717,
+   "decDegrees": -32.283,
+   "magnitude": 8.1,
+   "notes": ""
+  },
+  {
+   "id": "M71",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 19.883,
+   "decDegrees": 18.767,
+   "magnitude": 8.3,
+   "notes": ""
+  },
+  {
+   "id": "M72",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 20.883,
+   "decDegrees": -12.533,
+   "magnitude": 9.4,
+   "notes": ""
+  },
+  {
+   "id": "M73",
+   "name": null,
+   "type": "ast",
+   "raHours": 20.983,
+   "decDegrees": -12.633,
+   "magnitude": 10.0,
+   "notes": "Very difficult, small grouping of stars"
+  },
+  {
+   "id": "M74",
+   "name": null,
+   "type": "S",
+   "raHours": 1.6,
+   "decDegrees": 15.783,
+   "magnitude": 9.2,
+   "notes": ""
+  },
+  {
+   "id": "M75",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 20.1,
+   "decDegrees": -21.917,
+   "magnitude": 8.6,
+   "notes": ""
+  },
+  {
+   "id": "M76",
+   "name": null,
+   "type": "planetary_nebula",
+   "raHours": 1.7,
+   "decDegrees": 51.567,
+   "magnitude": 11.5,
+   "notes": "Cork nebula"
+  },
+  {
+   "id": "M77",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 2.7,
+   "decDegrees": -0.0,
+   "magnitude": 8.8,
+   "notes": ""
+  },
+  {
+   "id": "M78",
+   "name": null,
+   "type": "diffuse_nebula",
+   "raHours": 5.767,
+   "decDegrees": 0.067,
+   "magnitude": 8.0,
+   "notes": ""
+  },
+  {
+   "id": "M79",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 5.4,
+   "decDegrees": -24.517,
+   "magnitude": 8.0,
+   "notes": ""
+  },
+  {
+   "id": "M80",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 16.283,
+   "decDegrees": -22.967,
+   "magnitude": 7.2,
+   "notes": ""
+  },
+  {
+   "id": "M81",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 9.917,
+   "decDegrees": 69.05,
+   "magnitude": 6.8,
+   "notes": "Bodes nebula"
+  },
+  {
+   "id": "M82",
+   "name": null,
+   "type": "irregular_galaxy",
+   "raHours": 9.917,
+   "decDegrees": 69.667,
+   "magnitude": 8.4,
+   "notes": ""
+  },
+  {
+   "id": "M83",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 13.617,
+   "decDegrees": -29.85,
+   "magnitude": 7.6,
+   "notes": ""
+  },
+  {
+   "id": "M84",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 12.417,
+   "decDegrees": 12.883,
+   "magnitude": 9.3,
+   "notes": ""
+  },
+  {
+   "id": "M85",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 12.417,
+   "decDegrees": 18.183,
+   "magnitude": 9.2,
+   "notes": ""
+  },
+  {
+   "id": "M86",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 12.433,
+   "decDegrees": 12.933,
+   "magnitude": 9.2,
+   "notes": ""
+  },
+  {
+   "id": "M87",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 12.5,
+   "decDegrees": 12.383,
+   "magnitude": 8.6,
+   "notes": "Virgo A"
+  },
+  {
+   "id": "M88",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.517,
+   "decDegrees": 14.417,
+   "magnitude": 9.5,
+   "notes": ""
+  },
+  {
+   "id": "M89",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 12.583,
+   "decDegrees": 12.55,
+   "magnitude": 9.8,
+   "notes": ""
+  },
+  {
+   "id": "M90",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.6,
+   "decDegrees": 13.15,
+   "magnitude": 9.5,
+   "notes": ""
+  },
+  {
+   "id": "M91",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.583,
+   "decDegrees": 14.483,
+   "magnitude": 10.2,
+   "notes": ""
+  },
+  {
+   "id": "M92",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 17.283,
+   "decDegrees": 43.133,
+   "magnitude": 6.5,
+   "notes": ""
+  },
+  {
+   "id": "M93",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 7.733,
+   "decDegrees": -23.857,
+   "magnitude": 6.2,
+   "notes": ""
+  },
+  {
+   "id": "M94",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.833,
+   "decDegrees": 41.117,
+   "magnitude": 8.1,
+   "notes": ""
+  },
+  {
+   "id": "M95",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 10.717,
+   "decDegrees": 11.7,
+   "magnitude": 9.7,
+   "notes": ""
+  },
+  {
+   "id": "M96",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 10.767,
+   "decDegrees": 11.817,
+   "magnitude": 9.2,
+   "notes": ""
+  },
+  {
+   "id": "M97",
+   "name": null,
+   "type": "planetary_nebula",
+   "raHours": 11.233,
+   "decDegrees": 55.017,
+   "magnitude": 11.2,
+   "notes": "Owl nebula"
+  },
+  {
+   "id": "M98",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.217,
+   "decDegrees": 14.9,
+   "magnitude": 10.1,
+   "notes": ""
+  },
+  {
+   "id": "M99",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.3,
+   "decDegrees": 14.4,
+   "magnitude": 9.8,
+   "notes": "Pin Wheel Galaxy"
+  },
+  {
+   "id": "M100",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.367,
+   "decDegrees": 15.817,
+   "magnitude": 9.4,
+   "notes": ""
+  },
+  {
+   "id": "M101",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 14.05,
+   "decDegrees": 54.333,
+   "magnitude": 7.7,
+   "notes": "101 is the same as 102"
+  },
+  {
+   "id": "M102",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 15.1,
+   "decDegrees": 55.75,
+   "magnitude": 7.7,
+   "notes": "102 is the same as 101"
+  },
+  {
+   "id": "M103",
+   "name": null,
+   "type": "open_cluster",
+   "raHours": 1.55,
+   "decDegrees": 60.65,
+   "magnitude": 7.4,
+   "notes": ""
+  },
+  {
+   "id": "M104",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.65,
+   "decDegrees": -11.617,
+   "magnitude": 8.3,
+   "notes": "Sombrero galaxy"
+  },
+  {
+   "id": "M105",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 10.783,
+   "decDegrees": 12.567,
+   "magnitude": 9.3,
+   "notes": ""
+  },
+  {
+   "id": "M106",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 12.3,
+   "decDegrees": 47.3,
+   "magnitude": 8.3,
+   "notes": ""
+  },
+  {
+   "id": "M107",
+   "name": null,
+   "type": "globular_cluster",
+   "raHours": 16.533,
+   "decDegrees": -13.05,
+   "magnitude": 8.1,
+   "notes": ""
+  },
+  {
+   "id": "M108",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 11.183,
+   "decDegrees": 55.667,
+   "magnitude": 10.0,
+   "notes": ""
+  },
+  {
+   "id": "M109",
+   "name": null,
+   "type": "spiral_galaxy",
+   "raHours": 11.95,
+   "decDegrees": 53.367,
+   "magnitude": 9.8,
+   "notes": ""
+  },
+  {
+   "id": "M110",
+   "name": null,
+   "type": "elliptical_galaxy",
+   "raHours": 0.667,
+   "decDegrees": 41.683,
+   "magnitude": 8.0,
+   "notes": ""
+  }
+ ],
+ "ngc": [
+  {
+   "id": "M42",
+   "name": "Orion Nebula",
+   "type": "emission_nebula",
+   "raHours": 5.5883,
+   "decDegrees": -5.39,
+   "magnitude": 4.0,
+   "notes": "Brightest nebula. Pairs with M43. Winter target."
+  },
+  {
+   "id": "M43",
+   "name": "De Mairan's Nebula",
+   "type": "emission_nebula",
+   "raHours": 5.5833,
+   "decDegrees": -5.27,
+   "magnitude": 9.0,
+   "notes": "Companion to M42, same FOV."
+  },
+  {
+   "id": "M8",
+   "name": "Lagoon Nebula",
+   "type": "emission_nebula",
+   "raHours": 18.0375,
+   "decDegrees": -24.1,
+   "magnitude": 6.0,
+   "notes": "Large, pairs with M20 Trifid in same wide FOV."
+  },
+  {
+   "id": "M20",
+   "name": "Trifid Nebula",
+   "type": "emission_nebula",
+   "raHours": 18.0278,
+   "decDegrees": -23.03,
+   "magnitude": 6.3,
+   "notes": "Pairs with M8 Lagoon. Emission + reflection."
+  },
+  {
+   "id": "M16",
+   "name": "Eagle Nebula",
+   "type": "emission_nebula",
+   "raHours": 18.3108,
+   "decDegrees": -13.78,
+   "magnitude": 6.0,
+   "notes": "Pillars of Creation. Includes cluster NGC 6611."
+  },
+  {
+   "id": "M17",
+   "name": "Omega/Swan Nebula",
+   "type": "emission_nebula",
+   "raHours": 18.2083,
+   "decDegrees": -13.78,
+   "magnitude": 6.0,
+   "notes": "Bright, distinctive swan shape."
+  },
+  {
+   "id": "NGC 7000",
+   "name": "North America Nebula",
+   "type": "emission_nebula",
+   "raHours": 20.9667,
+   "decDegrees": 44.35,
+   "magnitude": 4.0,
+   "notes": "Huge, continent-shaped. Ideal for wide field."
+  },
+  {
+   "id": "IC 1396",
+   "name": "Elephant's Trunk Nebula",
+   "type": "emission_nebula",
+   "raHours": 21.725,
+   "decDegrees": 57.5,
+   "magnitude": 3.5,
+   "notes": "Enormous faint nebula in Cepheus. Needs dark sky."
+  },
+  {
+   "id": "NGC 1499",
+   "name": "California Nebula",
+   "type": "emission_nebula",
+   "raHours": 4.025,
+   "decDegrees": 36.6,
+   "magnitude": 6.0,
+   "notes": "Very wide, low surface brightness. Needs long exposure."
+  },
+  {
+   "id": "NGC 2237",
+   "name": "Rosette Nebula",
+   "type": "emission_nebula",
+   "raHours": 6.517,
+   "decDegrees": 4.95,
+   "magnitude": 9.0,
+   "notes": "Pairs with open cluster NGC 2244 in center."
+  },
+  {
+   "id": "NGC 6960",
+   "name": "Veil Nebula (Western)",
+   "type": "supernova_remnant",
+   "raHours": 20.45,
+   "decDegrees": 30.72,
+   "magnitude": 7.0,
+   "notes": "Supernova remnant. Eastern half is NGC 6992."
+  },
+  {
+   "id": "NGC 6992",
+   "name": "Veil Nebula (Eastern)",
+   "type": "supernova_remnant",
+   "raHours": 20.9333,
+   "decDegrees": 31.72,
+   "magnitude": 7.0,
+   "notes": "Brighter arc of the Veil. Pairs with NGC 6960."
+  },
+  {
+   "id": "NGC 281",
+   "name": "Pacman Nebula",
+   "type": "emission_nebula",
+   "raHours": 0.933,
+   "decDegrees": 56.62,
+   "magnitude": 7.4,
+   "notes": "Cassiopeia, pacman shape. Autumn target."
+  },
+  {
+   "id": "NGC 2264",
+   "name": "Cone Nebula / Christmas Tree",
+   "type": "emission_nebula",
+   "raHours": 6.683,
+   "decDegrees": 9.93,
+   "magnitude": 4.1,
+   "notes": "Includes Christmas Tree open cluster."
+  },
+  {
+   "id": "M45",
+   "name": "Pleiades",
+   "type": "open_cluster",
+   "raHours": 3.783,
+   "decDegrees": 24.12,
+   "magnitude": 1.6,
+   "notes": "THE wide-field target. Reflection nebulosity around stars."
+  },
+  {
+   "id": "M44",
+   "name": "Beehive Cluster (Praesepe)",
+   "type": "open_cluster",
+   "raHours": 8.667,
+   "decDegrees": 19.67,
+   "magnitude": 3.1,
+   "notes": "Large, bright. Best in small scopes / binoculars."
+  },
+  {
+   "id": "IC 4665",
+   "name": "Ophiuchus Cluster",
+   "type": "open_cluster",
+   "raHours": 17.75,
+   "decDegrees": 5.7,
+   "magnitude": 4.0,
+   "notes": "Large, loose. Low surface brightness \u2014 needs wide field."
+  },
+  {
+   "id": "NGC 869",
+   "name": "Double Cluster (h Persei)",
+   "type": "open_cluster",
+   "raHours": 2.2,
+   "decDegrees": 57.13,
+   "magnitude": 4.3,
+   "notes": "Pairs with NGC 884. Spectacular in wide field."
+  },
+  {
+   "id": "NGC 884",
+   "name": "Double Cluster (chi Persei)",
+   "type": "open_cluster",
+   "raHours": 2.233,
+   "decDegrees": 57.15,
+   "magnitude": 4.4,
+   "notes": "Companion to NGC 869, same FOV."
+  },
+  {
+   "id": "M41",
+   "name": "Canis Major Cluster",
+   "type": "open_cluster",
+   "raHours": 6.772,
+   "decDegrees": -20.76,
+   "magnitude": 4.5,
+   "notes": "Bright, easy. Below Sirius."
+  },
+  {
+   "id": "M35",
+   "name": "Gemini Cluster",
+   "type": "open_cluster",
+   "raHours": 6.133,
+   "decDegrees": 24.33,
+   "magnitude": 5.1,
+   "notes": "Rich. Small cluster NGC 2158 nearby in FOV."
+  },
+  {
+   "id": "M37",
+   "name": "Auriga Cluster",
+   "type": "open_cluster",
+   "raHours": 5.867,
+   "decDegrees": 32.55,
+   "magnitude": 5.6,
+   "notes": "Richest of the Auriga trio. ~500 stars."
+  },
+  {
+   "id": "M36",
+   "name": "Pinwheel Cluster",
+   "type": "open_cluster",
+   "raHours": 5.533,
+   "decDegrees": 34.13,
+   "magnitude": 6.0,
+   "notes": "Auriga trio member."
+  },
+  {
+   "id": "M38",
+   "name": "Starfish Cluster",
+   "type": "open_cluster",
+   "raHours": 5.417,
+   "decDegrees": 35.83,
+   "magnitude": 6.4,
+   "notes": "Auriga trio member. Cross-shaped."
+  },
+  {
+   "id": "M46",
+   "name": "Puppis Cluster",
+   "type": "open_cluster",
+   "raHours": 7.683,
+   "decDegrees": -14.8,
+   "magnitude": 6.1,
+   "notes": "Contains planetary NGC 2438 in foreground."
+  },
+  {
+   "id": "M47",
+   "name": "Puppis Cluster",
+   "type": "open_cluster",
+   "raHours": 7.6,
+   "decDegrees": -14.48,
+   "magnitude": 4.4,
+   "notes": "Bright, pairs with M46 in same wide FOV."
+  },
+  {
+   "id": "M48",
+   "name": "Hydra Cluster",
+   "type": "open_cluster",
+   "raHours": 8.217,
+   "decDegrees": -5.75,
+   "magnitude": 5.5,
+   "notes": "Large, triangular shape."
+  },
+  {
+   "id": "M39",
+   "name": "Cygnus Cluster",
+   "type": "open_cluster",
+   "raHours": 21.517,
+   "decDegrees": 48.43,
+   "magnitude": 4.6,
+   "notes": "Large, loose. Summer target near Deneb."
+  },
+  {
+   "id": "M34",
+   "name": "Perseus Cluster",
+   "type": "open_cluster",
+   "raHours": 2.7,
+   "decDegrees": 42.76,
+   "magnitude": 5.5,
+   "notes": "~100 stars. Autumn target."
+  },
+  {
+   "id": "M67",
+   "name": "Cancer Cluster",
+   "type": "open_cluster",
+   "raHours": 8.833,
+   "decDegrees": 11.8,
+   "magnitude": 6.9,
+   "notes": "One of oldest known clusters. ~4 billion years."
+  },
+  {
+   "id": "NGC 457",
+   "name": "Owl Cluster (ET Cluster)",
+   "type": "open_cluster",
+   "raHours": 1.283,
+   "decDegrees": 58.3,
+   "magnitude": 6.4,
+   "notes": "Cassiopeia. Two bright \"eyes\" + body shape."
+  },
+  {
+   "id": "NGC 2244",
+   "name": "Rosette Cluster",
+   "type": "open_cluster",
+   "raHours": 6.517,
+   "decDegrees": 4.95,
+   "magnitude": 4.8,
+   "notes": "Open cluster at center of Rosette Nebula."
+  },
+  {
+   "id": "Cr 399",
+   "name": "Coat Hanger (Brocchi's Cluster)",
+   "type": "asterism",
+   "raHours": 19.55,
+   "decDegrees": 20.17,
+   "magnitude": 3.6,
+   "notes": "Asterism, not true cluster. Perfect wide-field shape."
+  },
+  {
+   "id": "Stock 2",
+   "name": "Stock 2",
+   "type": "open_cluster",
+   "raHours": 2.283,
+   "decDegrees": 59.83,
+   "magnitude": 4.5,
+   "notes": "Near Double Cluster. Large, loose."
+  },
+  {
+   "id": "M22",
+   "name": "Sagittarius Cluster",
+   "type": "globular_cluster",
+   "raHours": 18.6,
+   "decDegrees": -23.9,
+   "magnitude": 5.1,
+   "notes": "One of best globulars. Large and bright."
+  },
+  {
+   "id": "M4",
+   "name": "Scorpius Cluster",
+   "type": "globular_cluster",
+   "raHours": 16.39,
+   "decDegrees": -26.52,
+   "magnitude": 5.9,
+   "notes": "Loose, easy to resolve. Near Antares."
+  },
+  {
+   "id": "M13",
+   "name": "Great Hercules Cluster",
+   "type": "globular_cluster",
+   "raHours": 16.69,
+   "decDegrees": 36.46,
+   "magnitude": 5.8,
+   "notes": "Best northern globular. Summer target."
+  },
+  {
+   "id": "M5",
+   "name": "Serpens Cluster",
+   "type": "globular_cluster",
+   "raHours": 15.3,
+   "decDegrees": 2.08,
+   "magnitude": 5.7,
+   "notes": "Among finest globulars. Spring/summer."
+  },
+  {
+   "id": "M3",
+   "name": "Canes Venatici Cluster",
+   "type": "globular_cluster",
+   "raHours": 13.7,
+   "decDegrees": 28.38,
+   "magnitude": 6.2,
+   "notes": "Rich, ~500,000 stars. Spring target."
+  },
+  {
+   "id": "M2",
+   "name": "Aquarius Cluster",
+   "type": "globular_cluster",
+   "raHours": 21.55,
+   "decDegrees": -0.82,
+   "magnitude": 6.5,
+   "notes": "Dense, slightly oval. Autumn target."
+  }
+ ],
+ "watchlist": [
+  {
+   "designation": "SS Cyg",
+   "chartId": "X42882PV",
+   "priority": 1,
+   "notes": "Dwarf nova, monitor for outburst",
+   "raHours": 21.711888666666667,
+   "decDegrees": 43.58608
+  },
+  {
+   "designation": "N Tau 2026",
+   "chartId": "X42882BGL",
+   "priority": 2,
+   "notes": "New nova, fading",
+   "raHours": 5.3521193333333335,
+   "decDegrees": 23.63889
+  }
+ ]
+}

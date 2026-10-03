@@ -1,7 +1,8 @@
 import { ref, shallowRef } from 'vue'
 import { fetchTonight } from '../api'
 
-export function useTonight() {
+/** `location`: ref to the observing location (see useLocation). */
+export function useTonight(location) {
   const data = shallowRef(null)
   const loading = ref(false)
   const error = ref(null)
@@ -10,7 +11,7 @@ export function useTonight() {
     loading.value = true
     error.value = null
     try {
-      data.value = await fetchTonight({ at, include })
+      data.value = await fetchTonight({ at, include, location: location.value })
     } catch (e) {
       error.value = e.message
     } finally {

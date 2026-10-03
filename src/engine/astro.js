@@ -1,17 +1,34 @@
-import { Body, Equator, Horizon, Illumination, Observer, SearchAltitude, SearchRiseSet } from 'astronomy-engine'
+import { Body, Equator, EquatorFromVector, Horizon, Illumination, MoonPhase, Observer, RotateVector, Rotation_EQJ_EQD,
+         SearchAltitude, SearchRiseSet, Spherical, VectorFromSphere } from 'astronomy-engine'
 import { addDays, toLocalIso, zonedTime } from './time'
 
-const BODIES = { sun: Body.Sun, moon: Body.Moon }
+const NAMES = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
+const BODIES = Object.fromEntries(NAMES.map((n) => [n.toLowerCase(), Body[n]]))
+export const PLANETS = NAMES.slice(2).map((n) => n.toLowerCase())
 // Sun center at sunrise/sunset (refraction + semidiameter); the day/civil boundary.
 const SUNSET_ALT = -0.8333
 
 export const observerFor = (loc) => new Observer(loc.latitude, loc.longitude, loc.elevationM ?? 0)
 
-/** Topocentric apparent altitude in degrees, without refraction (as astro-cli/skyfield). */
-export function altitude(body, date, observer) {
+/** Topocentric apparent altitude/azimuth in degrees, without refraction (as astro-cli/skyfield). */
+export function altaz(body, date, observer) {
   const eq = Equator(BODIES[body], date, observer, true, true)
-  return Horizon(date, observer, eq.ra, eq.dec).altitude
+  const { altitude, azimuth } = Horizon(date, observer, eq.ra, eq.dec)
+  return { alt: altitude, az: azimuth }
 }
+
+export const altitude = (body, date, observer) => altaz(body, date, observer).alt
+
+/** Alt/az of a fixed J2000 RA/Dec object; precession and nutation to `date` are applied (~0.4° otherwise). */
+export function starAltAz(raHours, decDeg, date, observer) {
+  const v = RotateVector(Rotation_EQJ_EQD(date), VectorFromSphere(new Spherical(decDeg, raHours * 15, 1), date))
+  const eq = EquatorFromVector(v)
+  const { altitude, azimuth } = Horizon(date, observer, eq.ra, eq.dec)
+  return { alt: altitude, az: azimuth }
+}
+
+/** True from new Moon to full Moon. */
+export const moonIsWaxing = (date) => MoonPhase(date) < 180
 
 /** Moon illuminated fraction (0 new, 1 full). */
 export const moonIllumination = (date) => Illumination(Body.Moon, date).phase_fraction

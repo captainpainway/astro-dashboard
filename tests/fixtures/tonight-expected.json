@@ -1,0 +1,3095 @@
+{
+ "meta": {
+  "source": "astro-cli api.tonight (skyfield + DE421), saved NWS payloads",
+  "exported": "2026-10-03",
+  "now": "2026-10-03T15:00:00-05:00"
+ },
+ "window": {
+  "location": {
+   "name": "Big Bend National Park, TX",
+   "latitude": 29.33,
+   "longitude": -103.21,
+   "elevationM": 1111,
+   "timezone": "America/Chicago"
+  },
+  "mode": "window",
+  "night": {
+   "startLocal": "2026-10-03T21:00:00-05:00",
+   "endLocal": "2026-10-04T05:00:00-05:00",
+   "startUtc": "2026-10-04T02:00:00+00:00",
+   "endUtc": "2026-10-04T10:00:00+00:00",
+   "timezone": "America/Chicago"
+  },
+  "weather": {
+   "summary": {
+    "cloudCoverAvg": 86.11111111111111,
+    "temperatureF": 64,
+    "windMphAvg": 10.555555555555555,
+    "precipProbAvg": 15.222222222222221,
+    "rating": "bad",
+    "score": 7.0,
+    "reasons": [
+     "overcast (86%)",
+     "rain possible (15%)",
+     "breezy (11 mph)"
+    ]
+   },
+   "current": {
+    "cloudCover": 95,
+    "temperatureF": null,
+    "windMph": null,
+    "description": "Overcast",
+    "station": "KT89 (Lajitas International Airport)",
+    "timestamp": "2026-10-03T14:15:00+00:00"
+   }
+  },
+  "twilight": {
+   "date": "2026-10-03",
+   "sunset": "2026-10-03T19:35:52.864338-05:00",
+   "sunrise": "2026-10-04T07:47:47.765952-05:00",
+   "civilDusk": "2026-10-03T19:59:36.139740-05:00",
+   "civilDawn": "2026-10-04T07:24:02.479014-05:00",
+   "nauticalDusk": "2026-10-03T20:27:06.781159-05:00",
+   "nauticalDawn": "2026-10-04T06:56:29.860257-05:00",
+   "astroDusk": "2026-10-03T20:54:40.581523-05:00",
+   "astroDawn": "2026-10-04T06:28:54.394161-05:00",
+   "midnightSun": false,
+   "polarNight": false
+  },
+  "instruments": {
+   "dob_8inch": [
+    {
+     "id": "Uranus",
+     "name": "Uranus",
+     "targetClass": "planet",
+     "score": 91.1,
+     "maxAlt": 81.1,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T23:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 81.1,
+     "azAtBest": 157.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M33",
+     "name": "M33",
+     "targetClass": "messier",
+     "score": 85.7,
+     "maxAlt": 88.1,
+     "bestTime": "2026-10-04T02:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 88.1,
+     "azAtBest": 38.0,
+     "moonInterference": 0.12,
+     "notes": "Pinwheel galaxy"
+    },
+    {
+     "id": "M45",
+     "name": "M45",
+     "targetClass": "messier",
+     "score": 84.1,
+     "maxAlt": 84.8,
+     "bestTime": "2026-10-04T04:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T23:15:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 84.8,
+     "azAtBest": 170.0,
+     "moonInterference": 0.19,
+     "notes": "Pleiades"
+    },
+    {
+     "id": "M27",
+     "name": "M27",
+     "targetClass": "messier",
+     "score": 83.0,
+     "maxAlt": 83.5,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T02:30:00-05:00"
+     },
+     "altAtBest": 83.5,
+     "azAtBest": 176.0,
+     "moonInterference": 0.01,
+     "notes": "Dumbbell nebula"
+    },
+    {
+     "id": "SS Cyg",
+     "name": "SS Cyg",
+     "targetClass": "variable",
+     "score": 81.6,
+     "maxAlt": 75.6,
+     "bestTime": "2026-10-03T22:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 75.6,
+     "azAtBest": 0.0,
+     "moonInterference": 0.0,
+     "notes": "chart X42882PV \u2014 Dwarf nova, monitor for outburst"
+    },
+    {
+     "id": "M29",
+     "name": "M29",
+     "targetClass": "messier",
+     "score": 81.0,
+     "maxAlt": 80.7,
+     "bestTime": "2026-10-03T21:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T03:30:00-05:00"
+     },
+     "altAtBest": 80.7,
+     "azAtBest": 355.0,
+     "moonInterference": 0.03,
+     "notes": ""
+    },
+    {
+     "id": "M56",
+     "name": "M56",
+     "targetClass": "messier",
+     "score": 80.7,
+     "maxAlt": 81.0,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T02:00:00-05:00"
+     },
+     "altAtBest": 81.0,
+     "azAtBest": 278.0,
+     "moonInterference": 0.01,
+     "notes": ""
+    },
+    {
+     "id": "M71",
+     "name": "M71",
+     "targetClass": "messier",
+     "score": 79.2,
+     "maxAlt": 79.5,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T02:15:00-05:00"
+     },
+     "altAtBest": 79.5,
+     "azAtBest": 185.0,
+     "moonInterference": 0.01,
+     "notes": ""
+    },
+    {
+     "id": "M31",
+     "name": "M31",
+     "targetClass": "messier",
+     "score": 78.6,
+     "maxAlt": 77.9,
+     "bestTime": "2026-10-04T01:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 77.9,
+     "azAtBest": 359.0,
+     "moonInterference": 0.1,
+     "notes": "Andromeda galaxy"
+    },
+    {
+     "id": "M57",
+     "name": "M57",
+     "targetClass": "messier",
+     "score": 75.6,
+     "maxAlt": 75.8,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T01:45:00-05:00"
+     },
+     "altAtBest": 75.8,
+     "azAtBest": 289.0,
+     "moonInterference": 0.0,
+     "notes": "Ring nebula.  Looks like smoke ring."
+    },
+    {
+     "id": "N Tau 2026",
+     "name": "N Tau 2026",
+     "targetClass": "variable",
+     "score": 74.6,
+     "maxAlt": 70.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T00:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 70.6,
+     "azAtBest": 102.0,
+     "moonInterference": 0.0,
+     "notes": "chart X42882BGL \u2014 New nova, fading"
+    },
+    {
+     "id": "M32",
+     "name": "M32",
+     "targetClass": "messier",
+     "score": 74.4,
+     "maxAlt": 78.3,
+     "bestTime": "2026-10-04T01:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 78.3,
+     "azAtBest": 359.0,
+     "moonInterference": 0.1,
+     "notes": ""
+    },
+    {
+     "id": "M110",
+     "name": "M110",
+     "targetClass": "messier",
+     "score": 73.6,
+     "maxAlt": 77.5,
+     "bestTime": "2026-10-04T01:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 77.5,
+     "azAtBest": 358.0,
+     "moonInterference": 0.1,
+     "notes": ""
+    },
+    {
+     "id": "M34",
+     "name": "M34",
+     "targetClass": "messier",
+     "score": 73.6,
+     "maxAlt": 76.5,
+     "bestTime": "2026-10-04T03:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 76.5,
+     "azAtBest": 359.0,
+     "moonInterference": 0.14,
+     "notes": ""
+    },
+    {
+     "id": "M15",
+     "name": "M15",
+     "targetClass": "messier",
+     "score": 73.4,
+     "maxAlt": 73.0,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T03:45:00-05:00"
+     },
+     "altAtBest": 73.0,
+     "azAtBest": 179.0,
+     "moonInterference": 0.03,
+     "notes": ""
+    },
+    {
+     "id": "Saturn",
+     "name": "Saturn",
+     "targetClass": "planet",
+     "score": 72.6,
+     "maxAlt": 62.6,
+     "bestTime": "2026-10-04T01:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 62.6,
+     "azAtBest": 179.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M39",
+     "name": "M39",
+     "targetClass": "messier",
+     "score": 72.1,
+     "maxAlt": 70.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 70.8,
+     "azAtBest": 2.0,
+     "moonInterference": 0.05,
+     "notes": ""
+    },
+    {
+     "id": "M74",
+     "name": "M74",
+     "targetClass": "messier",
+     "score": 71.7,
+     "maxAlt": 76.5,
+     "bestTime": "2026-10-04T02:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:15:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 76.5,
+     "azAtBest": 187.0,
+     "moonInterference": 0.12,
+     "notes": ""
+    },
+    {
+     "id": "Neptune",
+     "name": "Neptune",
+     "targetClass": "planet",
+     "score": 70.5,
+     "maxAlt": 60.5,
+     "bestTime": "2026-10-04T01:15:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 60.5,
+     "azAtBest": 181.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M76",
+     "name": "M76",
+     "targetClass": "messier",
+     "score": 63.0,
+     "maxAlt": 67.6,
+     "bestTime": "2026-10-04T02:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 67.6,
+     "azAtBest": 360.0,
+     "moonInterference": 0.12,
+     "notes": "Cork nebula"
+    },
+    {
+     "id": "M38",
+     "name": "M38",
+     "targetClass": "messier",
+     "score": 62.9,
+     "maxAlt": 70.0,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T00:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 70.0,
+     "azAtBest": 65.0,
+     "moonInterference": 0.22,
+     "notes": ""
+    },
+    {
+     "id": "M36",
+     "name": "M36",
+     "targetClass": "messier",
+     "score": 61.7,
+     "maxAlt": 68.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T00:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 68.6,
+     "azAtBest": 71.0,
+     "moonInterference": 0.22,
+     "notes": ""
+    },
+    {
+     "id": "M2",
+     "name": "M2",
+     "targetClass": "messier",
+     "score": 60.5,
+     "maxAlt": 59.9,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T03:15:00-05:00"
+     },
+     "altAtBest": 59.9,
+     "azAtBest": 177.0,
+     "moonInterference": 0.02,
+     "notes": ""
+    },
+    {
+     "id": "M37",
+     "name": "M37",
+     "targetClass": "messier",
+     "score": 58.5,
+     "maxAlt": 65.4,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T01:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 65.4,
+     "azAtBest": 75.0,
+     "moonInterference": 0.23,
+     "notes": ""
+    },
+    {
+     "id": "M1",
+     "name": "M1",
+     "targetClass": "messier",
+     "score": 57.7,
+     "maxAlt": 67.2,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T01:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 67.2,
+     "azAtBest": 103.0,
+     "moonInterference": 0.24,
+     "notes": "Crab nebula. Remnant of a supernova in the year 1054."
+    },
+    {
+     "id": "M92",
+     "name": "M92",
+     "targetClass": "messier",
+     "score": 56.7,
+     "maxAlt": 55.2,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T00:45:00-05:00"
+     },
+     "altAtBest": 55.2,
+     "azAtBest": 304.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M52",
+     "name": "M52",
+     "targetClass": "messier",
+     "score": 55.4,
+     "maxAlt": 57.6,
+     "bestTime": "2026-10-04T00:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 57.6,
+     "azAtBest": 359.0,
+     "moonInterference": 0.08,
+     "notes": ""
+    },
+    {
+     "id": "M103",
+     "name": "M103",
+     "targetClass": "messier",
+     "score": 54.7,
+     "maxAlt": 58.5,
+     "bestTime": "2026-10-04T02:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 58.5,
+     "azAtBest": 1.0,
+     "moonInterference": 0.11,
+     "notes": ""
+    },
+    {
+     "id": "M77",
+     "name": "M77",
+     "targetClass": "messier",
+     "score": 54.4,
+     "maxAlt": 60.8,
+     "bestTime": "2026-10-04T03:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T23:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 60.8,
+     "azAtBest": 181.0,
+     "moonInterference": 0.16,
+     "notes": ""
+    },
+    {
+     "id": "M35",
+     "name": "M35",
+     "targetClass": "messier",
+     "score": 53.4,
+     "maxAlt": 60.7,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T01:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 60.7,
+     "azAtBest": 92.0,
+     "moonInterference": 0.25,
+     "notes": ""
+    },
+    {
+     "id": "M11",
+     "name": "M11",
+     "targetClass": "messier",
+     "score": 53.3,
+     "maxAlt": 51.1,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T00:15:00-05:00"
+     },
+     "altAtBest": 51.1,
+     "azAtBest": 207.0,
+     "moonInterference": 0.0,
+     "notes": "Wild duck cluster"
+    },
+    {
+     "id": "M13",
+     "name": "M13",
+     "targetClass": "messier",
+     "score": 50.7,
+     "maxAlt": 48.6,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:45:00-05:00"
+     },
+     "altAtBest": 48.6,
+     "azAtBest": 293.0,
+     "moonInterference": 0.0,
+     "notes": "Hercules cluster. 100,000 stars"
+    },
+    {
+     "id": "M72",
+     "name": "M72",
+     "targetClass": "messier",
+     "score": 47.9,
+     "maxAlt": 48.2,
+     "bestTime": "2026-10-03T22:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T02:00:00-05:00"
+     },
+     "altAtBest": 48.2,
+     "azAtBest": 181.0,
+     "moonInterference": 0.01,
+     "notes": ""
+    },
+    {
+     "id": "M73",
+     "name": "M73",
+     "targetClass": "messier",
+     "score": 47.8,
+     "maxAlt": 48.1,
+     "bestTime": "2026-10-03T22:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T02:15:00-05:00"
+     },
+     "altAtBest": 48.1,
+     "azAtBest": 179.0,
+     "moonInterference": 0.01,
+     "notes": "Very difficult, small grouping of stars"
+    },
+    {
+     "id": "M26",
+     "name": "M26",
+     "targetClass": "messier",
+     "score": 47.6,
+     "maxAlt": 47.6,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T00:00:00-05:00"
+     },
+     "altAtBest": 47.6,
+     "azAtBest": 207.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "Moon",
+     "name": "Moon",
+     "targetClass": "moon",
+     "score": 45.5,
+     "maxAlt": 40.5,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T03:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 40.5,
+     "azAtBest": 82.0,
+     "moonInterference": 0.0,
+     "notes": "First Quarter (42% illuminated)"
+    },
+    {
+     "id": "M14",
+     "name": "M14",
+     "targetClass": "messier",
+     "score": 43.7,
+     "maxAlt": 43.3,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:15:00-05:00"
+     },
+     "altAtBest": 43.3,
+     "azAtBest": 232.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M16",
+     "name": "M16",
+     "targetClass": "messier",
+     "score": 42.7,
+     "maxAlt": 40.7,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:30:00-05:00"
+     },
+     "altAtBest": 40.7,
+     "azAtBest": 212.0,
+     "moonInterference": 0.0,
+     "notes": "Eagle nebula"
+    },
+    {
+     "id": "M42",
+     "name": "M42",
+     "targetClass": "messier",
+     "score": 41.5,
+     "maxAlt": 48.3,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 48.3,
+     "azAtBest": 142.0,
+     "moonInterference": 0.27,
+     "notes": "Great Orion nebula"
+    },
+    {
+     "id": "M25",
+     "name": "M25",
+     "targetClass": "messier",
+     "score": 40.7,
+     "maxAlt": 37.3,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:30:00-05:00"
+     },
+     "altAtBest": 37.3,
+     "azAtBest": 206.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M78",
+     "name": "M78",
+     "targetClass": "messier",
+     "score": 40.3,
+     "maxAlt": 51.1,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 51.1,
+     "azAtBest": 134.0,
+     "moonInterference": 0.27,
+     "notes": ""
+    },
+    {
+     "id": "M24",
+     "name": "M24",
+     "targetClass": "messier",
+     "score": 39.9,
+     "maxAlt": 36.4,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:15:00-05:00"
+     },
+     "altAtBest": 36.4,
+     "azAtBest": 210.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "Mars",
+     "name": "Mars",
+     "targetClass": "planet",
+     "score": 39.9,
+     "maxAlt": 29.9,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 29.9,
+     "azAtBest": 82.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M17",
+     "name": "M17",
+     "targetClass": "messier",
+     "score": 39.9,
+     "maxAlt": 38.9,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:30:00-05:00"
+     },
+     "altAtBest": 38.9,
+     "azAtBest": 210.0,
+     "moonInterference": 0.0,
+     "notes": "Omega nebula"
+    },
+    {
+     "id": "M18",
+     "name": "M18",
+     "targetClass": "messier",
+     "score": 39.0,
+     "maxAlt": 37.9,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:15:00-05:00"
+     },
+     "altAtBest": 37.9,
+     "azAtBest": 210.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M75",
+     "name": "M75",
+     "targetClass": "messier",
+     "score": 38.8,
+     "maxAlt": 38.8,
+     "bestTime": "2026-10-03T21:15:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T00:45:00-05:00"
+     },
+     "altAtBest": 38.8,
+     "azAtBest": 182.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M30",
+     "name": "M30",
+     "targetClass": "messier",
+     "score": 37.6,
+     "maxAlt": 37.6,
+     "bestTime": "2026-10-03T22:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T02:15:00-05:00"
+     },
+     "altAtBest": 37.6,
+     "azAtBest": 181.0,
+     "moonInterference": 0.01,
+     "notes": ""
+    },
+    {
+     "id": "M43",
+     "name": "M43",
+     "targetClass": "messier",
+     "score": 37.6,
+     "maxAlt": 48.3,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 48.3,
+     "azAtBest": 142.0,
+     "moonInterference": 0.27,
+     "notes": ""
+    },
+    {
+     "id": "M10",
+     "name": "M10",
+     "targetClass": "messier",
+     "score": 36.8,
+     "maxAlt": 35.4,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 35.4,
+     "azAtBest": 240.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M12",
+     "name": "M12",
+     "targetClass": "messier",
+     "score": 36.3,
+     "maxAlt": 34.9,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 34.9,
+     "azAtBest": 244.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M22",
+     "name": "M22",
+     "targetClass": "messier",
+     "score": 36.3,
+     "maxAlt": 33.4,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:15:00-05:00"
+     },
+     "altAtBest": 33.4,
+     "azAtBest": 202.0,
+     "moonInterference": 0.0,
+     "notes": "Excellent."
+    },
+    {
+     "id": "M23",
+     "name": "M23",
+     "targetClass": "messier",
+     "score": 36.2,
+     "maxAlt": 33.7,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:45:00-05:00"
+     },
+     "altAtBest": 33.7,
+     "azAtBest": 215.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M21",
+     "name": "M21",
+     "targetClass": "messier",
+     "score": 33.6,
+     "maxAlt": 31.5,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:45:00-05:00"
+     },
+     "altAtBest": 31.5,
+     "azAtBest": 211.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M102",
+     "name": "M102",
+     "targetClass": "messier",
+     "score": 33.6,
+     "maxAlt": 33.3,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:15:00-05:00"
+     },
+     "altAtBest": 33.3,
+     "azAtBest": 320.0,
+     "moonInterference": 0.0,
+     "notes": "102 is the same as 101"
+    },
+    {
+     "id": "M28",
+     "name": "M28",
+     "targetClass": "messier",
+     "score": 32.5,
+     "maxAlt": 31.4,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:00:00-05:00"
+     },
+     "altAtBest": 31.4,
+     "azAtBest": 205.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M8",
+     "name": "M8",
+     "targetClass": "messier",
+     "score": 31.9,
+     "maxAlt": 29.7,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 29.7,
+     "azAtBest": 210.0,
+     "moonInterference": 0.0,
+     "notes": "Lagoon nebula"
+    },
+    {
+     "id": "M20",
+     "name": "M20",
+     "targetClass": "messier",
+     "score": 30.9,
+     "maxAlt": 30.9,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:45:00-05:00"
+     },
+     "altAtBest": 30.9,
+     "azAtBest": 211.0,
+     "moonInterference": 0.0,
+     "notes": "Trifid nebula"
+    },
+    {
+     "id": "M55",
+     "name": "M55",
+     "targetClass": "messier",
+     "score": 30.6,
+     "maxAlt": 29.6,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:45:00-05:00"
+     },
+     "altAtBest": 29.6,
+     "azAtBest": 184.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M9",
+     "name": "M9",
+     "targetClass": "messier",
+     "score": 29.0,
+     "maxAlt": 28.9,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:15:00-05:00"
+     },
+     "altAtBest": 28.9,
+     "azAtBest": 223.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M54",
+     "name": "M54",
+     "targetClass": "messier",
+     "score": 28.8,
+     "maxAlt": 28.5,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:00:00-05:00"
+     },
+     "altAtBest": 28.5,
+     "azAtBest": 195.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M70",
+     "name": "M70",
+     "targetClass": "messier",
+     "score": 26.0,
+     "maxAlt": 26.0,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:45:00-05:00"
+     },
+     "altAtBest": 26.0,
+     "azAtBest": 197.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M69",
+     "name": "M69",
+     "targetClass": "messier",
+     "score": 25.4,
+     "maxAlt": 25.1,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 25.1,
+     "azAtBest": 200.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M107",
+     "name": "M107",
+     "targetClass": "messier",
+     "score": 24.9,
+     "maxAlt": 24.9,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:45:00-05:00"
+     },
+     "altAtBest": 24.9,
+     "azAtBest": 237.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M101",
+     "name": "M101",
+     "targetClass": "messier",
+     "score": 24.5,
+     "maxAlt": 24.2,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:00:00-05:00"
+     },
+     "altAtBest": 24.2,
+     "azAtBest": 320.0,
+     "moonInterference": 0.0,
+     "notes": "101 is the same as 102"
+    },
+    {
+     "id": "M7",
+     "name": "M7",
+     "targetClass": "messier",
+     "score": 24.3,
+     "maxAlt": 19.6,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:30:00-05:00"
+     },
+     "altAtBest": 19.6,
+     "azAtBest": 207.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M6",
+     "name": "M6",
+     "targetClass": "messier",
+     "score": 24.2,
+     "maxAlt": 20.4,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:30:00-05:00"
+     },
+     "altAtBest": 20.4,
+     "azAtBest": 210.0,
+     "moonInterference": 0.0,
+     "notes": "Butterfly cluster"
+    },
+    {
+     "id": "M81",
+     "name": "M81",
+     "targetClass": "messier",
+     "score": 22.3,
+     "maxAlt": 27.4,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 27.4,
+     "azAtBest": 24.0,
+     "moonInterference": 0.16,
+     "notes": "Bodes nebula"
+    },
+    {
+     "id": "M82",
+     "name": "M82",
+     "targetClass": "messier",
+     "score": 21.3,
+     "maxAlt": 27.5,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:15:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 27.5,
+     "azAtBest": 23.0,
+     "moonInterference": 0.15,
+     "notes": ""
+    },
+    {
+     "id": "M19",
+     "name": "M19",
+     "targetClass": "messier",
+     "score": 21.2,
+     "maxAlt": 20.4,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:30:00-05:00"
+     },
+     "altAtBest": 20.4,
+     "azAtBest": 221.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M5",
+     "name": "M5",
+     "targetClass": "messier",
+     "score": 20.8,
+     "maxAlt": 18.6,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:15:00-05:00"
+     },
+     "altAtBest": 18.6,
+     "azAtBest": 262.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M79",
+     "name": "M79",
+     "targetClass": "messier",
+     "score": 20.7,
+     "maxAlt": 32.4,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T03:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 32.4,
+     "azAtBest": 157.0,
+     "moonInterference": 0.29,
+     "notes": ""
+    },
+    {
+     "id": "M50",
+     "name": "M50",
+     "targetClass": "messier",
+     "score": 20.4,
+     "maxAlt": 31.9,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T03:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 31.9,
+     "azAtBest": 123.0,
+     "moonInterference": 0.34,
+     "notes": ""
+    },
+    {
+     "id": "M62",
+     "name": "M62",
+     "targetClass": "messier",
+     "score": 18.7,
+     "maxAlt": 17.3,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:15:00-05:00"
+     },
+     "altAtBest": 17.3,
+     "azAtBest": 219.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M51",
+     "name": "M51",
+     "targetClass": "messier",
+     "score": 16.6,
+     "maxAlt": 16.6,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:00:00-05:00"
+     },
+     "altAtBest": 16.6,
+     "azAtBest": 315.0,
+     "moonInterference": 0.0,
+     "notes": "Whirlpool galaxy"
+    },
+    {
+     "id": "M80",
+     "name": "M80",
+     "targetClass": "messier",
+     "score": 16.4,
+     "maxAlt": 15.6,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:00:00-05:00"
+     },
+     "altAtBest": 15.6,
+     "azAtBest": 231.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M44",
+     "name": "M44",
+     "targetClass": "messier",
+     "score": 16.2,
+     "maxAlt": 26.0,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:15:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 26.0,
+     "azAtBest": 81.0,
+     "moonInterference": 0.37,
+     "notes": "Beehive cluster.  358 stars approx. 500 ly distant"
+    },
+    {
+     "id": "M41",
+     "name": "M41",
+     "targetClass": "messier",
+     "score": 15.2,
+     "maxAlt": 25.7,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 25.7,
+     "azAtBest": 136.0,
+     "moonInterference": 0.35,
+     "notes": ""
+    },
+    {
+     "id": "M47",
+     "name": "M47",
+     "targetClass": "messier",
+     "score": 10.1,
+     "maxAlt": 21.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 21.6,
+     "azAtBest": 122.0,
+     "moonInterference": 0.38,
+     "notes": ""
+    },
+    {
+     "id": "M46",
+     "name": "M46",
+     "targetClass": "messier",
+     "score": 7.1,
+     "maxAlt": 20.5,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 20.5,
+     "azAtBest": 122.0,
+     "moonInterference": 0.38,
+     "notes": ""
+    },
+    {
+     "id": "M48",
+     "name": "M48",
+     "targetClass": "messier",
+     "score": 6.1,
+     "maxAlt": 19.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 19.6,
+     "azAtBest": 109.0,
+     "moonInterference": 0.39,
+     "notes": ""
+    },
+    {
+     "id": "M67",
+     "name": "M67",
+     "targetClass": "messier",
+     "score": 5.8,
+     "maxAlt": 20.2,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 20.2,
+     "azAtBest": 88.0,
+     "moonInterference": 0.39,
+     "notes": ""
+    }
+   ],
+   "dwarf_mini": [
+    {
+     "id": "NGC 6960",
+     "name": "Veil Nebula (Western)",
+     "targetClass": "nebula",
+     "score": 88.7,
+     "maxAlt": 88.5,
+     "bestTime": "2026-10-03T21:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T03:15:00-05:00"
+     },
+     "altAtBest": 88.5,
+     "azAtBest": 358.0,
+     "moonInterference": 0.02,
+     "notes": "Supernova remnant. Eastern half is NGC 6992."
+    },
+    {
+     "id": "NGC 6992",
+     "name": "Veil Nebula (Eastern)",
+     "targetClass": "nebula",
+     "score": 87.3,
+     "maxAlt": 87.5,
+     "bestTime": "2026-10-03T22:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T03:45:00-05:00"
+     },
+     "altAtBest": 87.5,
+     "azAtBest": 353.0,
+     "moonInterference": 0.03,
+     "notes": "Brighter arc of the Veil. Pairs with NGC 6960."
+    },
+    {
+     "id": "M45",
+     "name": "Pleiades",
+     "targetClass": "cluster",
+     "score": 83.7,
+     "maxAlt": 84.8,
+     "bestTime": "2026-10-04T04:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T23:15:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 84.8,
+     "azAtBest": 170.0,
+     "moonInterference": 0.19,
+     "notes": "THE wide-field target. Reflection nebulosity around stars."
+    },
+    {
+     "id": "Cr 399",
+     "name": "Coat Hanger (Brocchi's Cluster)",
+     "targetClass": "cluster",
+     "score": 83.6,
+     "maxAlt": 79.4,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T02:00:00-05:00"
+     },
+     "altAtBest": 79.4,
+     "azAtBest": 212.0,
+     "moonInterference": 0.01,
+     "notes": "Asterism, not true cluster. Perfect wide-field shape."
+    },
+    {
+     "id": "NGC 1499",
+     "name": "California Nebula",
+     "targetClass": "nebula",
+     "score": 77.4,
+     "maxAlt": 82.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T23:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 82.6,
+     "azAtBest": 6.0,
+     "moonInterference": 0.18,
+     "notes": "Very wide, low surface brightness. Needs long exposure."
+    },
+    {
+     "id": "NGC 7000",
+     "name": "North America Nebula",
+     "targetClass": "nebula",
+     "score": 77.2,
+     "maxAlt": 74.9,
+     "bestTime": "2026-10-03T22:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T04:30:00-05:00"
+     },
+     "altAtBest": 74.9,
+     "azAtBest": 0.0,
+     "moonInterference": 0.04,
+     "notes": "Huge, continent-shaped. Ideal for wide field."
+    },
+    {
+     "id": "M34",
+     "name": "Perseus Cluster",
+     "targetClass": "cluster",
+     "score": 73.3,
+     "maxAlt": 76.5,
+     "bestTime": "2026-10-04T03:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 76.5,
+     "azAtBest": 359.0,
+     "moonInterference": 0.14,
+     "notes": "~100 stars. Autumn target."
+    },
+    {
+     "id": "M39",
+     "name": "Cygnus Cluster",
+     "targetClass": "cluster",
+     "score": 72.1,
+     "maxAlt": 70.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 70.8,
+     "azAtBest": 2.0,
+     "moonInterference": 0.05,
+     "notes": "Large, loose. Summer target near Deneb."
+    },
+    {
+     "id": "IC 1396",
+     "name": "Elephant's Trunk Nebula",
+     "targetClass": "nebula",
+     "score": 63.7,
+     "maxAlt": 61.7,
+     "bestTime": "2026-10-03T22:45:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 61.7,
+     "azAtBest": 0.0,
+     "moonInterference": 0.06,
+     "notes": "Enormous faint nebula in Cepheus. Needs dark sky."
+    },
+    {
+     "id": "M38",
+     "name": "Starfish Cluster",
+     "targetClass": "cluster",
+     "score": 63.6,
+     "maxAlt": 70.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T00:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 70.6,
+     "azAtBest": 65.0,
+     "moonInterference": 0.21,
+     "notes": "Auriga trio member. Cross-shaped."
+    },
+    {
+     "id": "M36",
+     "name": "Pinwheel Cluster",
+     "targetClass": "cluster",
+     "score": 62.6,
+     "maxAlt": 69.5,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T00:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 69.5,
+     "azAtBest": 70.0,
+     "moonInterference": 0.22,
+     "notes": "Auriga trio member."
+    },
+    {
+     "id": "NGC 869",
+     "name": "Double Cluster (h Persei)",
+     "targetClass": "cluster",
+     "score": 61.0,
+     "maxAlt": 62.1,
+     "bestTime": "2026-10-04T03:15:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 62.1,
+     "azAtBest": 360.0,
+     "moonInterference": 0.12,
+     "notes": "Pairs with NGC 884. Spectacular in wide field."
+    },
+    {
+     "id": "NGC 884",
+     "name": "Double Cluster (chi Persei)",
+     "targetClass": "cluster",
+     "score": 60.8,
+     "maxAlt": 62.1,
+     "bestTime": "2026-10-04T03:15:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 62.1,
+     "azAtBest": 0.0,
+     "moonInterference": 0.12,
+     "notes": "Companion to NGC 869, same FOV."
+    },
+    {
+     "id": "M2",
+     "name": "Aquarius Cluster",
+     "targetClass": "cluster",
+     "score": 60.5,
+     "maxAlt": 59.9,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T03:15:00-05:00"
+     },
+     "altAtBest": 59.9,
+     "azAtBest": 177.0,
+     "moonInterference": 0.02,
+     "notes": "Dense, slightly oval. Autumn target."
+    },
+    {
+     "id": "NGC 281",
+     "name": "Pacman Nebula",
+     "targetClass": "nebula",
+     "score": 59.1,
+     "maxAlt": 62.6,
+     "bestTime": "2026-10-04T02:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 62.6,
+     "azAtBest": 360.0,
+     "moonInterference": 0.1,
+     "notes": "Cassiopeia, pacman shape. Autumn target."
+    },
+    {
+     "id": "M37",
+     "name": "Auriga Cluster",
+     "targetClass": "cluster",
+     "score": 58.5,
+     "maxAlt": 65.4,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T01:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 65.4,
+     "azAtBest": 75.0,
+     "moonInterference": 0.23,
+     "notes": "Richest of the Auriga trio. ~500 stars."
+    },
+    {
+     "id": "NGC 457",
+     "name": "Owl Cluster (ET Cluster)",
+     "targetClass": "cluster",
+     "score": 58.2,
+     "maxAlt": 60.9,
+     "bestTime": "2026-10-04T02:15:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 60.9,
+     "azAtBest": 1.0,
+     "moonInterference": 0.11,
+     "notes": "Cassiopeia. Two bright \"eyes\" + body shape."
+    },
+    {
+     "id": "Stock 2",
+     "name": "Stock 2",
+     "targetClass": "cluster",
+     "score": 58.1,
+     "maxAlt": 59.4,
+     "bestTime": "2026-10-04T03:15:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 59.4,
+     "azAtBest": 1.0,
+     "moonInterference": 0.12,
+     "notes": "Near Double Cluster. Large, loose."
+    },
+    {
+     "id": "IC 4665",
+     "name": "Ophiuchus Cluster",
+     "targetClass": "cluster",
+     "score": 54.9,
+     "maxAlt": 50.9,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:45:00-05:00"
+     },
+     "altAtBest": 50.9,
+     "azAtBest": 239.0,
+     "moonInterference": 0.0,
+     "notes": "Large, loose. Low surface brightness \u2014 needs wide field."
+    },
+    {
+     "id": "M35",
+     "name": "Gemini Cluster",
+     "targetClass": "cluster",
+     "score": 53.4,
+     "maxAlt": 60.7,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T01:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 60.7,
+     "azAtBest": 92.0,
+     "moonInterference": 0.25,
+     "notes": "Rich. Small cluster NGC 2158 nearby in FOV."
+    },
+    {
+     "id": "M13",
+     "name": "Great Hercules Cluster",
+     "targetClass": "cluster",
+     "score": 50.9,
+     "maxAlt": 48.7,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:45:00-05:00"
+     },
+     "altAtBest": 48.7,
+     "azAtBest": 293.0,
+     "moonInterference": 0.0,
+     "notes": "Best northern globular. Summer target."
+    },
+    {
+     "id": "M16",
+     "name": "Eagle Nebula",
+     "targetClass": "nebula",
+     "score": 42.8,
+     "maxAlt": 40.8,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:30:00-05:00"
+     },
+     "altAtBest": 40.8,
+     "azAtBest": 212.0,
+     "moonInterference": 0.0,
+     "notes": "Pillars of Creation. Includes cluster NGC 6611."
+    },
+    {
+     "id": "M17",
+     "name": "Omega/Swan Nebula",
+     "targetClass": "nebula",
+     "score": 42.1,
+     "maxAlt": 40.1,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:30:00-05:00"
+     },
+     "altAtBest": 40.1,
+     "azAtBest": 214.0,
+     "moonInterference": 0.0,
+     "notes": "Bright, distinctive swan shape."
+    },
+    {
+     "id": "M42",
+     "name": "Orion Nebula",
+     "targetClass": "nebula",
+     "score": 41.4,
+     "maxAlt": 48.2,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 48.2,
+     "azAtBest": 142.0,
+     "moonInterference": 0.27,
+     "notes": "Brightest nebula. Pairs with M43. Winter target."
+    },
+    {
+     "id": "NGC 2264",
+     "name": "Cone Nebula / Christmas Tree",
+     "targetClass": "nebula",
+     "score": 39.4,
+     "maxAlt": 47.3,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 47.3,
+     "azAtBest": 109.0,
+     "moonInterference": 0.3,
+     "notes": "Includes Christmas Tree open cluster."
+    },
+    {
+     "id": "NGC 2244",
+     "name": "Rosette Cluster",
+     "targetClass": "cluster",
+     "score": 37.8,
+     "maxAlt": 46.4,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 46.4,
+     "azAtBest": 117.0,
+     "moonInterference": 0.3,
+     "notes": "Open cluster at center of Rosette Nebula."
+    },
+    {
+     "id": "M43",
+     "name": "De Mairan's Nebula",
+     "targetClass": "nebula",
+     "score": 37.6,
+     "maxAlt": 48.3,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 48.3,
+     "azAtBest": 142.0,
+     "moonInterference": 0.27,
+     "notes": "Companion to M42, same FOV."
+    },
+    {
+     "id": "M22",
+     "name": "Sagittarius Cluster",
+     "targetClass": "cluster",
+     "score": 36.3,
+     "maxAlt": 33.4,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T23:15:00-05:00"
+     },
+     "altAtBest": 33.4,
+     "azAtBest": 202.0,
+     "moonInterference": 0.0,
+     "notes": "One of best globulars. Large and bright."
+    },
+    {
+     "id": "NGC 2237",
+     "name": "Rosette Nebula",
+     "targetClass": "nebula",
+     "score": 34.6,
+     "maxAlt": 46.4,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T02:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 46.4,
+     "azAtBest": 117.0,
+     "moonInterference": 0.3,
+     "notes": "Pairs with open cluster NGC 2244 in center."
+    },
+    {
+     "id": "M20",
+     "name": "Trifid Nebula",
+     "targetClass": "nebula",
+     "score": 32.5,
+     "maxAlt": 30.8,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:45:00-05:00"
+     },
+     "altAtBest": 30.8,
+     "azAtBest": 211.0,
+     "moonInterference": 0.0,
+     "notes": "Pairs with M8 Lagoon. Emission + reflection."
+    },
+    {
+     "id": "M8",
+     "name": "Lagoon Nebula",
+     "targetClass": "nebula",
+     "score": 31.9,
+     "maxAlt": 29.9,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 29.9,
+     "azAtBest": 210.0,
+     "moonInterference": 0.0,
+     "notes": "Large, pairs with M20 Trifid in same wide FOV."
+    },
+    {
+     "id": "M5",
+     "name": "Serpens Cluster",
+     "targetClass": "cluster",
+     "score": 20.9,
+     "maxAlt": 18.6,
+     "bestTime": "2026-10-03T21:00:00-05:00",
+     "window": {
+      "start": "2026-10-03T21:00:00-05:00",
+      "end": "2026-10-03T21:15:00-05:00"
+     },
+     "altAtBest": 18.6,
+     "azAtBest": 262.0,
+     "moonInterference": 0.0,
+     "notes": "Among finest globulars. Spring/summer."
+    },
+    {
+     "id": "M44",
+     "name": "Beehive Cluster (Praesepe)",
+     "targetClass": "cluster",
+     "score": 16.2,
+     "maxAlt": 26.0,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:15:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 26.0,
+     "azAtBest": 81.0,
+     "moonInterference": 0.37,
+     "notes": "Large, bright. Best in small scopes / binoculars."
+    },
+    {
+     "id": "M41",
+     "name": "Canis Major Cluster",
+     "targetClass": "cluster",
+     "score": 15.1,
+     "maxAlt": 25.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:00:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 25.6,
+     "azAtBest": 136.0,
+     "moonInterference": 0.35,
+     "notes": "Bright, easy. Below Sirius."
+    },
+    {
+     "id": "M47",
+     "name": "Puppis Cluster",
+     "targetClass": "cluster",
+     "score": 10.1,
+     "maxAlt": 21.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:30:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 21.6,
+     "azAtBest": 122.0,
+     "moonInterference": 0.38,
+     "notes": "Bright, pairs with M46 in same wide FOV."
+    },
+    {
+     "id": "M46",
+     "name": "Puppis Cluster",
+     "targetClass": "cluster",
+     "score": 7.1,
+     "maxAlt": 20.5,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 20.5,
+     "azAtBest": 122.0,
+     "moonInterference": 0.38,
+     "notes": "Contains planetary NGC 2438 in foreground."
+    },
+    {
+     "id": "M48",
+     "name": "Hydra Cluster",
+     "targetClass": "cluster",
+     "score": 6.4,
+     "maxAlt": 19.6,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 19.6,
+     "azAtBest": 109.0,
+     "moonInterference": 0.39,
+     "notes": "Large, triangular shape."
+    },
+    {
+     "id": "M67",
+     "name": "Cancer Cluster",
+     "targetClass": "cluster",
+     "score": 6.0,
+     "maxAlt": 20.5,
+     "bestTime": "2026-10-04T05:00:00-05:00",
+     "window": {
+      "start": "2026-10-04T04:45:00-05:00",
+      "end": "2026-10-04T05:00:00-05:00"
+     },
+     "altAtBest": 20.5,
+     "azAtBest": 88.0,
+     "moonInterference": 0.39,
+     "notes": "One of oldest known clusters. ~4 billion years."
+    }
+   ]
+  },
+  "errors": []
+ },
+ "instant": {
+  "location": {
+   "name": "Big Bend National Park, TX",
+   "latitude": 29.33,
+   "longitude": -103.21,
+   "elevationM": 1111,
+   "timezone": "America/Chicago"
+  },
+  "mode": "instant",
+  "at": {
+   "local": "2026-10-03T22:30:00-05:00",
+   "utc": "2026-10-04T03:30:00+00:00",
+   "timezone": "America/Chicago"
+  },
+  "weather": {
+   "current": {
+    "cloudCover": 95,
+    "temperatureF": null,
+    "windMph": null,
+    "description": "Overcast",
+    "station": "KT89 (Lajitas International Airport)",
+    "timestamp": "2026-10-03T14:15:00+00:00"
+   },
+   "atTime": {
+    "cloudCover": 82,
+    "temperatureF": 66,
+    "windMph": 10,
+    "rating": "bad",
+    "forecast": "Mostly Cloudy"
+   }
+  },
+  "twilight": {
+   "date": "2026-10-03",
+   "sunset": "2026-10-03T19:35:52.864338-05:00",
+   "sunrise": "2026-10-04T07:47:47.765952-05:00",
+   "civilDusk": "2026-10-03T19:59:36.139740-05:00",
+   "civilDawn": "2026-10-04T07:24:02.479014-05:00",
+   "nauticalDusk": "2026-10-03T20:27:06.781159-05:00",
+   "nauticalDawn": "2026-10-04T06:56:29.860257-05:00",
+   "astroDusk": "2026-10-03T20:54:40.581523-05:00",
+   "astroDawn": "2026-10-04T06:28:54.394161-05:00",
+   "midnightSun": false,
+   "polarNight": false
+  },
+  "instruments": {
+   "dob_8inch": [
+    {
+     "id": "SS Cyg",
+     "name": "SS Cyg",
+     "targetClass": "variable",
+     "score": 81.3,
+     "maxAlt": 75.3,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 75.3,
+     "azAtBest": 11.0,
+     "moonInterference": 0.0,
+     "notes": "chart X42882PV \u2014 Dwarf nova, monitor for outburst"
+    },
+    {
+     "id": "M29",
+     "name": "M29",
+     "targetClass": "messier",
+     "score": 75.1,
+     "maxAlt": 73.7,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 73.7,
+     "azAtBest": 309.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M15",
+     "name": "M15",
+     "targetClass": "messier",
+     "score": 74.6,
+     "maxAlt": 73.0,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 73.0,
+     "azAtBest": 179.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M39",
+     "name": "M39",
+     "targetClass": "messier",
+     "score": 74.2,
+     "maxAlt": 70.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 70.8,
+     "azAtBest": 2.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M27",
+     "name": "M27",
+     "targetClass": "messier",
+     "score": 69.1,
+     "maxAlt": 69.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 69.1,
+     "azAtBest": 257.0,
+     "moonInterference": 0.0,
+     "notes": "Dumbbell nebula"
+    },
+    {
+     "id": "M71",
+     "name": "M71",
+     "targetClass": "messier",
+     "score": 66.1,
+     "maxAlt": 66.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 66.1,
+     "azAtBest": 249.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M56",
+     "name": "M56",
+     "targetClass": "messier",
+     "score": 61.6,
+     "maxAlt": 61.6,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 61.6,
+     "azAtBest": 280.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M2",
+     "name": "M2",
+     "targetClass": "messier",
+     "score": 61.4,
+     "maxAlt": 59.9,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 59.9,
+     "azAtBest": 177.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M57",
+     "name": "M57",
+     "targetClass": "messier",
+     "score": 56.9,
+     "maxAlt": 56.9,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 56.9,
+     "azAtBest": 286.0,
+     "moonInterference": 0.0,
+     "notes": "Ring nebula.  Looks like smoke ring."
+    },
+    {
+     "id": "M31",
+     "name": "M31",
+     "targetClass": "messier",
+     "score": 53.6,
+     "maxAlt": 49.0,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 49.0,
+     "azAtBest": 59.0,
+     "moonInterference": 0.0,
+     "notes": "Andromeda galaxy"
+    },
+    {
+     "id": "M52",
+     "name": "M52",
+     "targetClass": "messier",
+     "score": 53.5,
+     "maxAlt": 52.4,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 52.4,
+     "azAtBest": 22.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "Neptune",
+     "name": "Neptune",
+     "targetClass": "planet",
+     "score": 51.0,
+     "maxAlt": 41.0,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 41.0,
+     "azAtBest": 120.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M110",
+     "name": "M110",
+     "targetClass": "messier",
+     "score": 49.4,
+     "maxAlt": 49.4,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 49.4,
+     "azAtBest": 59.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M32",
+     "name": "M32",
+     "targetClass": "messier",
+     "score": 49.1,
+     "maxAlt": 49.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 49.1,
+     "azAtBest": 60.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M73",
+     "name": "M73",
+     "targetClass": "messier",
+     "score": 47.6,
+     "maxAlt": 47.6,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 47.6,
+     "azAtBest": 190.0,
+     "moonInterference": 0.0,
+     "notes": "Very difficult, small grouping of stars"
+    },
+    {
+     "id": "M72",
+     "name": "M72",
+     "targetClass": "messier",
+     "score": 47.4,
+     "maxAlt": 47.4,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 47.4,
+     "azAtBest": 192.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "Saturn",
+     "name": "Saturn",
+     "targetClass": "planet",
+     "score": 45.8,
+     "maxAlt": 35.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 35.8,
+     "azAtBest": 111.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M11",
+     "name": "M11",
+     "targetClass": "messier",
+     "score": 40.5,
+     "maxAlt": 38.3,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 38.3,
+     "azAtBest": 233.0,
+     "moonInterference": 0.0,
+     "notes": "Wild duck cluster"
+    },
+    {
+     "id": "M92",
+     "name": "M92",
+     "targetClass": "messier",
+     "score": 40.3,
+     "maxAlt": 38.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 38.8,
+     "azAtBest": 304.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M33",
+     "name": "M33",
+     "targetClass": "messier",
+     "score": 39.8,
+     "maxAlt": 37.5,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 37.5,
+     "azAtBest": 72.0,
+     "moonInterference": 0.0,
+     "notes": "Pinwheel galaxy"
+    },
+    {
+     "id": "M103",
+     "name": "M103",
+     "targetClass": "messier",
+     "score": 39.7,
+     "maxAlt": 39.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 39.1,
+     "azAtBest": 34.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M76",
+     "name": "M76",
+     "targetClass": "messier",
+     "score": 38.5,
+     "maxAlt": 38.5,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 38.5,
+     "azAtBest": 45.0,
+     "moonInterference": 0.0,
+     "notes": "Cork nebula"
+    },
+    {
+     "id": "M30",
+     "name": "M30",
+     "targetClass": "messier",
+     "score": 38.0,
+     "maxAlt": 37.5,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 37.5,
+     "azAtBest": 176.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M75",
+     "name": "M75",
+     "targetClass": "messier",
+     "score": 35.2,
+     "maxAlt": 35.2,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 35.2,
+     "azAtBest": 203.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M26",
+     "name": "M26",
+     "targetClass": "messier",
+     "score": 35.1,
+     "maxAlt": 35.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 35.1,
+     "azAtBest": 232.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M13",
+     "name": "M13",
+     "targetClass": "messier",
+     "score": 32.9,
+     "maxAlt": 30.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 30.8,
+     "azAtBest": 297.0,
+     "moonInterference": 0.0,
+     "notes": "Hercules cluster. 100,000 stars"
+    },
+    {
+     "id": "M74",
+     "name": "M74",
+     "targetClass": "messier",
+     "score": 31.7,
+     "maxAlt": 31.7,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 31.7,
+     "azAtBest": 89.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M34",
+     "name": "M34",
+     "targetClass": "messier",
+     "score": 30.0,
+     "maxAlt": 27.2,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 27.2,
+     "azAtBest": 54.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M16",
+     "name": "M16",
+     "targetClass": "messier",
+     "score": 29.2,
+     "maxAlt": 27.2,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 27.2,
+     "azAtBest": 233.0,
+     "moonInterference": 0.0,
+     "notes": "Eagle nebula"
+    },
+    {
+     "id": "M25",
+     "name": "M25",
+     "targetClass": "messier",
+     "score": 29.0,
+     "maxAlt": 25.6,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 25.6,
+     "azAtBest": 227.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M24",
+     "name": "M24",
+     "targetClass": "messier",
+     "score": 27.2,
+     "maxAlt": 23.7,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 23.7,
+     "azAtBest": 230.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M17",
+     "name": "M17",
+     "targetClass": "messier",
+     "score": 26.9,
+     "maxAlt": 25.9,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 25.9,
+     "azAtBest": 231.0,
+     "moonInterference": 0.0,
+     "notes": "Omega nebula"
+    },
+    {
+     "id": "M14",
+     "name": "M14",
+     "targetClass": "messier",
+     "score": 26.5,
+     "maxAlt": 26.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 26.1,
+     "azAtBest": 250.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M18",
+     "name": "M18",
+     "targetClass": "messier",
+     "score": 26.2,
+     "maxAlt": 25.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 25.1,
+     "azAtBest": 231.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M22",
+     "name": "M22",
+     "targetClass": "messier",
+     "score": 25.7,
+     "maxAlt": 22.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 22.8,
+     "azAtBest": 222.0,
+     "moonInterference": 0.0,
+     "notes": "Excellent."
+    },
+    {
+     "id": "M55",
+     "name": "M55",
+     "targetClass": "messier",
+     "score": 25.5,
+     "maxAlt": 24.5,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 24.5,
+     "azAtBest": 205.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M23",
+     "name": "M23",
+     "targetClass": "messier",
+     "score": 22.5,
+     "maxAlt": 20.0,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 20.0,
+     "azAtBest": 233.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M28",
+     "name": "M28",
+     "targetClass": "messier",
+     "score": 21.4,
+     "maxAlt": 20.3,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 20.3,
+     "azAtBest": 224.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M102",
+     "name": "M102",
+     "targetClass": "messier",
+     "score": 21.3,
+     "maxAlt": 21.0,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 21.0,
+     "azAtBest": 323.0,
+     "moonInterference": 0.0,
+     "notes": "102 is the same as 101"
+    },
+    {
+     "id": "M21",
+     "name": "M21",
+     "targetClass": "messier",
+     "score": 20.9,
+     "maxAlt": 18.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 18.8,
+     "azAtBest": 229.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M54",
+     "name": "M54",
+     "targetClass": "messier",
+     "score": 20.5,
+     "maxAlt": 20.2,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 20.2,
+     "azAtBest": 214.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M8",
+     "name": "M8",
+     "targetClass": "messier",
+     "score": 19.5,
+     "maxAlt": 17.3,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 17.3,
+     "azAtBest": 228.0,
+     "moonInterference": 0.0,
+     "notes": "Lagoon nebula"
+    },
+    {
+     "id": "M10",
+     "name": "M10",
+     "targetClass": "messier",
+     "score": 18.7,
+     "maxAlt": 17.3,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 17.3,
+     "azAtBest": 255.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M20",
+     "name": "M20",
+     "targetClass": "messier",
+     "score": 18.1,
+     "maxAlt": 18.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 18.1,
+     "azAtBest": 229.0,
+     "moonInterference": 0.0,
+     "notes": "Trifid nebula"
+    },
+    {
+     "id": "M12",
+     "name": "M12",
+     "targetClass": "messier",
+     "score": 17.7,
+     "maxAlt": 16.3,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 16.3,
+     "azAtBest": 258.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M70",
+     "name": "M70",
+     "targetClass": "messier",
+     "score": 17.2,
+     "maxAlt": 17.2,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 17.2,
+     "azAtBest": 215.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    },
+    {
+     "id": "M69",
+     "name": "M69",
+     "targetClass": "messier",
+     "score": 15.9,
+     "maxAlt": 15.6,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 15.6,
+     "azAtBest": 218.0,
+     "moonInterference": 0.0,
+     "notes": ""
+    }
+   ],
+   "dwarf_mini": [
+    {
+     "id": "NGC 6992",
+     "name": "Veil Nebula (Eastern)",
+     "targetClass": "nebula",
+     "score": 83.8,
+     "maxAlt": 82.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 82.8,
+     "azAtBest": 292.0,
+     "moonInterference": 0.0,
+     "notes": "Brighter arc of the Veil. Pairs with NGC 6960."
+    },
+    {
+     "id": "NGC 6960",
+     "name": "Veil Nebula (Western)",
+     "targetClass": "nebula",
+     "score": 77.8,
+     "maxAlt": 76.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 76.8,
+     "azAtBest": 280.0,
+     "moonInterference": 0.0,
+     "notes": "Supernova remnant. Eastern half is NGC 6992."
+    },
+    {
+     "id": "NGC 7000",
+     "name": "North America Nebula",
+     "targetClass": "nebula",
+     "score": 77.8,
+     "maxAlt": 73.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 73.8,
+     "azAtBest": 341.0,
+     "moonInterference": 0.0,
+     "notes": "Huge, continent-shaped. Ideal for wide field."
+    },
+    {
+     "id": "M39",
+     "name": "Cygnus Cluster",
+     "targetClass": "cluster",
+     "score": 74.2,
+     "maxAlt": 70.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 70.8,
+     "azAtBest": 2.0,
+     "moonInterference": 0.0,
+     "notes": "Large, loose. Summer target near Deneb."
+    },
+    {
+     "id": "Cr 399",
+     "name": "Coat Hanger (Brocchi's Cluster)",
+     "targetClass": "cluster",
+     "score": 67.0,
+     "maxAlt": 62.6,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 62.6,
+     "azAtBest": 257.0,
+     "moonInterference": 0.0,
+     "notes": "Asterism, not true cluster. Perfect wide-field shape."
+    },
+    {
+     "id": "IC 1396",
+     "name": "Elephant's Trunk Nebula",
+     "targetClass": "nebula",
+     "score": 66.1,
+     "maxAlt": 61.6,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 61.6,
+     "azAtBest": 4.0,
+     "moonInterference": 0.0,
+     "notes": "Enormous faint nebula in Cepheus. Needs dark sky."
+    },
+    {
+     "id": "M2",
+     "name": "Aquarius Cluster",
+     "targetClass": "cluster",
+     "score": 61.4,
+     "maxAlt": 59.9,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 59.9,
+     "azAtBest": 177.0,
+     "moonInterference": 0.0,
+     "notes": "Dense, slightly oval. Autumn target."
+    },
+    {
+     "id": "NGC 281",
+     "name": "Pacman Nebula",
+     "targetClass": "nebula",
+     "score": 45.2,
+     "maxAlt": 44.6,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 44.6,
+     "azAtBest": 37.0,
+     "moonInterference": 0.0,
+     "notes": "Cassiopeia, pacman shape. Autumn target."
+    },
+    {
+     "id": "NGC 457",
+     "name": "Owl Cluster (ET Cluster)",
+     "targetClass": "cluster",
+     "score": 43.1,
+     "maxAlt": 41.5,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 41.5,
+     "azAtBest": 36.0,
+     "moonInterference": 0.0,
+     "notes": "Cassiopeia. Two bright \"eyes\" + body shape."
+    },
+    {
+     "id": "NGC 869",
+     "name": "Double Cluster (h Persei)",
+     "targetClass": "cluster",
+     "score": 38.0,
+     "maxAlt": 34.3,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 34.3,
+     "azAtBest": 38.0,
+     "moonInterference": 0.0,
+     "notes": "Pairs with NGC 884. Spectacular in wide field."
+    },
+    {
+     "id": "NGC 884",
+     "name": "Double Cluster (chi Persei)",
+     "targetClass": "cluster",
+     "score": 37.6,
+     "maxAlt": 34.0,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 34.0,
+     "azAtBest": 38.0,
+     "moonInterference": 0.0,
+     "notes": "Companion to NGC 869, same FOV."
+    },
+    {
+     "id": "Stock 2",
+     "name": "Stock 2",
+     "targetClass": "cluster",
+     "score": 37.2,
+     "maxAlt": 33.7,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 33.7,
+     "azAtBest": 35.0,
+     "moonInterference": 0.0,
+     "notes": "Near Double Cluster. Large, loose."
+    },
+    {
+     "id": "IC 4665",
+     "name": "Ophiuchus Cluster",
+     "targetClass": "cluster",
+     "score": 36.6,
+     "maxAlt": 32.6,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 32.6,
+     "azAtBest": 257.0,
+     "moonInterference": 0.0,
+     "notes": "Large, loose. Low surface brightness \u2014 needs wide field."
+    },
+    {
+     "id": "M13",
+     "name": "Great Hercules Cluster",
+     "targetClass": "cluster",
+     "score": 33.1,
+     "maxAlt": 30.9,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 30.9,
+     "azAtBest": 297.0,
+     "moonInterference": 0.0,
+     "notes": "Best northern globular. Summer target."
+    },
+    {
+     "id": "M34",
+     "name": "Perseus Cluster",
+     "targetClass": "cluster",
+     "score": 29.7,
+     "maxAlt": 27.2,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 27.2,
+     "azAtBest": 54.0,
+     "moonInterference": 0.0,
+     "notes": "~100 stars. Autumn target."
+    },
+    {
+     "id": "M16",
+     "name": "Eagle Nebula",
+     "targetClass": "nebula",
+     "score": 29.4,
+     "maxAlt": 27.4,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 27.4,
+     "azAtBest": 233.0,
+     "moonInterference": 0.0,
+     "notes": "Pillars of Creation. Includes cluster NGC 6611."
+    },
+    {
+     "id": "M17",
+     "name": "Omega/Swan Nebula",
+     "targetClass": "nebula",
+     "score": 28.3,
+     "maxAlt": 26.3,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 26.3,
+     "azAtBest": 234.0,
+     "moonInterference": 0.0,
+     "notes": "Bright, distinctive swan shape."
+    },
+    {
+     "id": "M22",
+     "name": "Sagittarius Cluster",
+     "targetClass": "cluster",
+     "score": 25.7,
+     "maxAlt": 22.8,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 22.8,
+     "azAtBest": 222.0,
+     "moonInterference": 0.0,
+     "notes": "One of best globulars. Large and bright."
+    },
+    {
+     "id": "M20",
+     "name": "Trifid Nebula",
+     "targetClass": "nebula",
+     "score": 19.8,
+     "maxAlt": 18.1,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 18.1,
+     "azAtBest": 229.0,
+     "moonInterference": 0.0,
+     "notes": "Pairs with M8 Lagoon. Emission + reflection."
+    },
+    {
+     "id": "M8",
+     "name": "Lagoon Nebula",
+     "targetClass": "nebula",
+     "score": 19.4,
+     "maxAlt": 17.4,
+     "bestTime": "2026-10-03T22:30:00-05:00",
+     "window": {
+      "start": "2026-10-03T22:30:00-05:00",
+      "end": "2026-10-03T22:30:00-05:00"
+     },
+     "altAtBest": 17.4,
+     "azAtBest": 228.0,
+     "moonInterference": 0.0,
+     "notes": "Large, pairs with M20 Trifid in same wide FOV."
+    }
+   ]
+  },
+  "errors": []
+ }
+}

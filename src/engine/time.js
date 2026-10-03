@@ -47,3 +47,16 @@ export function zonedTime(day, hour, minute, tz) {
   t = wall - offsetMinutes(new Date(t), tz) * 60_000
   return new Date(t)
 }
+
+/** Next wall-clock `hour:minute` in `tz`: today if not yet passed, else tomorrow. */
+export function nextOccurrence(now, hour, minute, tz) {
+  const today = localDate(now, tz)
+  const t = zonedTime(today, hour, minute, tz)
+  return t < now ? zonedTime(addDays(today, 1), hour, minute, tz) : t
+}
+
+/** Observing window 21:00 → 05:00 local (astro-cli's "tonight"; tomorrow's once 21:00 has passed). */
+export function tonightWindow(now, tz) {
+  const start = nextOccurrence(now, 21, 0, tz)
+  return { start, end: zonedTime(addDays(localDate(start, tz), 1), 5, 0, tz) }
+}

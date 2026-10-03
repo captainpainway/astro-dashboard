@@ -59,3 +59,12 @@ export function expandDurationSeries(values) {
   }
   return out
 }
+
+/** Latest observation from the nearest station: { station: "ID (name)", obs } or null if none are listed. */
+export async function fetchObservation(props) {
+  const stations = (await getJson(props.observationStations)).features
+  if (!stations?.length) return null
+  const { stationIdentifier: id, name } = stations[0].properties
+  const obs = (await getJson(`${NWS}/stations/${id}/observations/latest`)).properties
+  return { station: `${id} (${name})`, obs }
+}

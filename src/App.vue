@@ -18,8 +18,8 @@ import OutlookView from './components/OutlookView.vue'
 import NightTimes from './components/NightTimes.vue'
 import { isDisplayable } from './format'
 
-const { data, loading, error, load } = useTonight()
 const { location } = useLocation()
+const { data, loading, error, load } = useTonight(location)
 const forecast = useForecast(location)
 const discover = useDiscover()
 const outlook = useOutlook(location)

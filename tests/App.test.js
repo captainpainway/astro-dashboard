@@ -3,10 +3,11 @@ import { mount, flushPromises } from '@vue/test-utils'
 import App from '../src/App.vue'
 import { DEMO_LOCATION } from '../src/composables/useLocation'
 
-// Forecast and outlook are computed in the browser; stub them at the api boundary.
-const engine = vi.hoisted(() => ({ forecast: vi.fn(), outlook: vi.fn() }))
+// Tonight, forecast and outlook are computed in the browser; stub them at the api boundary.
+const engine = vi.hoisted(() => ({ tonight: vi.fn(), forecast: vi.fn(), outlook: vi.fn() }))
 vi.mock('../src/api', async (importOriginal) => ({
   ...(await importOriginal()),
+  fetchTonight: (opts) => engine.tonight(opts),
   fetchForecast: (opts) => engine.forecast(opts),
   fetchOutlook: (opts) => engine.outlook(opts),
 }))
@@ -150,7 +151,7 @@ function mockFetchJson(fixture) {
 }
 
 async function mountOnTonightView(fixture = windowFixture) {
-  vi.stubGlobal('fetch', mockFetchJson(fixture))
+  engine.tonight.mockResolvedValue(fixture)
   const w = mount(App)
   await flushPromises()
   await w.findAll('.view-switch button').find(b => b.text() === 'tonight').trigger('click')
@@ -159,17 +160,14 @@ async function mountOnTonightView(fixture = windowFixture) {
 }
 
 beforeEach(() => {
-  vi.stubGlobal('fetch', mockFetchJson(windowFixture))
+  vi.stubGlobal('fetch', mockFetchJson(discoverFixture)) // discover is the only server call left (Phase 4)
+  engine.tonight.mockReset().mockResolvedValue(windowFixture)
   engine.forecast.mockReset().mockResolvedValue(forecastFixture)
   engine.outlook.mockReset().mockResolvedValue(outlookFixture)
 })
 
 /** Mount the app on the home view with all three data sources wired. */
 async function mountHome() {
-  vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
-    if (String(url).includes('/api/discover')) return { ok: true, json: () => Promise.resolve(discoverFixture) }
-    return { ok: true, json: () => Promise.resolve(windowFixture) }
-  }))
   const w = mount(App)
   await flushPromises()
   return w
@@ -177,10 +175,6 @@ async function mountHome() {
 
 describe('App integration', () => {
   it('home view renders overview cards from all three data sources', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockImplementation((url) => {
-      if (String(url).includes('/api/discover')) return { ok: true, json: () => Promise.resolve(discoverFixture) }
-      return { ok: true, json: () => Promise.resolve(windowFixture) }
-    }))
     const w = mount(App)
     await flushPromises()
     expect(w.find('.card-conditions').exists()).toBe(true)
@@ -189,7 +183,7 @@ describe('App integration', () => {
     expect(w.find('.card-picks').text()).toContain('SS Cyg')
     // all three loaded on mount; the forecast for the visitor's location
     const urls = fetch.mock.calls.map(c => String(c[0]))
-    expect(urls.some(u => u.includes('/api/tonight'))).toBe(true)
+    expect(engine.tonight).toHaveBeenCalledWith({ at: null, include: null, location: DEMO_LOCATION })
     expect(engine.forecast).toHaveBeenCalledWith({ date: undefined, location: DEMO_LOCATION })
     expect(urls.some(u => u.includes('/api/discover'))).toBe(true)
   })
@@ -225,14 +219,12 @@ describe('App integration', () => {
   })
 
   it('instant mode: refetches with at=, shows atTime weather, no night window', async () => {
-    vi.stubGlobal('fetch', mockFetchJson(instantFixture))
     const w = await mountOnTonightView(instantFixture)
     // switch mode -> new fetch with at param
     const instantBtn = w.findAll('.mode button').find(b => b.text() === 'at time')
     await instantBtn.trigger('click')
     await flushPromises()
-    const calledUrl = fetch.mock.calls.at(-1)[0]
-    expect(calledUrl).toContain('at=22:30')
+    expect(engine.tonight).toHaveBeenLastCalledWith(expect.objectContaining({ at: '22:30' }))
     expect(w.text()).toContain('Sky at 10:30 PM')
     expect(w.text()).toContain('SS Cyg')
   })
@@ -248,24 +240,21 @@ describe('App integration', () => {
     const chipFor = (label) => w.findAll('.chips button').find(b => b.text() === label)
     await chipFor('moon').trigger('click')
     await flushPromises()
-    const url = fetch.mock.calls.at(-1)[0]
-    expect(url).toContain('include=')
-    expect(url).not.toContain('include=moon')
+    expect(engine.tonight.mock.calls.at(-1)[0].include).toEqual(['planet', 'variable', 'messier', 'nebula', 'cluster'])
     // whittle down to one class…
     for (const c of ['planet', 'variable', 'messier', 'nebula']) {
       await chipFor(c).trigger('click')
       await flushPromises()
     }
     // only cluster left; clicking it must NOT remove the last class
-    const lastUrl = fetch.mock.calls.at(-1)[0]
-    expect(lastUrl).toContain('include=cluster')
+    expect(engine.tonight.mock.calls.at(-1)[0].include).toEqual(['cluster'])
     await chipFor('cluster').trigger('click')
     await flushPromises()
-    const afterUrl = fetch.mock.calls.at(-1)[0]
-    expect(afterUrl).toContain('include=cluster')
+    expect(engine.tonight.mock.calls.at(-1)[0].include).toEqual(['cluster'])
   })
 
   it('home view: fetch failures show inline errors, not a blank page', async () => {
+    engine.tonight.mockRejectedValue(new Error('Failed to fetch'))
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')))
     const w = mount(App)
     await flushPromises()
