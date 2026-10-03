@@ -1,6 +1,6 @@
 import { altitude, moonIllumination, observerFor, twilightEvents } from './astro'
 import { buildHours, parseWindMph, round1 } from './forecast'
-import { fetchGridpoint, fetchHourly, fetchNightPeriods, pointProps } from './nws'
+import { fetchGridpoint, fetchHourly, fetchNightPeriods, pointProps, weatherFetchedAt } from './nws'
 import { rateConditions } from './rating'
 import { localDate, toLocalIso } from './time'
 
@@ -114,6 +114,6 @@ export async function buildOutlook(location, { nights = 7 } = {}) {
   } catch (e) {
     errors.push(`outlook: ${e.message}`)
   }
-  return { generatedAt: new Date().toISOString(), location: { ...location, elevationM }, timezone: tz,
+  return { generatedAt: weatherFetchedAt(), location: { ...location, elevationM }, timezone: tz,
            nights: rows, errors }
 }

@@ -1,5 +1,6 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { buildForecast } from '../src/engine/forecast'
+import { clearWeatherCache } from '../src/engine/nws'
 import { buildOutlook } from '../src/engine/outlook'
 import { buildTonight } from '../src/engine/tonight'
 import { BIG_BEND, expectPlan, expectRow, expectTwilight, nwsFetch } from './parity'
@@ -11,7 +12,7 @@ import grid from './fixtures/nws-forecastGridData.json'
 const HOUR_TOL = { sunAlt: 0.15, moonAlt: 0.15, moonIllum: 1e-3, score: 0.15 }
 const NIGHT_TOL = { moonIllum: 1e-3, moonUpFraction: 0.05, darkHours: 0.5, score: 0.15 }
 
-beforeEach(() => { vi.stubGlobal('fetch', nwsFetch()) })
+beforeEach(() => { clearWeatherCache(); vi.stubGlobal('fetch', nwsFetch()) })
 
 describe('buildForecast', () => {
   it('matches astro-cli for the night of 2026-10-03', async () => {
@@ -151,5 +152,27 @@ describe('buildTonight', () => {
     const only = await buildTonight(BIG_BEND, { include: ['cluster'] }, NOW)
     expect(only.instruments.dob_8inch).toEqual([])
     expect(new Set(only.instruments.dwarf_mini.map((t) => t.targetClass))).toEqual(new Set(['cluster']))
+  })
+})
+
+describe('weather cache across views', () => {
+  afterEach(() => vi.useRealTimers())
+
+  it('reuses one set of NWS responses and stamps every view with when they were fetched', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-03T12:00:00Z'))
+    clearWeatherCache()
+    const NOW = new Date('2026-10-03T15:00:00-05:00')
+    const first = await buildTonight(BIG_BEND, {}, NOW)
+    expect(fetch).toHaveBeenCalledTimes(5) // points, hourly, grid, stations, observation
+
+    vi.setSystemTime(new Date('2026-10-03T16:00:00Z')) // an hour later, e.g. after a chip click
+    const again = await buildTonight(BIG_BEND, { include: ['planet'] }, NOW)
+    const forecast = await buildForecast(BIG_BEND, { date: '2026-10-03' }, NOW)
+    expect(fetch).toHaveBeenCalledTimes(5)
+    const outlook = await buildOutlook(BIG_BEND)
+    expect(fetch).toHaveBeenCalledTimes(6) // only the 12-hour forecast is new
+
+    for (const r of [first, again, forecast, outlook]) expect(r.generatedAt).toBe('2026-10-03T12:00:00.000Z')
   })
 })

@@ -1,11 +1,13 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { DEMO_LOCATION, useLocation } from '../src/composables/useLocation'
+import { clearWeatherCache } from '../src/engine/nws'
 import points from './fixtures/nws-points.json'
 
 const KEY = 'astrodash.location'
 const seattle = { name: 'Seattle, WA', latitude: 47.61, longitude: -122.33, elevationM: null, timezone: 'America/Los_Angeles' }
 
 beforeEach(() => {
+  clearWeatherCache()
   localStorage.clear()
   vi.stubGlobal('fetch', vi.fn(() => ({ ok: true, status: 200, json: () => Promise.resolve(points) })))
 })

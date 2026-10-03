@@ -4,13 +4,14 @@ import App from '../src/App.vue'
 import { DEMO_LOCATION } from '../src/composables/useLocation'
 
 // Tonight, forecast, outlook and lunar are computed in the browser; stub them at the api boundary.
-const engine = vi.hoisted(() => ({ tonight: vi.fn(), forecast: vi.fn(), outlook: vi.fn(), lunar: vi.fn() }))
+const engine = vi.hoisted(() => ({ tonight: vi.fn(), forecast: vi.fn(), outlook: vi.fn(), lunar: vi.fn(), clear: vi.fn() }))
 vi.mock('../src/api', async (importOriginal) => ({
   ...(await importOriginal()),
   fetchTonight: (opts) => engine.tonight(opts),
   fetchForecast: (opts) => engine.forecast(opts),
   fetchOutlook: (opts) => engine.outlook(opts),
   fetchLunar: (opts) => engine.lunar(opts),
+  clearWeatherCache: (...args) => engine.clear(...args),
 }))
 
 // Fixture mirrors the live GET /tonight response (window mode)
@@ -160,6 +161,7 @@ beforeEach(() => {
   engine.forecast.mockReset().mockResolvedValue(forecastFixture)
   engine.outlook.mockReset().mockResolvedValue(outlookFixture)
   engine.lunar.mockReset().mockResolvedValue(lunarFixture)
+  engine.clear.mockReset()
 })
 
 /** Mount the app on the home view with every data source wired. */
@@ -365,5 +367,33 @@ describe('App integration', () => {
     expect(w.findAll('.lunar tr.data-row')).toHaveLength(1)
     expect(w.find('.lunar').text()).toContain('Aristoteles')
     expect(w.find('.lunar').text()).not.toContain('Mare Imbrium')
+  })
+
+  it('refresh clears the weather cache and reloads what is on screen; outlook only once it has been opened', async () => {
+    const w = mount(App)
+    await flushPromises()
+    for (const m of [engine.tonight, engine.forecast, engine.outlook, engine.lunar]) m.mockClear()
+    await w.find('.refresh').trigger('click')
+    await flushPromises()
+    expect(engine.clear).toHaveBeenCalledWith(true)
+    expect(engine.tonight).toHaveBeenCalledTimes(1)
+    expect(engine.forecast).toHaveBeenCalledTimes(1)
+    expect(engine.lunar).toHaveBeenCalledTimes(1)
+    expect(engine.outlook).not.toHaveBeenCalled() // never opened, so no 12-hour forecast fetch
+    await w.findAll('.view-switch button').find(b => b.text() === 'outlook').trigger('click')
+    await flushPromises()
+    expect(engine.outlook).toHaveBeenCalledTimes(1) // first visit loads it
+    await w.find('.refresh').trigger('click')
+    await flushPromises()
+    expect(engine.outlook).toHaveBeenCalledTimes(2) // now it is on screen, so refresh reloads it
+  })
+
+  it('a chip click re-ranks tonight without clearing the weather cache', async () => {
+    const w = await mountOnTonightView()
+    engine.clear.mockClear()
+    await w.findAll('.chips button').find(b => b.text() === 'moon').trigger('click')
+    await flushPromises()
+    expect(engine.clear).not.toHaveBeenCalled()
+    expect(engine.tonight.mock.calls.at(-1)[0].include).not.toContain('moon')
   })
 })

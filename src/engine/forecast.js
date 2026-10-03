@@ -1,6 +1,6 @@
 import { altitude, moonIllumination, observerFor, twilightEvents } from './astro'
 import { cloudPenalty, deduct, precipPenalty, scoreToRating, tempPenalty, windPenalty } from './rating'
-import { fetchGridpoint, fetchHourly, pointProps } from './nws'
+import { fetchGridpoint, fetchHourly, pointProps, weatherFetchedAt } from './nws'
 import { addDays, localDate, toLocalIso, zonedTime } from './time'
 
 export const round1 = (x) => (x == null ? null : Math.round(x * 10) / 10)
@@ -115,7 +115,7 @@ export async function buildForecast(location, { date } = {}, now = new Date()) {
   const twilight = twilightEvents(location, day)
   flagDaylight(hours, twilight)
   return {
-    generatedAt: new Date().toISOString(),
+    generatedAt: weatherFetchedAt(),
     location: { ...location, elevationM },
     night: { startLocal: toLocalIso(start, tz), endLocal: toLocalIso(end, tz),
              startUtc: toLocalIso(start, 'UTC'), endUtc: toLocalIso(end, 'UTC'), timezone: tz },

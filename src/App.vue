@@ -16,6 +16,7 @@ import LunarView from './components/LunarView.vue'
 import OverviewView from './components/OverviewView.vue'
 import OutlookView from './components/OutlookView.vue'
 import NightTimes from './components/NightTimes.vue'
+import { clearWeatherCache } from './api'
 import { isDisplayable } from './format'
 
 const { location } = useLocation()
@@ -78,22 +79,20 @@ const instrumentLabels = {
   dwarf_mini: 'Dwarf Mini',
 }
 
+/** Refresh button: drop cached weather (and the browser's copy), then reload everything on screen. */
 async function refresh() {
-  if (view.value === 'home') await loadAll()
-  else if (view.value === 'forecast') await forecast.load()
-  else if (view.value === 'outlook') await outlook.load()
-  else if (view.value === 'lunar') await lunar.load()
-  else await load(requestParams.value)
+  clearWeatherCache(true)
+  await Promise.all([
+    load(requestParams.value),
+    forecast.load(),
+    lunar.load(),
+    outlook.loaded.value ? outlook.load() : null, // the 12-hour forecast is only fetched once the outlook was opened
+  ])
 }
-const dockLoading = computed(() => {
-  if (view.value === 'home') return loading.value || forecast.loading.value || lunar.loading.value
-  if (view.value === 'forecast') return forecast.loading.value
-  if (view.value === 'outlook') return outlook.loading.value
-  if (view.value === 'lunar') return lunar.loading.value
-  return loading.value
-})
+const dockLoading = computed(() =>
+  loading.value || forecast.loading.value || outlook.loading.value || lunar.loading.value)
 onMounted(loadAll)
-watch(requestParams, refresh)
+watch(requestParams, () => load(requestParams.value))
 </script>
 
 <template>

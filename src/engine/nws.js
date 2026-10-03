@@ -7,11 +7,38 @@ export const roundCoord = (x) => Math.round(x * 100) / 100
 const validCoords = (lat, lon) =>
   Number.isFinite(lat) && Math.abs(lat) <= 90 && Number.isFinite(lon) && Math.abs(lon) <= 180
 
-async function getJson(url) {
-  const res = await fetch(url)
+// Weather responses stay in memory until the refresh button or a page reload. Promises are cached,
+// so concurrent callers share one request; failures are dropped so the next caller retries.
+const cache = new Map()
+const staleUrls = new Set() // refetched once past the browser's HTTP cache after a refresh
+// ponytail: one stamp for the whole cache; per-URL fetch times if a view ever needs finer than "since the last refresh".
+let cachedSince = Date.now()
+
+/** Forget every cached response; `bypassHttpCache` also makes each URL's next fetch skip the browser cache. */
+export function clearWeatherCache(bypassHttpCache = false) {
+  staleUrls.clear()
+  if (bypassHttpCache) for (const url of cache.keys()) staleUrls.add(url)
+  cache.clear()
+  cachedSince = Date.now()
+}
+
+/** When the current cache generation began (page load or last refresh), ISO 8601. */
+export const weatherFetchedAt = () => new Date(cachedSince).toISOString()
+
+async function request(url, reload) {
+  const res = await (reload ? fetch(url, { cache: 'reload' }) : fetch(url))
   if (res.status === 404 && url.includes('/points/')) throw new Error('No NWS forecast for this location (US only)')
   if (!res.ok) throw new Error(`NWS ${res.status} ${res.statusText}`)
   return res.json()
+}
+
+function getJson(url) {
+  if (!cache.has(url)) {
+    const promise = request(url, staleUrls.delete(url))
+    cache.set(url, promise)
+    promise.catch(() => { if (cache.get(url) === promise) cache.delete(url) })
+  }
+  return cache.get(url)
 }
 
 /** NWS /points metadata (forecast URLs, timezone, place) for rounded coordinates. */

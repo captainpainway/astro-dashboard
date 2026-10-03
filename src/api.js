@@ -3,6 +3,8 @@ import { buildOutlook } from './engine/outlook'
 import { buildLunar } from './engine/lunar'
 import { buildTonight } from './engine/tonight'
 
+export { clearWeatherCache } from './engine/nws'
+
 /** Tonight's ranked plan (or the sky at `at`), computed in the browser for `location`. */
 export const fetchTonight = ({ at, include, location } = {}) => buildTonight(location, { at, include })
 

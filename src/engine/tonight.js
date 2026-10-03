@@ -1,6 +1,6 @@
 import { twilightEvents } from './astro'
 import { round1 } from './forecast'
-import { fetchGridpoint, fetchHourly, fetchObservation, pointProps } from './nws'
+import { fetchGridpoint, fetchHourly, fetchObservation, pointProps, weatherFetchedAt } from './nws'
 import { cloudFromText } from './outlook'
 import { rateConditions } from './rating'
 import { TARGET_CLASSES, generatePlan, timeGrid } from './scoring'
@@ -142,7 +142,7 @@ export async function buildTonight(location, { at, include } = {}, now = new Dat
   const instruments = generatePlan(loc, instant ? [instant] : timeGrid(start, end), include?.length ? include : TARGET_CLASSES)
   const twilight = twilightEvents(loc, localDate(start, tz))
   const sky = grid?.skyCover
-  const common = { generatedAt: new Date().toISOString(), location: loc, twilight, instruments, errors: [...new Set(errors)] }
+  const common = { generatedAt: weatherFetchedAt(), location: loc, twilight, instruments, errors: [...new Set(errors)] }
   if (instant) {
     return { ...common, mode: 'instant',
              at: { local: toLocalIso(instant, tz), utc: toLocalIso(instant, 'UTC'), timezone: tz },
