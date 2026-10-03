@@ -2,7 +2,7 @@
 // Stroke-only 24×24 icon paths. `key` is the view id; `label` is what the dock shows.
 export const ITEMS = [
   { key: 'home', label: 'home', d: 'M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10' },
-  { key: 'tonight', label: 'tonight', d: 'M12 3l2.2 6.8H21l-5.5 4 2.1 6.7L12 16.4l-5.6 4.1 2.1-6.7L3 9.8h6.8z' },
+  { key: 'tonight', label: 'tonight', d: 'M17 12a5 5 0 1 1-10 0 5 5 0 0 1 10 0zM21.52 7.56A10.5 3 -25 0 1 2.48 16.44M2.48 16.44A10.5 3 -25 0 1 7.05 11.27M14.62 7.74A10.5 3 -25 0 1 21.52 7.56' },
   { key: 'forecast', label: 'hourly', d: 'M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 9.5 4.25 4.25 0 0 0 7 18z' },
   { key: 'outlook', label: 'forecast', d: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4' },
   { key: 'lunar', label: 'lunar', d: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z' },
