@@ -121,7 +121,8 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
     <p v-if="error" class="error">failed to load: {{ error }}</p>
     <ErrorsBanner v-if="data" :errors="data.errors" />
     <ControlsBar v-if="data" v-model:mode="mode" v-model:at-time="atTime"
-                 v-model:active-classes="activeClasses" v-model:sort-key="sortKey" />
+                 v-model:active-classes="activeClasses" v-model:sort-key="sortKey"
+                 :twilight="data.twilight ?? null" />
     <div class="panel">
         <NightTimes v-if="data?.twilight" :twilight="data.twilight" compact />
     </div>

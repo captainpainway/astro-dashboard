@@ -34,6 +34,26 @@ describe('ControlsBar', () => {
     w.unmount()
   })
 
+  it('at-time mode runs from sunset to sunrise, each rounded to the nearest half hour', async () => {
+    const twilight = { sunset: '2026-10-03T19:09:30-05:00', sunrise: '2026-10-04T07:47:10-05:00' }
+    const w = make({ mode: 'instant', twilight })
+    await timeSelect(w).find('.glass-select-trigger').trigger('click')
+    const opts = timeSelect(w).findAll('[role="option"]').map((o) => o.text())
+    expect(opts[0]).toBe('7:00 PM') // sunset 7:09
+    expect(opts.at(-1)).toBe('8:00 AM') // sunrise 7:47
+    expect(opts).toHaveLength(27)
+    expect(opts).toContain('12:00 AM')
+    w.unmount()
+  })
+
+  it('falls back to 6:00 PM - 6:00 AM where the Sun does not set or rise', async () => {
+    const w = make({ mode: 'instant', twilight: { sunset: null, sunrise: null } })
+    await timeSelect(w).find('.glass-select-trigger').trigger('click')
+    const opts = timeSelect(w).findAll('[role="option"]').map((o) => o.text())
+    expect([opts[0], opts.at(-1), opts.length]).toEqual(['6:00 PM', '6:00 AM', 25])
+    w.unmount()
+  })
+
   it('choosing a time emits it as HH:MM', async () => {
     const w = make({ mode: 'instant' })
     await timeSelect(w).find('.glass-select-trigger').trigger('click')

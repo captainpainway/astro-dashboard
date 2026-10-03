@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import GlassSelect from './GlassSelect.vue'
 
 const CLASSES = ['planet', 'moon', 'variable', 'messier', 'nebula', 'cluster']
@@ -8,18 +9,29 @@ const SORTS = [
   { value: 'maxAlt', label: 'altitude' },
   { value: 'name', label: 'name' },
 ]
-// Observing times, 6:00 PM → 6:00 AM in 30-minute steps; values are the HH:MM the API takes as at=
-const TIMES = Array.from({ length: 25 }, (_, i) => {
-  const mins = (18 * 60 + i * 30) % (24 * 60)
+// Observing times in 30-minute steps from sunset to sunrise, each rounded to the nearest half hour (6:00 PM to
+// 6:00 AM where there is no sunset or sunrise); values are the HH:MM the API takes as at=
+const clockMinutes = (iso) => { const m = /T(\d{2}):(\d{2})/.exec(iso ?? ''); return m ? Number(m[1]) * 60 + Number(m[2]) : null }
+const nearestHalfHour = (mins) => Math.round(mins / 30) * 30
+const option = (total) => {
+  const mins = total % (24 * 60)
   const h = Math.floor(mins / 60), m = String(mins % 60).padStart(2, '0')
   return { value: `${String(h).padStart(2, '0')}:${m}`, label: `${h % 12 || 12}:${m} ${h < 12 ? 'AM' : 'PM'}` }
-})
+}
 
 const props = defineProps({
   mode: { type: String, required: true },
   atTime: { type: String, default: '' },
   activeClasses: { type: Array, required: true },
   sortKey: { type: String, required: true },
+  twilight: { type: Object, default: null },
+})
+const TIMES = computed(() => {
+  const [set, rise] = [clockMinutes(props.twilight?.sunset), clockMinutes(props.twilight?.sunrise)]
+  const from = set == null || rise == null ? 18 * 60 : nearestHalfHour(set)
+  let to = set == null || rise == null ? 30 * 60 : nearestHalfHour(rise)
+  if (to <= from) to += 24 * 60
+  return Array.from({ length: (to - from) / 30 + 1 }, (_, i) => option(from + i * 30))
 })
 const emit = defineEmits(['update:mode', 'update:atTime', 'update:activeClasses', 'update:sortKey'])
 

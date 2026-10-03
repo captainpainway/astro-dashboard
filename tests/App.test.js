@@ -65,6 +65,7 @@ const instantFixture = {
     current: windowFixture.weather.current,
     atTime: { cloudCover: 57, temperatureF: 77, windMph: 5, rating: 'poor', forecast: 'Mostly Cloudy' },
   },
+  twilight: windowFixture.twilight,
   instruments: { dob_8inch: windowFixture.instruments.dob_8inch,
                   dwarf_mini: windowFixture.instruments.dwarf_mini },
   errors: [],
@@ -228,6 +229,10 @@ describe('App integration', () => {
     expect(engine.tonight).toHaveBeenLastCalledWith(expect.objectContaining({ at: '22:30' }))
     expect(w.text()).toContain('Sky at 10:30 PM')
     expect(w.text()).toContain('SS Cyg')
+    // the time choices follow the night's sunset (7:27 PM) and sunrise (7:13 AM), to the nearest half hour
+    await w.find('.time-select .glass-select-trigger').trigger('click')
+    const opts = w.findAll('.time-select [role="option"]').map((o) => o.text())
+    expect([opts[0], opts.at(-1)]).toEqual(['7:30 PM', '7:00 AM'])
   })
 
   it('shows the degraded-data banner when errors[] is non-empty', async () => {
