@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { fmtCoords, fmtTime, lunarEmpty } from '../format'
 import { useRowAnimation } from '../composables/useRowAnimation'
 import MoonMap from './MoonMap.vue'
@@ -21,6 +21,8 @@ const showAll = ref(false)
 const visible = computed(() => (showAll.value ? shown.value : shown.value.slice(0, LIMIT)))
 const table = ref(null)
 const { onBeforeEnter, onEnter, onLeave } = useRowAnimation(table, visible)
+const mapStamp = ref(0) // new lunar data (refresh) remounts the map so it re-reads "now"
+watch(() => props.moon, () => { mapStamp.value++ })
 const tierLabel = computed(() => TIERS.find((t) => t.key === tier.value).label)
 const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
 </script>
@@ -33,7 +35,7 @@ const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
         {{ t.label }} ({{ count(t.key) }})
       </button>
     </nav>
-    <MoonMap :features="shown" />
+    <MoonMap :key="mapStamp" :features="shown" />
     <p v-if="loading && !features.length" class="muted">loading lunar features…</p>
     <p v-else-if="!features.length" class="muted">{{ lunarEmpty(moon) }}</p>
     <p v-else-if="!shown.length" class="muted">no {{ tierLabel }} features are well placed tonight</p>

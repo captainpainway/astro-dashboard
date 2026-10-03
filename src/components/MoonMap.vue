@@ -13,10 +13,20 @@ const failed = ref(typeof WebGLRenderingContext === 'undefined')
 const canvas = ref(null)
 const selectedId = ref(null)
 
-const dots = computed(() => props.features
-  .filter((f) => f.lat != null)
-  .map((f) => ({ id: f.id, name: f.name, ...project(f, basis) }))
-  .filter((d) => d.visible))
+const MERGE = 0.04 // unit-disc distance under which two dots can't be told apart (about 8px at full size)
+// One dot per spot: features that project almost on top of each other share a dot named after all of them.
+const dots = computed(() => {
+  const out = []
+  for (const f of props.features) {
+    if (f.lat == null) continue
+    const p = project(f, basis)
+    if (!p.visible) continue
+    const near = out.find((d) => Math.hypot(d.x - p.x, d.y - p.y) < MERGE)
+    if (near) near.name += ` · ${f.name}`
+    else out.push({ id: f.id, name: f.name, x: p.x, y: p.y })
+  }
+  return out
+})
 const selected = computed(() => dots.value.find((d) => d.id === selectedId.value))
 const pos = (d) => ({ left: `${50 + d.x * 50}%`, top: `${50 - d.y * 50}%` })
 

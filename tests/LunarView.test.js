@@ -115,9 +115,12 @@ describe('LunarView moon map', () => {
     const gl = new Proxy({}, { get: () => () => ({}) }) // every GL call is a no-op
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(gl)
   }
-  afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
+  afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers() })
   const dots = (w) => w.findAll('.moon-dot')
   const atPlace = (id, name, lat, lon, over = {}) => feature({ id, name, lat, lon, ...over })
+  const spread = [atPlace('mare-imbrium', 'Mare Imbrium', 30, -20, { tier: 'eyes' }),
+    atPlace('copernicus', 'Copernicus', 9.6, -20, { tier: 'binoculars' }),
+    atPlace('rupes-recta', 'Rupes Recta', -22, -8, { tier: 'telescope' })]
 
   it('draws one dot per near-side feature, labelled with its name', () => {
     stubGl()
@@ -136,7 +139,7 @@ describe('LunarView moon map', () => {
 
   it('follows the tier filter', async () => {
     stubGl()
-    const w = mountView()
+    const w = mountView({ features: spread })
     expect(dots(w)).toHaveLength(3)
     await tab(w, 'binoculars').trigger('click')
     expect(dots(w)).toHaveLength(1)
@@ -160,7 +163,7 @@ describe('LunarView moon map', () => {
 
   it('closes the tooltip when the tier filter removes its feature', async () => {
     stubGl()
-    const w = mountView()
+    const w = mountView({ features: spread })
     await dots(w)[0].trigger('click') // Mare Imbrium (eyes)
     expect(w.find('.moon-tip').exists()).toBe(true)
     await tab(w, 'telescope').trigger('click')
@@ -179,5 +182,25 @@ describe('LunarView moon map', () => {
     const w = mountView()
     await flushPromises()
     expect(w.find('.moon-map').exists()).toBe(false)
+  })
+
+  it('merges features at the same spot into one dot that names them all', async () => {
+    stubGl()
+    const w = mountView({ features: [atPlace('a', 'Clavius', -58.4, -14.4), atPlace('b', 'Clavius craterlets', -58.4, -14.4),
+                                     atPlace('c', 'Copernicus', 9.6, -20)] })
+    expect(dots(w).map((d) => d.attributes('aria-label'))).toEqual(['Clavius · Clavius craterlets', 'Copernicus'])
+    await dots(w)[0].trigger('click')
+    expect(w.find('.moon-tip').text()).toBe('Clavius · Clavius craterlets')
+  })
+
+  it('redraws the Moon for the new time when the lunar data is reloaded', async () => {
+    stubGl()
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-10T00:00:00Z'))
+    const w = mountView({ features: [atPlace('a', 'Near limb', 0, 60)], moon: { note: 'a' } })
+    const before = dots(w)[0].attributes('style')
+    vi.setSystemTime(new Date('2026-10-17T00:00:00Z')) // libration has moved a few degrees
+    await w.setProps({ moon: { note: 'b' } })
+    expect(dots(w)[0].attributes('style')).not.toBe(before)
   })
 })
