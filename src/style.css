@@ -127,6 +127,14 @@ button { font: inherit; cursor: pointer; }
 .error { color: var(--bad); }
 .tabs { display: flex; gap: 0.5rem; margin: 0.75rem 0; }
 .tabs button { border-radius: 12px; padding: 0.5rem 1rem; color: var(--muted); }
+/* Lunar page: tier tabs on the left, list/map as a joined button group on the right */
+.lunar-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 1rem; }
+.view-toggle { gap: 0; margin-left: auto; }
+.view-toggle button { border-radius: 0; }
+.view-toggle button:first-child { border-radius: 12px 0 0 12px; }
+.view-toggle button:last-child { border-radius: 0 12px 12px 0; }
+.view-toggle button + button { margin-left: -1px; }
+.view-toggle button.active { position: relative; z-index: 1; }
 /* Square stage so the dots' percentages land on the disc */
 .moon-map { position: relative; width: min(100%, 420px); aspect-ratio: 1; margin: 0.75rem auto; }
 .moon-map canvas { width: 100%; height: 100%; display: block; }
