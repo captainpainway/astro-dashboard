@@ -1,8 +1,7 @@
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { gsap } from 'gsap'
-import { Flip } from 'gsap/Flip'
+import { computed, ref } from 'vue'
 import { compass, fmtTime, isDisplayable, pct, timeline } from '../format'
+import { useRowAnimation } from '../composables/useRowAnimation'
 
 const props = defineProps({
   targets: { type: Array, required: true },
@@ -27,66 +26,8 @@ const sorted = computed(() => {
 
 const visible = computed(() => showAll.value ? sorted.value : sorted.value.slice(0, LIMIT))
 
-gsap.registerPlugin(Flip)
-
-/**
- * Row animation: new rows fade in, removed rows fade out, and the rows that stay
- * FLIP-glide to their new spots — first when rows are inserted or reordered, then
- * again when leaving rows are actually removed and the gap closes.
- */
 const table = ref(null)
-const reduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-const rowEls = () => [...(table.value?.querySelectorAll('tbody > tr') ?? [])]
-const leaving = new Set()
-
-let moveState = null
-watch(visible, () => {
-  moveState = reduceMotion() ? null : Flip.getState(rowEls())
-}, { flush: 'pre' })
-watch(visible, () => {
-  if (!moveState) return
-  // leave hooks run during the patch, so `leaving` is filled in by now
-  Flip.from(moveState, { targets: rowEls().filter((el) => !leaving.has(el)),
-    duration: 0.35, ease: 'power2.inOut' })
-  moveState = null
-}, { flush: 'post' })
-
-let enterIndex = 0
-// Enter tweens the cells, not the <tr>: Flip owns the row's transform and restores its
-// inline style when done, which would clobber a fade running on the row itself.
-function onBeforeEnter(el) {
-  if (!reduceMotion()) gsap.set(el.children, { opacity: 0 })
-}
-function onEnter(el, done) {
-  if (reduceMotion()) return done()
-  if (enterIndex === 0) queueMicrotask(() => { enterIndex = 0 })
-  const delay = 0.12 + Math.min(enterIndex++, 10) * 0.03
-  gsap.fromTo(el.children, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.3, delay, ease: 'power2.out',
-    clearProps: 'transform,opacity', onComplete: done })
-}
-
-// Leave completions are batched so rows removed together close their gaps in one Flip.
-let removals = []
-function queueRemoval(done) {
-  removals.push(done)
-  if (removals.length > 1) return
-  queueMicrotask(() => {
-    const dones = removals
-    removals = []
-    const state = Flip.getState(rowEls().filter((el) => !leaving.has(el)))
-    dones.forEach((d) => d())
-    Flip.from(state, { duration: 0.3, ease: 'power2.inOut' })
-  })
-}
-function onLeave(el, done) {
-  const finish = () => { leaving.delete(el); done() }
-  if (reduceMotion()) return finish()
-  leaving.add(el)
-  gsap.killTweensOf(el)
-  gsap.to(el, { opacity: 0, x: 12, duration: 0.2, ease: 'power1.in', onComplete: () => queueRemoval(finish) })
-}
-
-onBeforeUnmount(() => gsap.killTweensOf(rowEls().flatMap((r) => [r, ...r.children])))
+const { onBeforeEnter, onEnter, onLeave } = useRowAnimation(table, visible)
 
 function moonClass(mi) {
   if (mi === null || mi === undefined) return 'moon-none'

@@ -24,7 +24,50 @@ describe('LunarView', () => {
     expect(rows[1].text()).toContain('terminator, Sun 10°')
     expect(rows[1].text()).toContain('1:00 AM')
     expect(rows[1].text()).not.toContain('41°') // the Moon's altitude is folded into the score, not shown
-    expect(w.findAll('th').map((th) => th.text())).toEqual(['', 'feature', 'tier', 'type', 'score', 'Sun', 'best time', 'why'])
+    expect(w.findAll('th').map((th) => th.text())).toEqual(['', 'feature', 'tier', 'score', 'sun', 'best time', 'why'])
+  })
+
+  it('draws the score as a number plus a meter whose bar width is the score', () => {
+    const cell = mountView().findAll('tr.data-row')[1].find('td.score')
+    expect(cell.find('.score-num').text()).toBe('80')
+    expect(cell.find('.score-track .score-bar').attributes('style')).toContain('width: 80%')
+  })
+
+  it('mirrors the tonight list: panel wrapper, tier-coloured badges, alternating rows', () => {
+    const w = mountView()
+    expect(w.find('.targets-panel.panel table.targets').exists()).toBe(true)
+    expect(w.findAll('tr.data-row .badge').map((b) => b.classes()).map((c) => c.find((x) => x.startsWith('tier-'))))
+      .toEqual(['tier-eyes', 'tier-binoculars', 'tier-telescope'])
+    const rows = w.findAll('tr.data-row')
+    expect(rows.map((r) => r.classes().includes('alt'))).toEqual([false, true, false])
+  })
+
+  it('expands a row on click to show its type, AL age group and the Moon altitude, and collapses on a second click', async () => {
+    const w = mountView()
+    expect(w.find('.detail-row').exists()).toBe(false)
+    await w.findAll('tr.data-row')[1].trigger('click')
+    expect(w.find('.detail-row').text()).toContain('Crater')
+    expect(w.find('.detail-row').text()).toContain('~10 days old')
+    expect(w.find('.detail-row').text()).toContain('Moon 41° up')
+    await w.findAll('tr.data-row')[1].trigger('click')
+    expect(w.find('.detail-row').exists()).toBe(false)
+  })
+
+  it('says a phase row has no fixed place when expanded', async () => {
+    const w = mountView({ features: [feature({ kind: 'phase', type: null, ageDays: null, sunAlt: null, name: 'Man in the Moon' })] })
+    await w.find('tr.data-row').trigger('click')
+    expect(w.find('.detail-row').text()).toContain('no fixed place')
+  })
+
+  it('caps the list at 25 rows with a show-all toggle, like the tonight list', async () => {
+    const many = Array.from({ length: 27 }, (_, i) => feature({ id: `f${i}`, name: `Feature ${i}`, score: 90 - i }))
+    const w = mountView({ features: many })
+    expect(w.findAll('tr.data-row')).toHaveLength(25)
+    expect(w.find('.show-more').text()).toBe('show all 27 features')
+    await w.find('.show-more').trigger('click')
+    expect(w.findAll('tr.data-row')).toHaveLength(27)
+    expect(w.find('.show-more').text()).toBe('show top 25')
+    expect(mountView().find('.show-more').exists()).toBe(false)
   })
 
   it('shows the Moon note and a count per tier tab', () => {
