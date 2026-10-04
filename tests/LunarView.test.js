@@ -336,6 +336,20 @@ describe('LunarView moon map', () => {
     expect(opts.some((o) => /moon(rise|set)/.test(o))).toBe(false)
   })
 
+  it('leaves times already past out of the sky-view times', async () => {
+    stubGl()
+    vi.useFakeTimers({ toFake: ['Date'] })
+    const times = moonVisibleTimes(location, new Date('2026-10-03T23:00:00Z'))
+    vi.setSystemTime(new Date(times[3].date.getTime() + 60_000))
+    const w = await mountMap({ features: [atPlace('a', 'Alpha', 10, 20)] })
+    await w.findAll('[aria-label="orientation"] button')[1].trigger('click')
+    await w.find('.glass-select-trigger').trigger('click')
+    const opts = w.findAll('[role="option"]').map((o) => o.text())
+    expect(opts).toHaveLength(1 + times.length - 4) // now + the times after times[3]
+    expect(opts.some((o) => /^moonrise/.test(o))).toBe(false)
+    expect(opts.at(-1)).toMatch(/^moonset /)
+  })
+
   it('redraws the Moon for the new time when the lunar data is reloaded', async () => {
     stubGl()
     vi.useFakeTimers({ toFake: ['Date'] })

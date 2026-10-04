@@ -33,7 +33,7 @@ const moonPos = computed(() => altaz('moon', date.value, observerFor(props.locat
 const passTimes = moonVisibleTimes(props.location, now,
   props.night && { start: new Date(props.night.startUtc), end: new Date(props.night.endUtc) })
 const stamp = (d) => fmtTime(toLocalIso(d, props.location.timezone))
-const timeOptions = [{ value: 'now', label: 'now' }, ...passTimes.map(({ date, event }) => ({
+const timeOptions = [{ value: 'now', label: 'now' }, ...passTimes.filter((t) => t.date >= now).map(({ date, event }) => ({
   value: String(date.getTime()),
   label: `${event ? `${event} ` : ''}${stamp(date)}`,
 }))]
