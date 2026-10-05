@@ -71,6 +71,19 @@ export function introEnd(range, bestHour) {
   return range.astroDusk ?? new Date((range.start.getTime() + range.end.getTime()) / 2)
 }
 
+/** Play: `time` moved on by `ms`, stopping at the end of `range` (then `done` is true). */
+export function playStep(time, range, ms) {
+  const end = range.end.getTime()
+  return time + ms >= end ? { time: end, done: true } : { time: time + ms, done: false }
+}
+
+/** `time` moved by `deltaMs`, snapped to the scrubber's 5-minute grid (which starts at sunset) and kept in `range`. */
+export function stepTime(time, range, deltaMs, step = 300_000) {
+  const start = range.start.getTime()
+  const t = start + Math.round((time + deltaMs - start) / step) * step
+  return Math.min(range.end.getTime(), Math.max(start, t))
+}
+
 /** Horizontal field of view for a tile `width` CSS px wide: about 7 px per degree, from 90° to 180°. */
 export const fieldOfView = (width) => clamp(width / 7, 90, 180)
 

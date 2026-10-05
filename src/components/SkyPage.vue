@@ -1,7 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { ZOOM_STEP } from '../composables/useSkyView'
-import { allTargets, altAzOf, filterTargets, targetHorizon } from '../engine/sky'
+import { allTargets, altAzOf, filterTargets, playStep, stepTime, targetHorizon } from '../engine/sky'
+import { reduceMotion } from '../motion'
 import SkyScrubber from './SkyScrubber.vue'
 import SkyStage from './SkyStage.vue'
 import SkyTargetPanel from './SkyTargetPanel.vue'
@@ -15,6 +16,7 @@ const props = defineProps({
   error: { type: String, default: null }, // tonight's plan failed
 })
 
+const HOUR = 3_600_000
 const failed = ref(false) // no WebGL: the list still works
 const instrument = ref('all')
 const upOnly = ref(false)
@@ -37,6 +39,49 @@ function pick(row) {
   selectedId.value = row.id
   if (row.pos && !failed.value) props.sky.turnTo(row.pos)
 }
+
+// Play runs the night at an hour per second (with reduced motion, a jump of an hour each second) and stops at sunrise.
+const playing = ref(false)
+let raf = 0
+let timer = 0
+let last = 0
+function advance(ms) {
+  const next = playStep(props.sky.time, props.sky.range, ms)
+  props.sky.time = next.time
+  if (next.done) pause()
+}
+function tick(t) {
+  advance((t - last) * HOUR / 1000)
+  last = t
+  if (playing.value) raf = requestAnimationFrame(tick)
+}
+function play() {
+  props.sky.touch()
+  if (props.sky.time >= props.sky.range.end.getTime()) props.sky.time = props.sky.range.start.getTime()
+  playing.value = true
+  if (reduceMotion()) timer = setInterval(() => advance(HOUR), 1000)
+  else {
+    last = performance.now()
+    raf = requestAnimationFrame(tick)
+  }
+}
+function pause() {
+  playing.value = false
+  cancelAnimationFrame(raf)
+  clearInterval(timer)
+}
+const inNight = (t) => t >= props.sky.range.start.getTime() && t <= props.sky.range.end.getTime()
+const nowInNight = computed(() => inNight(props.sky.now.getTime()))
+const bestInNight = computed(() => props.bestHour != null && inNight(Date.parse(props.bestHour)))
+function jump(t) {
+  pause()
+  props.sky.setTime(t)
+}
+const step = (dir) => jump(stepTime(props.sky.time, props.sky.range, dir * HOUR))
+const jumpNow = () => jump(Math.min(props.sky.range.end.getTime(), Math.max(props.sky.range.start.getTime(), Date.now())))
+
+watch(() => props.location, pause)
+onBeforeUnmount(pause)
 </script>
 
 <template>
@@ -57,7 +102,13 @@ function pick(row) {
                       @hover="hoverId = $event" @close="panelOpen = false" />
     </div>
     <div class="sky-scrub sky-timebar">
-      <SkyScrubber :sky="sky" :best-hour="bestHour" />
+      <button class="show-more sky-ctl" :aria-label="playing ? 'Pause' : 'Play the night'"
+              @click="playing ? pause() : play()">{{ playing ? '⏸' : '▶' }}</button>
+      <button class="show-more sky-ctl" aria-label="Back one hour" @click="step(-1)">−1h</button>
+      <SkyScrubber :sky="sky" :best-hour="bestHour" @scrub="pause" />
+      <button class="show-more sky-ctl" aria-label="Forward one hour" @click="step(1)">+1h</button>
+      <button class="show-more sky-ctl" :disabled="!nowInNight" @click="jumpNow">Now</button>
+      <button v-if="bestInNight" class="show-more sky-ctl" @click="jump(Date.parse(bestHour))">Best</button>
       <div class="btn-group zoom" role="group" aria-label="zoom">
         <button aria-label="zoom out" :disabled="sky.view.zoom <= 1" @click="sky.zoomBy(1 / ZOOM_STEP)">−</button>
         <button aria-label="zoom in" :disabled="sky.view.zoom >= sky.zoomMax" @click="sky.zoomBy(ZOOM_STEP)">+</button>

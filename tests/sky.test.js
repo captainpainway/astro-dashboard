@@ -4,7 +4,7 @@ import expected from './fixtures/tonight-expected.json'
 import { altaz, observerFor, starAltAz, twilightEvents } from '../src/engine/astro'
 import { toLocalIso } from '../src/engine/time'
 import {
-  allTargets, altAzOf, camera, filterTargets, darkness, edgeMarker, fieldOfView, horizonVector, introEnd, moonPath, nightRange, rotate, skyAt,
+  allTargets, altAzOf, camera, filterTargets, playStep, stepTime, darkness, edgeMarker, fieldOfView, horizonVector, introEnd, moonPath, nightRange, rotate, skyAt,
   starLimit, targetHorizon, targetVector, terrainSeed, topTargets, turnTarget, unitVector,
 } from '../src/engine/sky'
 
@@ -197,5 +197,21 @@ describe('drawing helpers', () => {
   it('bulges the terminator the right way for crescent and gibbous phases', () => {
     expect(moonPath(0.25, 9)).toBe('M 0 -9 A 9 9 0 0 1 0 9 A 4.5 9 0 0 0 0 -9 Z')
     expect(moonPath(0.75, 9)).toBe('M 0 -9 A 9 9 0 0 1 0 9 A 4.5 9 0 0 1 0 -9 Z')
+  })
+})
+
+describe('time steps', () => {
+  const range = { start: new Date('2026-10-06T00:33:10Z'), end: new Date('2026-10-06T12:21:40Z') }
+  const start = range.start.getTime()
+
+  it('plays forward and stops at the end of the night', () => {
+    expect(playStep(start, range, 60_000)).toEqual({ time: start + 60_000, done: false })
+    expect(playStep(range.end.getTime() - 1000, range, 60_000)).toEqual({ time: range.end.getTime(), done: true })
+  })
+
+  it("steps on the scrubber's 5-minute grid from sunset, inside the night", () => {
+    expect(stepTime(start + 7 * 60_000, range, 3_600_000)).toBe(start + 65 * 60_000)
+    expect(stepTime(start + 30 * 60_000, range, -3_600_000)).toBe(start)
+    expect(stepTime(range.end.getTime() - 60_000, range, 3_600_000)).toBe(range.end.getTime())
   })
 })

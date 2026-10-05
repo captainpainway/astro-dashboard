@@ -2,6 +2,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import SkyPage from '../src/components/SkyPage.vue'
 import { useSkyView } from '../src/composables/useSkyView'
+import { stepTime } from '../src/engine/sky'
+import { toLocalIso } from '../src/engine/time'
+import { fmtTime } from '../src/format'
 
 const location = { name: 'Big Bend National Park, TX', latitude: 29.33, longitude: -103.21, elevationM: 1111,
                    timezone: 'America/Chicago' }
@@ -141,5 +144,71 @@ describe('SkyPage targets', () => {
     expect(loading.w.find('.sky-targets').text()).toContain('loading targets…')
     const failed = await mountPage({ tonight: null, error: 'network down' })
     expect(failed.w.find('.sky-targets').text()).toContain('network down')
+  })
+})
+
+const DAY = new Date('2026-10-05T18:00:00Z') // 13:00 CDT, before sunset
+const timeText = (w) => w.find('.sky-time').text()
+const label = (ms) => fmtTime(toLocalIso(new Date(ms), location.timezone))
+const button = (w, text) => w.findAll('.sky-timebar button').find((b) => b.text() === text)
+
+describe('SkyPage time controls', () => {
+  it("steps by an hour on the scrubber's grid, and stays inside the night", async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w, sky } = await mountPage()
+    await w.find('[aria-label="Forward one hour"]').trigger('click')
+    expect(timeText(w)).toBe(label(stepTime(NIGHT.getTime(), sky.range, 3_600_000)))
+    for (let i = 0; i < 12; i++) await w.find('[aria-label="Back one hour"]').trigger('click')
+    expect(sky.time).toBe(sky.range.start.getTime())
+  })
+
+  it('jumps to now and to the best hour', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    await w.find('[aria-label="Forward one hour"]').trigger('click')
+    await button(w, 'Now').trigger('click')
+    expect(timeText(w)).toBe('12:00 AM')
+    await button(w, 'Best').trigger('click')
+    expect(timeText(w)).toBe('11:00 PM')
+  })
+
+  it('hides Best until there is a best hour, and disables Now outside the night', async () => {
+    at(DAY)
+    media({ reduce: true })
+    const { w } = await mountPage({ bestHour: null })
+    expect(button(w, 'Best')).toBeUndefined()
+    expect(button(w, 'Now').attributes('disabled')).toBeDefined()
+  })
+
+  it('plays an hour per second with reduced motion, and stops at sunrise', async () => {
+    at(NIGHT, { toFake: ['Date', 'setInterval', 'clearInterval'] })
+    media({ reduce: true })
+    const { w, sky } = await mountPage()
+    await w.find('[aria-label="Play the night"]').trigger('click')
+    vi.advanceTimersByTime(2000)
+    await flushPromises()
+    expect(sky.time).toBe(NIGHT.getTime() + 2 * 3_600_000)
+    vi.advanceTimersByTime(20_000)
+    await flushPromises()
+    expect(sky.time).toBe(sky.range.end.getTime())
+    expect(w.find('[aria-label="Play the night"]').exists()).toBe(true)
+  })
+
+  it('pauses when the scrubber moves, and plays from sunset when started at sunrise', async () => {
+    at(NIGHT, { toFake: ['Date', 'setInterval', 'clearInterval'] })
+    media({ reduce: true })
+    const { w, sky } = await mountPage()
+    await w.find('[aria-label="Play the night"]').trigger('click')
+    const t = sky.range.start.getTime() + 10 * 60_000
+    await w.find('.sky-range').setValue(String(t))
+    vi.advanceTimersByTime(2000)
+    await flushPromises()
+    expect(sky.time).toBe(t)
+    expect(w.find('[aria-label="Play the night"]').exists()).toBe(true)
+    sky.setTime(sky.range.end.getTime())
+    await w.find('[aria-label="Play the night"]').trigger('click')
+    expect(sky.time).toBe(sky.range.start.getTime())
   })
 })

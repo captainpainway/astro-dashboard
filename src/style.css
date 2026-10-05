@@ -484,6 +484,12 @@ a:hover { text-decoration: underline; }
   font-variant-numeric: tabular-nums; }
 .sky-ring.dim { opacity: .45; }
 .sky-ring.dim:hover, .sky-ring.dim.active, .sky-ring.dim:focus-visible { opacity: 1; }
+.sky-timebar { flex-wrap: wrap; row-gap: 0.5rem; }
+.sky-ctl { min-width: 2.4rem; padding: 0.25rem 0.7rem; }
+.sky-ctl:disabled { opacity: .5; cursor: default; }
+@media (max-width: 700px) {
+  .sky-timebar .sky-track { order: -1; } /* the slider gets the first row; the buttons wrap below it */
+}
 @media (max-width: 700px) {
   .sky-body.panel-open { grid-template-columns: minmax(0, 1fr); }
   .sky-targets { position: absolute; inset: auto 0 0 0; height: 60%; z-index: 7; border-left: 0;
