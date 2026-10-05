@@ -6,6 +6,7 @@ import { moonView, moonVisibleTimes, project, rotateBasis, skyRotation, sunVecto
 import { altaz, observerFor } from '../engine/astro'
 import { toLocalIso } from '../engine/time'
 import GlassSelect from './GlassSelect.vue'
+import { reduceMotion, tipIn, tipOut } from '../motion'
 // NASA SVS CGI Moon Kit (public domain): LROC color map, 2048x1024 equirectangular.
 import textureUrl from '../assets/moon-2k.jpg'
 
@@ -130,19 +131,6 @@ function render() {
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 }
 watch([basis, view], () => { if (uniforms) render() })
-
-const reduceMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-// The tip's bottom-left corner sits 14px above its dot: it pops out from there and springs into place, then shrinks back.
-function tipIn(el, done) {
-  gsap.set(el, { yPercent: -100 })
-  if (reduceMotion()) { gsap.set(el, { y: -14 }); return done() }
-  gsap.fromTo(el, { opacity: 0, scale: 0.3, y: -4, rotation: -4 },
-    { opacity: 1, scale: 1, y: -14, rotation: 0, duration: 0.45, ease: 'back.out(2.4)', onComplete: done })
-}
-function tipOut(el, done) {
-  if (reduceMotion()) return done()
-  gsap.to(el, { opacity: 0, scale: 0.6, y: -8, duration: 0.15, ease: 'power2.in', onComplete: done })
-}
 
 // Turn the Moon the short way round to the new angle; the dots and the canvas follow `spin.angle` frame by frame.
 watch(skyAngle, (to) => {

@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import OverviewView from '../src/components/OverviewView.vue'
+import { Draggable } from 'gsap/Draggable'
+import SkyPanorama from '../src/components/SkyPanorama.vue'
+import { nightRange } from '../src/engine/sky'
+import { toLocalIso } from '../src/engine/time'
+import { fmtTime } from '../src/format'
 
 const tonight = {
   mode: 'window',
@@ -245,5 +250,186 @@ describe('OverviewView sky tile', () => {
     w.find('.sky-tile canvas').element.dispatchEvent(new Event('webglcontextlost'))
     await flushPromises()
     expect(w.find('.sky-tile').exists()).toBe(false)
+  })
+})
+
+// 00:00 CDT on 2026-10-06 at Big Bend: M45 is 28° up in the ENE, Saturn (54°) and SS Cyg (68°) are above a view that
+// faces M45, and M42 is below the horizon. 13:00 CDT the day before is daytime, before the 19:33 sunset.
+const NIGHT = new Date('2026-10-06T05:00:00Z')
+const DAY = new Date('2026-10-05T18:00:00Z')
+const target = (id, name, targetClass, score) => ({
+  id, name, targetClass, score, maxAlt: 60, bestTime: '2026-10-06T01:00:00-05:00', altAtBest: 60, azAtBest: 90,
+  window: { start: '2026-10-05T20:52:00-05:00', end: '2026-10-06T06:10:00-05:00' }, moonInterference: 0, notes: '',
+})
+const skyTonight = { ...tonight, instruments: {
+  dob_8inch: [target('M45', 'Pleiades', 'messier', 95), target('Saturn', 'Saturn', 'planet', 60),
+              target('SS Cyg', 'SS Cyg', 'variable', 50), target('M42', 'Orion Nebula', 'messier', 40),
+              target('nowhere', 'Nowhere', 'messier', 30)],
+  dwarf_mini: [target('M45', 'Pleiades', 'cluster', 90)],
+} }
+const hour = (time, score) => ({ ...forecast.hours[0], time, isDark: true, score })
+const skyForecast = { ...forecast, hours: [hour('2026-10-05T21:00:00-05:00', 50), hour('2026-10-05T23:00:00-05:00', 80),
+                                           hour('2026-10-06T00:00:00-05:00', 70)] }
+const media = ({ reduce = false, coarse = false } = {}) => vi.stubGlobal('matchMedia', (q) => ({
+  matches: (q === '(prefers-reduced-motion: reduce)' && reduce) || (q === '(pointer: coarse)' && coarse),
+}))
+const at = (date, extra = {}) => { vi.useFakeTimers({ toFake: ['Date'], ...extra }); vi.setSystemTime(date) }
+const mountSky = async (props = {}) => {
+  stubGl()
+  const w = mount(OverviewView, { props: { ...allProps, location, tonight: skyTonight, forecast: skyForecast, ...props } })
+  await flushPromises()
+  return w
+}
+const ringLabels = (w) => w.findAll('.sky-ring').map((b) => b.attributes('aria-label'))
+const edgeLabels = (w) => w.findAll('.sky-edge').map((b) => b.attributes('aria-label')).sort()
+const timeText = (w) => w.find('.sky-time').text()
+const atChips = (w) => w.findAll('.hour-chip').map((c) => c.classes().includes('at'))
+
+describe('SkyPanorama overlay and time', () => {
+  it('rings on-screen targets once each, pins the others to the edge, and skips targets below the horizon or unknown', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    expect(ringLabels(w)).toEqual(['Pleiades, messier, 28° up, ENE']) // the view opens facing the #1 target
+    expect(edgeLabels(w)).toEqual(['Turn to SS Cyg', 'Turn to Saturn'])
+    expect(w.find('.sky-tile').text()).not.toContain('Orion Nebula')
+    expect(w.find('.sky-tile').text()).not.toContain('Nowhere')
+  })
+
+  it('still rings the targets when the tonight plan is in instant mode', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky({ tonight: { ...skyTonight, mode: 'instant' } })
+    expect(ringLabels(w)).toEqual(['Pleiades, messier, 28° up, ENE'])
+  })
+
+  it('splits the ring of a target both instruments list, and names both in its tooltip', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    const ring = w.find('.sky-ring')
+    expect(ring.element.style.getPropertyValue('--ring-a')).toBe('#7aa2ff')
+    expect(ring.element.style.getPropertyValue('--ring-b')).toBe('#f0abfc')
+    await ring.trigger('mouseenter')
+    const tip = w.find('.sky-tip')
+    expect(tip.text()).toContain('Pleiades')
+    expect(tip.text()).toContain('8" Dobsonian · Dwarf Mini')
+    expect(tip.text()).toContain('Best at 1:00 AM')
+    await ring.trigger('mouseleave')
+    await flushPromises()
+    expect(w.find('.sky-tip').exists()).toBe(false)
+  })
+
+  it('opens at the current time at night, in the site time zone, and highlights that hour', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    expect(timeText(w)).toBe('12:00 AM')
+    expect(atChips(w)).toEqual([false, false, true])
+  })
+
+  it('shows the site clock, not the viewer clock', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky({ location: { ...location, timezone: 'America/New_York' } })
+    expect(timeText(w)).toBe('1:00 AM')
+  })
+
+  it('moves the time and the hourly highlight with the scrubber', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    const input = w.find('.sky-range')
+    const min = Number(input.attributes('min'))
+    await input.setValue(String(min + 90 * 60_000)) // 90 minutes after sunset, on the 5-minute grid
+    expect(timeText(w)).toBe(fmtTime(toLocalIso(new Date(min + 90 * 60_000), 'America/Chicago')))
+    expect(atChips(w)).toEqual([true, false, false]) // 19:33 sunset + 90 min falls in the 21:00 hour
+  })
+
+  it('opens on the best dark hour in daytime when motion is reduced', async () => {
+    at(DAY)
+    media({ reduce: true })
+    expect(timeText(await mountSky())).toBe('11:00 PM') // the 23:00 hour scores best
+  })
+
+  it('opens at astronomical dusk in daytime before the forecast has loaded', async () => {
+    at(DAY)
+    media({ reduce: true })
+    expect(timeText(await mountSky({ forecast: null }))).toBe('8:52 PM')
+  })
+
+  it('plays the intro from sunset in daytime, and a key press stops it', async () => {
+    at(DAY, { shouldAdvanceTime: true })
+    media()
+    const w = await mountSky()
+    expect(timeText(w)).toBe('7:33 PM')
+    await vi.waitFor(() => expect(timeText(w)).not.toBe('7:33 PM'), { timeout: 3000 })
+    await w.find('.sky-stage').trigger('keydown', { key: 'ArrowLeft' })
+    const stopped = timeText(w)
+    await new Promise((r) => setTimeout(r, 300))
+    expect(timeText(w)).toBe(stopped)
+  })
+
+  it('restarts in the new night when the location changes mid-intro', async () => {
+    at(DAY, { shouldAdvanceTime: true })
+    media()
+    const w = await mountSky()
+    const seattle = { name: 'Seattle, WA', latitude: 47.61, longitude: -122.33, timezone: 'America/Los_Angeles' }
+    await w.setProps({ location: seattle })
+    await flushPromises()
+    const range = nightRange(seattle, new Date())
+    expect(w.find('.sky-range').attributes('min')).toBe(String(range.start.getTime()))
+    await new Promise((r) => setTimeout(r, 300))
+    const last = w.findComponent(SkyPanorama).emitted('time').at(-1)[0]
+    expect(last >= range.start.getTime() && last <= range.end.getTime()).toBe(true)
+  })
+
+  it('turns to a target when its edge marker is clicked', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    await w.findAll('.sky-edge').find((b) => b.text().includes('Saturn')).trigger('click')
+    expect(ringLabels(w).some((l) => l.startsWith('Saturn'))).toBe(true)
+    expect(edgeLabels(w)).not.toContain('Turn to Saturn')
+  })
+
+  it('turns the view with the arrow keys', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    const x = () => parseFloat(w.find('.sky-ring').element.style.left)
+    const before = x()
+    await w.find('.sky-stage').trigger('keydown', { key: 'ArrowRight' })
+    expect(x()).toBeLessThan(before)
+  })
+
+  it('faces the #1 target when the plan arrives after the tile opened', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky({ tonight: null })
+    expect(w.findAll('.sky-ring')).toHaveLength(0)
+    await w.setProps({ tonight: skyTonight })
+    await flushPromises()
+    expect(ringLabels(w)).toEqual(['Pleiades, messier, 28° up, ENE'])
+  })
+
+  it('announces the time and how many targets are up once the time settles', async () => {
+    at(NIGHT, { toFake: ['Date', 'setTimeout', 'clearTimeout'] })
+    media({ reduce: true })
+    const w = await mountSky()
+    vi.advanceTimersByTime(500)
+    await flushPromises()
+    expect(w.find('.sky-tile [role="status"]').text()).toBe('12:00 AM, 3 of 4 targets above the horizon')
+  })
+
+  it('drags only sideways on touch screens so vertical swipes scroll the page', async () => {
+    at(NIGHT)
+    const create = vi.spyOn(Draggable, 'create')
+    media({ coarse: true })
+    await mountSky()
+    expect(create.mock.calls.at(-1)[1].type).toBe('x')
+    media()
+    await mountSky()
+    expect(create.mock.calls.at(-1)[1].type).toBe('x,y')
   })
 })

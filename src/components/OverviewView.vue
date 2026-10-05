@@ -45,6 +45,13 @@ const bestWindow = computed(() => {
   return dark.reduce((a, b) => (b.score > (a?.score ?? -Infinity) ? b : a), null)
 })
 
+// The hourly chip whose hour contains the sky tile's time.
+const scrubTime = ref(null)
+const scrubHour = computed(() => (props.forecast?.hours ?? []).find((h) => {
+  const t = Date.parse(h.time)
+  return scrubTime.value >= t && scrubTime.value < t + 3_600_000
+})?.time ?? null)
+
 const topLunar = computed(() => {
   const f = props.lunar?.features ?? []
   return f.length ? { top: f[0], more: f.length - 1 } : null
@@ -53,7 +60,8 @@ const topLunar = computed(() => {
 
 <template>
   <div class="overview">
-  <SkyPanorama v-if="location && !skyFailed" :location="location" @failed="skyFailed = true" />
+  <SkyPanorama v-if="location && !skyFailed" :location="location" :tonight="tonight"
+               :best-hour="bestWindow?.time ?? null" @time="scrubTime = $event" @failed="skyFailed = true" />
   <section class="bento">
     <!-- Conditions: the hero — "is tonight worth it?" -->
     <article v-if="tonight" class="panel ov-card tile-hero card-conditions">
@@ -140,7 +148,7 @@ const topLunar = computed(() => {
       <div class="ov-hours">
         <div v-for="h in forecast.hours" :key="h.time"
              class="hour-chip"
-             :class="[`rc-${normalizeRating(h.rating)}`, { best: bestWindow && h.time === bestWindow.time }]">
+             :class="[`rc-${normalizeRating(h.rating)}`, { best: bestWindow && h.time === bestWindow.time, at: h.time === scrubHour }]">
           <span class="hour-chip-time">{{ fmtTime(h.time) }}</span>
           <span class="hour-chip-emoji">{{ weatherEmoji(h) }}</span>
           <span class="hour-chip-temp">{{ h.tempF != null ? h.tempF + '°' : '—' }}</span>
