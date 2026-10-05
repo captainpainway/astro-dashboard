@@ -488,6 +488,25 @@ describe('SkyPanorama overlay and time', () => {
     near(spread(w) / wide, 2, 0.3)
   })
 
+  it('tilts with a two-finger vertical drag, and says so on the first touch', async () => {
+    at(NIGHT)
+    media({ reduce: true, coarse: true })
+    const w = await mountSky()
+    const stage = w.find('.sky-stage').element
+    const pointer = (type, pointerId, clientY) => stage.dispatchEvent(
+      Object.assign(new Event(type, { bubbles: true }), { pointerId, pointerType: 'touch', clientX: 400 + 100 * pointerId, clientY }))
+    const top = () => parseFloat(w.find('.sky-ring').element.style.top)
+    const before = top()
+    pointer('pointerdown', 1, 100)
+    await flushPromises()
+    expect(w.find('.sky-hint').text()).toBe('Two fingers to tilt and zoom')
+    pointer('pointerdown', 2, 100)
+    pointer('pointermove', 1, 160)
+    pointer('pointermove', 2, 160) // both fingers 60px down: the sky follows them, so the view tilts up
+    await flushPromises()
+    expect(top()).toBeGreaterThan(before + 30)
+  })
+
   it('turns the view with the arrow keys', async () => {
     at(NIGHT)
     media({ reduce: true })

@@ -209,32 +209,41 @@ function turnTo(r) {
 // Ctrl + scroll zooms; trackpad pinches arrive as Ctrl + wheel too.
 const hint = ref('')
 let hintTimer = 0
+function showHint(text) {
+  hint.value = text
+  clearTimeout(hintTimer)
+  hintTimer = setTimeout(() => { hint.value = '' }, 1500)
+}
 function onWheel(e) {
-  if (!e.ctrlKey && !e.metaKey) {
-    hint.value = `${/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'} + scroll to zoom`
-    clearTimeout(hintTimer)
-    hintTimer = setTimeout(() => { hint.value = '' }, 1500)
-    return
-  }
+  if (!e.ctrlKey && !e.metaKey) return showHint(`${/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'} + scroll to zoom`)
   e.preventDefault()
   hint.value = ''
   zoomBy(Math.exp(-e.deltaY * 0.002), false)
 }
 
-// Two fingers zoom by how far apart they move; the drag pauses until fewer than two are down.
+// Two fingers zoom by how far apart they move and tilt by how far they move up or down together (one finger only
+// turns on touch screens, so vertical swipes scroll the page); the drag pauses until fewer than two are down.
 const fingers = new Map()
 let pinch = null
+let hinted = false
 const spanOf = () => { const [a, b] = [...fingers.values()]; return Math.hypot(a.x - b.x, a.y - b.y) }
+const midY = () => { const [a, b] = [...fingers.values()]; return (a.y + b.y) / 2 }
 function onPointerDown(e) {
   fingers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+  if (e.pointerType === 'touch' && !hinted) { hinted = true; showHint('Two fingers to tilt and zoom') }
   if (fingers.size !== 2) return
   drag?.disable()
-  pinch = { span: spanOf() || 1, zoom: view.zoom }
+  pinch = { span: spanOf() || 1, zoom: view.zoom, y: midY() }
 }
 function onPointerMove(e) {
   if (!fingers.has(e.pointerId)) return
   fingers.set(e.pointerId, { x: e.clientX, y: e.clientY })
-  if (pinch) { touch(); view.zoom = clampZoom(pinch.zoom * spanOf() / pinch.span) }
+  if (!pinch) return
+  touch()
+  view.zoom = clampZoom(pinch.zoom * spanOf() / pinch.span)
+  const y = midY()
+  view.pitch = Math.min(85, Math.max(5, view.pitch + (y - pinch.y) * cam.value.degPerPx))
+  pinch.y = y
 }
 function onPointerUp(e) {
   fingers.delete(e.pointerId)
