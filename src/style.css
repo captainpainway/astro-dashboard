@@ -436,7 +436,6 @@ a:hover { text-decoration: underline; }
   pointer-events: none; }
 .sky-tick-best { background: var(--good); }
 .sky-time { font-variant-numeric: tabular-nums; min-width: 5.5rem; }
-.sky-credits { color: var(--muted); }
 .sky-hint { position: absolute; left: 50%; top: 50%; margin: 0; transform: translate(-50%, -50%); padding: 0.4rem 0.9rem;
   border-radius: 999px; font-size: 0.85rem; background: var(--glass-bg-menu); border: 1px solid var(--glass-edge);
   white-space: nowrap; pointer-events: none; }
@@ -446,7 +445,7 @@ a:hover { text-decoration: underline; }
 .sky-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 @media (max-width: 700px) {
   .sky-stage { aspect-ratio: 4 / 3; }
-  .sky-scrub { flex-wrap: wrap; row-gap: 0.5rem; } /* slider on its own row; zoom, time and credits below */
+  .sky-scrub { flex-wrap: wrap; row-gap: 0.5rem; } /* slider on its own row; zoom and time below */
   .sky-track { flex-basis: 100%; }
 }
 

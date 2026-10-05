@@ -337,7 +337,6 @@ onBeforeUnmount(() => {
         <button aria-label="zoom in" :disabled="view.zoom >= zoomMax" @click="zoomBy(ZOOM_STEP)">+</button>
       </div>
       <span class="sky-time">{{ timeLabel }}</span>
-      <a class="sky-credits small" href="credits.txt">credits</a>
     </div>
     <p class="sr-only" role="status" aria-live="polite">{{ status }}</p>
   </section>
