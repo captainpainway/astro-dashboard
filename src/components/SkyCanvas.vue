@@ -1,12 +1,13 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import skyData from '../engine/sky.json'
-import { VISIBLE_Z, darkness, horizonVector, starColor, starLimit, unitVector } from '../engine/sky'
+import { VISIBLE_Z, darkness, eclipticLine, gridLines, horizonVector, meridianLine, starColor, starLimit, unitVector } from '../engine/sky'
 
 const props = defineProps({
   frame: { type: Object, required: true }, // skyAt(...)
   cam: { type: Object, required: true }, // camera(...)
   seed: { type: Array, required: true }, // terrainSeed(...)
+  layers: { type: Object, required: true }, // which line layers to draw (see SkyLayersMenu)
 })
 const emit = defineEmits(['failed'])
 const canvas = ref(null)
@@ -96,14 +97,23 @@ void main() {
   gl_Position = hidden ? HIDDEN : clipOf(h);
 }`
 const LINE_FRAG = `precision mediump float;
+uniform vec3 uColor;
 uniform float uAlpha;
-void main() { gl_FragColor = vec4(vec3(0.55, 0.65, 0.9) * uAlpha, uAlpha); }`
+void main() { gl_FragColor = vec4(uColor * uAlpha, uAlpha); }`
+// Line layers: colour, strength, and whether the vertices are J2000 (turned by uRot) or already in the horizon frame.
+const IDENTITY = [1, 0, 0, 0, 1, 0, 0, 0, 1]
+const LINE_STYLES = {
+  lines: { color: [0.55, 0.65, 0.9], alpha: (f) => 0.22 * darkness(f), j2000: true },
+  grid: { color: [0.6, 0.7, 0.85], alpha: () => 0.16, j2000: false },
+  ecliptic: { color: [1, 0.8, 0.45], alpha: () => 0.45, j2000: true },
+  meridian: { color: [0.5, 0.9, 0.6], alpha: () => 0.35, j2000: false },
+}
 
 let gl = null
 let progs = null
 let buffers = null
 let starCount = 0
-let lineCount = 0
+let lineSets = null
 
 function compile(vert, frag) {
   const shader = (type, src) => {
@@ -129,20 +139,30 @@ function buffer(data) {
   return b
 }
 
+// A segment list as two buffers: each vertex, and its segment's other end (see LINE_VERT).
+const segmentBuffers = (segs) => ({
+  pos: buffer(segs.flatMap(([a, b]) => [...a, ...b])),
+  other: buffer(segs.flatMap(([a, b]) => [...b, ...a])),
+  count: segs.length * 2,
+})
+
 function setup() {
   progs = { sky: compile(QUAD_VERT, SKY_FRAG), stars: compile(STAR_VERT, STAR_FRAG), lines: compile(LINE_VERT, LINE_FRAG) }
   const { stars, lines } = skyData
   const v = ([ra, dec]) => unitVector(ra, dec)
-  const segs = lines.flatMap((figure) => figure.flatMap((line) => line.slice(1).map((p, i) => [line[i], p])))
+  const figures = lines.flatMap((figure) => figure.flatMap((line) => line.slice(1).map((p, i) => [v(line[i]), v(p)])))
   starCount = stars.length
-  lineCount = segs.length * 2
   buffers = {
     quad: buffer([-1, -1, 1, -1, -1, 1, 1, 1]),
     starPos: buffer(stars.flatMap(([ra, dec]) => unitVector(ra, dec))),
     starMag: buffer(stars.map((s) => s[2])),
     starColor: buffer(stars.flatMap((s) => starColor(s[3]))),
-    linePos: buffer(segs.flatMap(([a, b]) => [...v(a), ...v(b)])),
-    lineOther: buffer(segs.flatMap(([a, b]) => [...v(b), ...v(a)])),
+  }
+  lineSets = {
+    lines: segmentBuffers(figures),
+    grid: segmentBuffers(gridLines()),
+    ecliptic: segmentBuffers(eclipticLine()),
+    meridian: segmentBuffers(meridianLine()),
   }
   gl.enable(gl.BLEND)
   gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA) // premultiplied alpha
@@ -175,9 +195,9 @@ function render() {
     gl.uniform3fv(p.u('uUp'), cam.up)
     gl.uniform3fv(p.u('uFwd'), cam.fwd)
   }
-  const projected = (p) => {
+  const projected = (p, rot = frame.rot) => {
     view(p)
-    gl.uniformMatrix3fv(p.u('uRot'), false, frame.rot)
+    gl.uniformMatrix3fv(p.u('uRot'), false, rot)
     gl.uniform2f(p.u('uK'), 2 * cam.scale / cam.width, 2 * cam.scale / cam.height)
   }
   const sky = (terrain) => (p) => {
@@ -194,8 +214,15 @@ function render() {
   }
   const quad = { aPos: [buffers.quad, 2] }
   draw(progs.sky, sky(false), quad, gl.TRIANGLE_STRIP, 4)
-  draw(progs.lines, (p) => { projected(p); gl.uniform1f(p.u('uAlpha'), 0.22 * darkness(frame)) },
-       { aPos: [buffers.linePos, 3], aOther: [buffers.lineOther, 3] }, gl.LINES, lineCount)
+  for (const [key, style] of Object.entries(LINE_STYLES)) {
+    if (!props.layers[key]) continue
+    const set = lineSets[key]
+    draw(progs.lines, (p) => {
+      projected(p, style.j2000 ? frame.rot : IDENTITY)
+      gl.uniform3fv(p.u('uColor'), style.color)
+      gl.uniform1f(p.u('uAlpha'), style.alpha(frame))
+    }, { aPos: [set.pos, 3], aOther: [set.other, 3] }, gl.LINES, set.count)
+  }
   draw(progs.stars, (p) => { projected(p); gl.uniform1f(p.u('uLimit'), starLimit(frame)); gl.uniform1f(p.u('uDpr'), dpr) },
        { aPos: [buffers.starPos, 3], aMag: [buffers.starMag, 1], aColor: [buffers.starColor, 3] }, gl.POINTS, starCount)
   draw(progs.sky, sky(true), quad, gl.TRIANGLE_STRIP, 4)
@@ -204,7 +231,7 @@ function render() {
 // Redraw at most once per animation frame, and only when something changed: no loop runs while idle.
 let queued = 0
 const schedule = () => { if (progs && !queued) queued = requestAnimationFrame(() => { queued = 0; render() }) }
-watch(() => [props.frame, props.cam, props.seed], schedule)
+watch(() => [props.frame, props.cam, props.seed, props.layers], schedule)
 
 const fail = () => emit('failed')
 onMounted(() => {

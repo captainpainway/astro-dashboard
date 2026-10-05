@@ -4,7 +4,7 @@ import expected from './fixtures/tonight-expected.json'
 import { altaz, observerFor, starAltAz, twilightEvents } from '../src/engine/astro'
 import { toLocalIso } from '../src/engine/time'
 import {
-  allTargets, altAzOf, camera, filterTargets, playStep, stepTime, darkness, edgeMarker, fieldOfView, horizonVector, introEnd, moonPath, nightRange, rotate, skyAt,
+  DEEP_SKY, allTargets, altAzOf, eclipticLine, gridLines, meridianLine, camera, filterTargets, playStep, stepTime, darkness, edgeMarker, fieldOfView, horizonVector, introEnd, moonPath, nightRange, rotate, skyAt,
   starLimit, targetHorizon, targetVector, terrainSeed, topTargets, turnTarget, unitVector,
 } from '../src/engine/sky'
 
@@ -213,5 +213,48 @@ describe('time steps', () => {
     expect(stepTime(start + 7 * 60_000, range, 3_600_000)).toBe(start + 65 * 60_000)
     expect(stepTime(start + 30 * 60_000, range, -3_600_000)).toBe(start)
     expect(stepTime(range.end.getTime() - 60_000, range, 3_600_000)).toBe(range.end.getTime())
+  })
+})
+
+describe('line layers and catalogues', () => {
+  const unit = (v) => near(Math.hypot(...v), 1, 1e-9)
+
+  it('draws the ecliptic as a closed J2000 circle through the equinox, tilted 23.44°', () => {
+    const segs = eclipticLine()
+    expect(segs).toHaveLength(180)
+    const pole = [0, -Math.sin(23.4393 * Math.PI / 180), Math.cos(23.4393 * Math.PI / 180)]
+    for (const [a] of segs) {
+      unit(a)
+      near(a[0] * pole[0] + a[1] * pole[1] + a[2] * pole[2], 0, 1e-9)
+    }
+    expect(segs[0][0]).toEqual([1, 0, 0])
+  })
+
+  it('grids the horizon frame every 15° of altitude and 30° of azimuth', () => {
+    const segs = gridLines()
+    expect(segs).toHaveLength(5 * 120 + 12 * 29)
+    segs.forEach(([a, b]) => { unit(a); unit(b) })
+    near(altAzOf(segs[2 * 120][0]).alt, 45, 1e-9) // the third circle
+  })
+
+  it('runs the meridian from the north horizon over the zenith to the south horizon', () => {
+    const segs = meridianLine()
+    expect(segs).toHaveLength(90)
+    segs.forEach(([a]) => near(a[1], 0, 1e-9)) // no east–west component
+    const [n, s] = [segs[0][0], segs.at(-1)[1]] // compared with near(): the vectors carry -0 components
+    ;[[n, [1, 0, 0]], [s, [-1, 0, 0]]].forEach(([v, want]) => v.forEach((x, i) => near(x, want[i], 1e-9)))
+  })
+
+  it('merges Messier and NGC objects, keeping the common names', () => {
+    expect(DEEP_SKY).toHaveLength(125)
+    expect(new Set(DEEP_SKY.map((o) => o.id)).size).toBe(125)
+    expect(DEEP_SKY.find((o) => o.id === 'M45').name).toBe('Pleiades')
+    expect(DEEP_SKY.find((o) => o.id === 'M1').name).toBe('M1')
+  })
+
+  it('names 216 stars down to magnitude 3.5', () => {
+    expect(sky.starNames).toHaveLength(216)
+    expect(sky.starNames.every(([, , , mag]) => mag <= 3.5)).toBe(true)
+    expect(sky.starNames.map(([name]) => name)).toEqual(expect.arrayContaining(['Polaris', 'Vega', 'Acrux']))
   })
 })

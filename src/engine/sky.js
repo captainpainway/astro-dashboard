@@ -1,5 +1,6 @@
 import { Rotation_EQJ_HOR } from 'astronomy-engine'
 import catalogs from './catalogs.json'
+import skyData from './sky.json'
 import { PLANETS, altaz, darkWindow, moonIllumination, moonIsWaxing, observerFor, twilightEvents } from './astro'
 import { localDate } from './time'
 import { isDisplayable } from '../format'
@@ -169,6 +170,41 @@ const CATALOG = new Map([
   ...catalogs.ngc.map((o) => [o.id, o]),
   ...catalogs.watchlist.map((o) => [o.designation, o]),
 ])
+
+// Messier objects with the NGC list's common names merged in (the NGC list repeats 25 Messier ids with names).
+const deep = new Map(catalogs.messier.map((o) => [o.id, o]))
+for (const o of catalogs.ngc) deep.set(o.id, { ...deep.get(o.id), ...o })
+/** Deep-sky objects for the sky page's catalogue layer and search, with J2000 unit vectors. */
+export const DEEP_SKY = [...deep.values()].map((o) =>
+  ({ id: o.id, name: o.name ?? o.id, type: o.type, magnitude: o.magnitude, v: unitVector(o.raHours, o.decDegrees) }))
+
+const OBLIQUITY = 23.4393 * RAD
+/** The ecliptic as J2000 segments `[a, b]` of unit vectors, every `step` degrees of longitude. */
+export function eclipticLine(step = 2) {
+  const at = (lon) => {
+    const l = lon * RAD
+    return [Math.cos(l), Math.sin(l) * Math.cos(OBLIQUITY), Math.sin(l) * Math.sin(OBLIQUITY)]
+  }
+  return Array.from({ length: 360 / step }, (_, i) => [at(i * step), at((i + 1) * step)])
+}
+
+/** Horizon-frame segments: altitude circles every 15° and azimuth lines every 30°, stopping 3° short of the zenith. */
+export function gridLines() {
+  const segs = []
+  for (let alt = 15; alt < 90; alt += 15) {
+    for (let az = 0; az < 360; az += 3) segs.push([horizonVector({ alt, az }), horizonVector({ alt, az: az + 3 })])
+  }
+  for (let az = 0; az < 360; az += 30) {
+    for (let alt = 0; alt < 87; alt += 3) segs.push([horizonVector({ alt, az }), horizonVector({ alt: alt + 3, az })])
+  }
+  return segs
+}
+
+/** The meridian, from the north horizon over the zenith to the south horizon, as horizon-frame segments. */
+export function meridianLine(step = 2) {
+  const at = (a) => (a <= 90 ? horizonVector({ alt: a, az: 0 }) : horizonVector({ alt: 180 - a, az: 180 }))
+  return Array.from({ length: 180 / step }, (_, i) => [at(i * step), at((i + 1) * step)])
+}
 
 /** J2000 unit vector of a catalogue target (Messier, NGC by id, watchlist by designation); null if unknown. */
 export function targetVector(id) {

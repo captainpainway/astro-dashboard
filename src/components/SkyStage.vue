@@ -13,13 +13,14 @@ import { Draggable } from 'gsap/Draggable'
 import { InertiaPlugin } from 'gsap/InertiaPlugin'
 import skyData from '../engine/sky.json'
 import {
-  altAzOf, camera, darkness, edgeMarker, fieldOfView, horizonVector, moonPath, rotate, targetHorizon, terrainSeed,
+  DEEP_SKY, altAzOf, camera, darkness, edgeMarker, fieldOfView, horizonVector, moonPath, rotate, targetHorizon, terrainSeed,
   unitVector,
 } from '../engine/sky'
 import { ZOOM_STEP } from '../composables/useSkyView'
 import { compass, fmtTime } from '../format'
 import { reduceMotion, tipIn, tipOut } from '../motion'
 import SkyCanvas from './SkyCanvas.vue'
+import { DEFAULT_LAYERS } from './SkyLayersMenu.vue'
 
 gsap.registerPlugin(Draggable, InertiaPlugin)
 
@@ -30,12 +31,14 @@ const props = defineProps({
   selectedId: { type: String, default: null }, // the target picked on the sky page; its tooltip stays up
   hoverId: { type: String, default: null }, // a target hovered in the sky page's list
   emphasis: { type: Object, default: null }, // Set of ids ringed at full strength; the other rings are dimmed
+  layers: { type: Object, default: () => DEFAULT_LAYERS }, // see SkyLayersMenu
   immersive: { type: Boolean, default: false }, // sky page: plain wheel zooms, one finger drags both ways
 })
 const emit = defineEmits(['failed', 'update:selectedId'])
 
 const DEG = 180 / Math.PI
 const NAMES = skyData.names.map(([abbr, name, ra, dec]) => ({ abbr, name, v: unitVector(ra, dec) }))
+const STARS = skyData.starNames.map(([name, ra, dec, mag]) => ({ name, mag, v: unitVector(ra, dec) }))
 
 const sky = props.sky // App.vue owns one for the whole visit, so this prop never changes
 const view = sky.view
@@ -81,6 +84,17 @@ const compassMarks = computed(() => [0, 45, 90, 135, 180, 225, 270, 315].flatMap
   const p = cam.value.project(horizonVector({ alt: 0, az }))
   return p.onScreen ? [{ az, label: compass(az), p }] : []
 }))
+// Star names: the brightest always, every named star from 2× zoom. Deep-sky markers carry names from 2× zoom too.
+const visible = (list) => list.flatMap((o) => {
+  const h = rotate(frame.value.rot, o.v)
+  const p = cam.value.project(h)
+  return h[2] > 0 && p.onScreen ? [{ ...o, p }] : []
+})
+const starLabels = computed(() =>
+  (props.layers.stars ? visible(STARS.filter((s) => s.mag <= 2 || view.zoom >= 2)) : []))
+const dsos = computed(() => (props.layers.deepSky ? visible(DEEP_SKY) : []))
+const dsoTip = ref(null)
+const dso = computed(() => dsos.value.find((o) => o.id === dsoTip.value))
 const moonDisc = computed(() => {
   const { moon, sun } = frame.value
   if (moon.alt <= 0) return null
@@ -101,7 +115,7 @@ const ringStyle = (r) => {
 const ringLabel = (r) => `${r.name}, ${r.targetClass}, ${Math.round(r.alt)}° up, ${compass(r.az)}`
 const ringHover = ref(null)
 const shownId = computed(() => ringHover.value ?? props.hoverId ?? props.selectedId)
-const selected = computed(() => rings.value.find((r) => r.id === shownId.value))
+const selected = computed(() => (props.layers.targets ? rings.value.find((r) => r.id === shownId.value) : null))
 
 // The time is announced once it has been still for half a second, not on every scrub step.
 const status = ref('')
@@ -222,20 +236,31 @@ onBeforeUnmount(() => {
        aria-label="sky view: drag or use the arrow keys to look around, + and − to zoom" :style="{ '--dark': dark }"
        @keydown="onKey" @wheel="onWheel" @pointerdown="onPointerDown" @pointermove="onPointerMove"
        @pointerup="onPointerUp" @pointercancel="onPointerUp">
-    <SkyCanvas :frame="frame" :cam="cam" :seed="seed" @failed="emit('failed')" />
-    <span v-for="n in labels" :key="n.abbr" class="sky-name" :style="pos(n.p)" aria-hidden="true">{{ n.name }}</span>
+    <SkyCanvas :frame="frame" :cam="cam" :seed="seed" :layers="layers" @failed="emit('failed')" />
+    <template v-if="layers.names">
+      <span v-for="n in labels" :key="n.abbr" class="sky-name" :style="pos(n.p)" aria-hidden="true">{{ n.name }}</span>
+    </template>
+    <span v-for="(s, i) in starLabels" :key="i" class="sky-star-name" :style="pos(s.p)" aria-hidden="true">{{ s.name }}</span>
+    <span v-for="o in dsos" :key="o.id" class="sky-dso" :style="pos(o.p)" aria-hidden="true"
+          @mouseenter="dsoTip = o.id" @mouseleave="dsoTip = null" @click="dsoTip = dsoTip === o.id ? null : o.id">
+      <span v-if="view.zoom >= 2" class="sky-dso-name">{{ o.name }}</span>
+    </span>
     <span v-for="c in compassMarks" :key="c.az" class="sky-compass" :style="pos(c.p)" aria-hidden="true">{{ c.label }}</span>
-    <span v-for="pl in planets" :key="pl.id" class="sky-planet" :style="pos(pl.p)" aria-hidden="true">{{ pl.id }}</span>
-    <svg v-if="moonDisc" class="sky-moon" :style="pos(moonDisc.p)" viewBox="-10 -10 20 20" aria-hidden="true">
-      <circle r="9" class="sky-moon-dark" />
-      <path :d="moonDisc.path" :transform="`rotate(${moonDisc.angle})`" class="sky-moon-lit" />
-    </svg>
-    <button v-for="r in rings" :key="r.id" class="sky-ring"
-            :class="{ active: r.id === shownId, dim: emphasis && !emphasis.has(r.id) }" :style="ringStyle(r)"
-            :aria-label="ringLabel(r)" @mouseenter="ringHover = r.id" @mouseleave="ringHover = null"
-            @focus="ringHover = r.id" @blur="ringHover = null" @click="emit('update:selectedId', r.id)" />
-    <button v-for="r in edges" :key="`edge-${r.id}`" class="sky-edge" :style="pos(r.edge)" :aria-label="`Turn to ${r.name}`"
-            @click="sky.turnTo(r)">{{ r.edge.arrow }} {{ r.name }}</button>
+    <template v-if="layers.planets">
+      <span v-for="pl in planets" :key="pl.id" class="sky-planet" :style="pos(pl.p)" aria-hidden="true">{{ pl.id }}</span>
+      <svg v-if="moonDisc" class="sky-moon" :style="pos(moonDisc.p)" viewBox="-10 -10 20 20" aria-hidden="true">
+        <circle r="9" class="sky-moon-dark" />
+        <path :d="moonDisc.path" :transform="`rotate(${moonDisc.angle})`" class="sky-moon-lit" />
+      </svg>
+    </template>
+    <template v-if="layers.targets">
+      <button v-for="r in rings" :key="r.id" class="sky-ring"
+              :class="{ active: r.id === shownId, dim: emphasis && !emphasis.has(r.id) }" :style="ringStyle(r)"
+              :aria-label="ringLabel(r)" @mouseenter="ringHover = r.id" @mouseleave="ringHover = null"
+              @focus="ringHover = r.id" @blur="ringHover = null" @click="emit('update:selectedId', r.id)" />
+      <button v-for="r in edges" :key="`edge-${r.id}`" class="sky-edge" :style="pos(r.edge)" :aria-label="`Turn to ${r.name}`"
+              @click="sky.turnTo(r)">{{ r.edge.arrow }} {{ r.name }}</button>
+    </template>
     <Transition :css="false" @enter="tipIn" @leave="tipOut">
       <span v-if="selected" :key="selected.id" class="moon-tip sky-tip" role="tooltip" :style="pos(selected.p)">
         <span class="moon-tip-item">
@@ -243,6 +268,14 @@ onBeforeUnmount(() => {
           <span class="muted small">{{ selected.targetClass }} · {{ Math.round(selected.alt) }}° up, {{ compass(selected.az) }}</span>
           <span class="muted small">Best at {{ fmtTime(selected.bestTime) }}</span>
           <span class="muted small">{{ selected.instruments.map((i) => INSTRUMENTS[i]?.label ?? i).join(' · ') }}</span>
+        </span>
+      </span>
+    </Transition>
+    <Transition :css="false" @enter="tipIn" @leave="tipOut">
+      <span v-if="dso" :key="dso.id" class="moon-tip sky-tip" role="tooltip" :style="pos(dso.p)">
+        <span class="moon-tip-item">
+          <strong>{{ dso.name }}</strong>
+          <span class="muted small">{{ dso.type?.replace(/_/g, ' ') }} · magnitude {{ dso.magnitude ?? '—' }}</span>
         </span>
       </span>
     </Transition>

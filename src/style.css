@@ -487,6 +487,18 @@ a:hover { text-decoration: underline; }
 .sky-timebar { flex-wrap: wrap; row-gap: 0.5rem; }
 .sky-ctl { min-width: 2.4rem; padding: 0.25rem 0.7rem; }
 .sky-ctl:disabled { opacity: .5; cursor: default; }
+.sky-star-name { position: absolute; transform: translate(6px, -50%); font-size: 0.68rem; color: rgba(255, 244, 214, .75);
+  white-space: nowrap; pointer-events: none; }
+.sky-dso { position: absolute; width: 24px; height: 24px; transform: translate(-50%, -50%); cursor: help; }
+.sky-dso::before { content: ''; position: absolute; left: 8px; top: 8px; width: 8px; height: 8px; transform: rotate(45deg);
+  border: 1px solid rgba(150, 215, 195, .75); }
+.sky-dso-name { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 0.65rem;
+  color: rgba(150, 215, 195, .85); white-space: nowrap; pointer-events: none; }
+.sky-layers { position: relative; }
+.sky-layers-menu { position: absolute; top: calc(100% + 6px); left: 0; z-index: 8; display: grid; gap: 0.35rem;
+  min-width: 14rem; margin: 0; padding: 0.6rem 0.8rem; background: var(--glass-bg-menu);
+  border: 1px solid var(--glass-edge); border-radius: var(--radius); box-shadow: var(--glass-shadow); }
+.sky-layers-menu label { display: flex; align-items: center; gap: 0.5rem; min-height: 24px; }
 @media (max-width: 700px) {
   .sky-timebar .sky-track { order: -1; } /* the slider gets the first row; the buttons wrap below it */
 }

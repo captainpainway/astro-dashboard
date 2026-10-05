@@ -5,6 +5,7 @@ import { useSkyView } from '../src/composables/useSkyView'
 import { stepTime } from '../src/engine/sky'
 import { toLocalIso } from '../src/engine/time'
 import { fmtTime } from '../src/format'
+import skyData from '../src/engine/sky.json'
 
 const location = { name: 'Big Bend National Park, TX', latitude: 29.33, longitude: -103.21, elevationM: 1111,
                    timezone: 'America/Chicago' }
@@ -210,5 +211,62 @@ describe('SkyPage time controls', () => {
     sky.setTime(sky.range.end.getTime())
     await w.find('[aria-label="Play the night"]').trigger('click')
     expect(sky.time).toBe(sky.range.start.getTime())
+  })
+})
+
+const openLayers = (w) => w.findAll('.sky-toolbar button').find((b) => b.text() === 'Layers').trigger('click')
+const layerBox = (w, text) => w.findAll('.sky-layers-menu label').find((l) => l.text() === text).find('input')
+
+describe('SkyPage layers', () => {
+  it('draws deep-sky markers only with their layer on, and remembers the choice', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const first = await mountPage()
+    expect(first.w.findAll('.sky-dso')).toHaveLength(0)
+    await openLayers(first.w)
+    await layerBox(first.w, 'Deep-sky catalogue').setValue(true)
+    expect(first.w.findAll('.sky-dso').length).toBeGreaterThan(0)
+    expect(JSON.parse(localStorage.getItem('astrodash.skyLayers')).deepSky).toBe(true)
+    const again = await mountPage()
+    expect(again.w.findAll('.sky-dso').length).toBeGreaterThan(0)
+  })
+
+  it('hides the constellation names with their layer off', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    expect(w.findAll('.sky-name').length).toBeGreaterThan(0)
+    await openLayers(w)
+    await layerBox(w, 'Constellation names').setValue(false)
+    expect(w.findAll('.sky-name')).toHaveLength(0)
+  })
+
+  it('names the brightest stars, and fainter named stars from 2× zoom', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w, sky } = await mountPage()
+    await openLayers(w)
+    await layerBox(w, 'Star names').setValue(true)
+    Object.assign(sky.view, { yaw: 0, pitch: 30 }) // north, with Polaris 29° up
+    await flushPromises()
+    const faint = new Set(skyData.starNames.filter(([, , , mag]) => mag > 2).map(([name]) => name))
+    const names = () => w.findAll('.sky-star-name').map((s) => s.text())
+    expect(names()).toContain('Polaris')
+    expect(names().some((n) => faint.has(n))).toBe(false)
+    sky.view.zoom = 2
+    await flushPromises()
+    expect(names().some((n) => faint.has(n))).toBe(true)
+  })
+
+  it('falls back to the default layers when storage is unavailable', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('denied') })
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('denied') })
+    const { w } = await mountPage()
+    expect(w.findAll('.sky-name').length).toBeGreaterThan(0)
+    await openLayers(w)
+    await layerBox(w, 'Deep-sky catalogue').setValue(true)
+    expect(w.findAll('.sky-dso').length).toBeGreaterThan(0)
   })
 })

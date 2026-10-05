@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { ZOOM_STEP } from '../composables/useSkyView'
 import { allTargets, altAzOf, filterTargets, playStep, stepTime, targetHorizon } from '../engine/sky'
 import { reduceMotion } from '../motion'
+import SkyLayersMenu, { loadLayers, saveLayers } from './SkyLayersMenu.vue'
 import SkyScrubber from './SkyScrubber.vue'
 import SkyStage from './SkyStage.vue'
 import SkyTargetPanel from './SkyTargetPanel.vue'
@@ -23,6 +24,8 @@ const upOnly = ref(false)
 const selectedId = ref(null)
 const hoverId = ref(null)
 const panelOpen = ref(!window.matchMedia?.('(max-width: 700px)').matches) // phones open on the sky, not the list
+const layers = ref(loadLayers())
+watch(layers, saveLayers)
 
 const all = computed(() => allTargets(props.tonight?.instruments))
 const shown = computed(() =>
@@ -87,6 +90,7 @@ onBeforeUnmount(pause)
 <template>
   <section class="panel sky-page" :aria-label="`Sky over ${location.name}`">
     <div class="sky-toolbar">
+      <SkyLayersMenu v-model="layers" />
       <button class="show-more sky-targets-toggle" :aria-expanded="panelOpen" @click="panelOpen = !panelOpen">
         Targets ({{ rows.length }})
       </button>
@@ -94,7 +98,7 @@ onBeforeUnmount(pause)
     <div class="sky-body" :class="{ 'panel-open': panelOpen }">
       <div class="sky-main">
         <SkyStage v-if="!failed" v-model:selected-id="selectedId" :sky="sky" :location="location" :targets="shown"
-                  :hover-id="hoverId" :emphasis="emphasis" immersive @failed="failed = true" />
+                  :hover-id="hoverId" :emphasis="emphasis" :layers="layers" immersive @failed="failed = true" />
         <p v-else class="sky-nogl muted">Your browser can't draw the sky (WebGL is unavailable).</p>
       </div>
       <SkyTargetPanel v-if="panelOpen" v-model:instrument="instrument" v-model:up-only="upOnly" :rows="rows"
