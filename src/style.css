@@ -405,6 +405,12 @@ a:hover { text-decoration: underline; }
   animation: tile-pulse 1.4s ease-in-out infinite; }
 @keyframes tile-pulse { 50% { background: var(--glass-bg-2); } }
 
+/* Sky hero (SkyPanorama.vue): WebGL sky under an HTML overlay positioned in px from the stage's top-left */
+.sky-tile { padding: 0; overflow: hidden; margin: 1.25rem 0 0; }
+.sky-stage { position: relative; aspect-ratio: 2.6 / 1; }
+.sky-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+@media (max-width: 700px) { .sky-stage { aspect-ratio: 4 / 3; } }
+
 /* Page changes crossfade the whole screen via document.startViewTransition (see setView in App.vue).
    Neither .page nor .dock gets a view-transition-name on purpose: a named element is snapshotted on its own,
    cutting its glass off from the sky, whereas in the root snapshot both pages and the dock stay frosted and the

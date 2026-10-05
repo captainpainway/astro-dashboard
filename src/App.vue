@@ -110,7 +110,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
       <p v-if="error" class="error">failed to load: {{ error }}</p>
       <p v-if="forecast.error.value" class="error">hourly failed: {{ forecast.error.value }}</p>
       <p v-if="lunar.error.value" class="error">lunar failed: {{ lunar.error.value }}</p>
-      <OverviewView :tonight="data" :forecast="forecast.data.value" :lunar="lunar.data.value"
+      <OverviewView :location="location" :tonight="data" :forecast="forecast.data.value" :lunar="lunar.data.value"
                    :twilight="data?.twilight ?? forecast.data.value?.twilight ?? null"
                    :tonight-loading="loading" :forecast-loading="forecast.loading.value"
                    :lunar-loading="lunar.loading.value" />

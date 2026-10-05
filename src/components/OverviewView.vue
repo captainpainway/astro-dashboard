@@ -1,11 +1,13 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { summarizeHours } from '../engine/forecast'
 import { fmtTime, lunarEmpty, weatherEmoji } from '../format'
 import { ratingStyle, normalizeRating } from '../ratings'
 import NightTimes from './NightTimes.vue'
+import SkyPanorama from './SkyPanorama.vue'
 
 const props = defineProps({
+  location: { type: Object, default: null },
   tonight: { type: Object, default: null },
   forecast: { type: Object, default: null },
   lunar: { type: Object, default: null },
@@ -14,6 +16,7 @@ const props = defineProps({
   forecastLoading: { type: Boolean, default: false },
   lunarLoading: { type: Boolean, default: false },
 })
+const skyFailed = ref(false)
 
 const INSTRUMENT_LABELS = { dob_8inch: '8" Dobsonian', dwarf_mini: 'Dwarf Mini' }
 
@@ -49,7 +52,9 @@ const topLunar = computed(() => {
 </script>
 
 <template>
-  <section class="overview bento">
+  <div class="overview">
+  <SkyPanorama v-if="location && !skyFailed" :location="location" @failed="skyFailed = true" />
+  <section class="bento">
     <!-- Conditions: the hero — "is tonight worth it?" -->
     <article v-if="tonight" class="panel ov-card tile-hero card-conditions">
       <h2>tonight's conditions</h2>
@@ -147,4 +152,5 @@ const topLunar = computed(() => {
       <p class="muted">loading hourly…</p>
     </article>
   </section>
+  </div>
 </template>

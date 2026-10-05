@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { flushPromises, mount } from '@vue/test-utils'
 import OverviewView from '../src/components/OverviewView.vue'
 
 const tonight = {
@@ -204,5 +204,46 @@ describe('OverviewView', () => {
     const w = mount(OverviewView, { props: { ...allProps, tonight: t, forecast: null } })
     expect(w.find('.card-conditions').text()).not.toContain('NaN')
     expect(w.find('.card-conditions').text()).toContain('— mph')
+  })
+})
+
+const location = { name: 'Big Bend National Park, TX', latitude: 29.33, longitude: -103.21, elevationM: 1111,
+                   timezone: 'America/Chicago' }
+const stubGl = () => {
+  vi.stubGlobal('WebGLRenderingContext', function () {})
+  const gl = new Proxy({}, { get: () => () => ({}) }) // every GL call is a no-op
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(gl)
+}
+afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); vi.useRealTimers() })
+
+describe('OverviewView sky tile', () => {
+  it('has no sky tile without a location', () => {
+    stubGl()
+    expect(mount(OverviewView, { props: allProps }).find('.sky-tile').exists()).toBe(false)
+  })
+
+  it('shows the sky tile above the bento when WebGL works', async () => {
+    stubGl()
+    const w = mount(OverviewView, { props: { ...allProps, location } })
+    await flushPromises()
+    expect(w.find('.sky-tile canvas').exists()).toBe(true)
+    expect(w.find('.sky-tile').attributes('aria-label')).toBe('Sky over Big Bend National Park, TX tonight')
+    expect(w.find('.sky-tile').element.nextElementSibling.classList.contains('bento')).toBe(true)
+  })
+
+  it('drops the sky tile and keeps the bento when WebGL is missing', async () => {
+    const w = mount(OverviewView, { props: { ...allProps, location } }) // jsdom has no WebGLRenderingContext
+    await flushPromises()
+    expect(w.find('.sky-tile').exists()).toBe(false)
+    expect(w.find('.card-conditions').exists()).toBe(true)
+  })
+
+  it('drops the sky tile when the WebGL context is lost', async () => {
+    stubGl()
+    const w = mount(OverviewView, { props: { ...allProps, location } })
+    await flushPromises()
+    w.find('.sky-tile canvas').element.dispatchEvent(new Event('webglcontextlost'))
+    await flushPromises()
+    expect(w.find('.sky-tile').exists()).toBe(false)
   })
 })
