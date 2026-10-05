@@ -7,7 +7,7 @@ describe('AppDock', () => {
 
   it('renders one button per page, labelled by text only', () => {
     const w = mount(AppDock, { props: { modelValue: 'home' } })
-    expect(items(w).map((b) => b.text())).toEqual(['home', 'tonight', 'hourly', 'forecast', 'lunar'])
+    expect(items(w).map((b) => b.text())).toEqual(['home', 'sky', 'tonight', 'hourly', 'forecast', 'lunar'])
   })
 
   it('marks the current page active', () => {
@@ -30,8 +30,8 @@ describe('AppDock', () => {
 
   it('emits the chosen view on click', async () => {
     const w = mount(AppDock, { props: { modelValue: 'home' } })
-    await items(w)[2].trigger('click')
-    expect(w.emitted('update:modelValue')).toEqual([['forecast']]) // the third button is "hourly", whose view id is still 'forecast'
+    await items(w)[3].trigger('click')
+    expect(w.emitted('update:modelValue')).toEqual([['forecast']]) // the fourth button is "hourly", whose view id is still 'forecast'
   })
 
   it('refresh emits, and is disabled while loading', async () => {

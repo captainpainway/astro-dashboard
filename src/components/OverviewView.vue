@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { summarizeHours } from '../engine/forecast'
+import { bestDarkHour, summarizeHours } from '../engine/forecast'
 import { fmtTime, lunarEmpty, weatherEmoji } from '../format'
 import { ratingStyle, normalizeRating } from '../ratings'
 import NightTimes from './NightTimes.vue'
@@ -17,6 +17,7 @@ const props = defineProps({
   forecastLoading: { type: Boolean, default: false },
   lunarLoading: { type: Boolean, default: false },
 })
+const emit = defineEmits(['expand'])
 const skyFailed = ref(false)
 
 const INSTRUMENT_LABELS = { dob_8inch: '8" Dobsonian', dwarf_mini: 'Dwarf Mini' }
@@ -41,10 +42,7 @@ const picks = computed(() => {
   return out
 })
 
-const bestWindow = computed(() => {
-  const dark = (props.forecast?.hours ?? []).filter((h) => h.isDark)
-  return dark.reduce((a, b) => (b.score > (a?.score ?? -Infinity) ? b : a), null)
-})
+const bestWindow = computed(() => bestDarkHour(props.forecast?.hours ?? []))
 
 // The hourly chip whose hour contains the sky tile's time.
 const scrubTime = ref(null)
@@ -62,7 +60,8 @@ const topLunar = computed(() => {
 <template>
   <div class="overview">
   <SkyPanorama v-if="location && sky && !skyFailed" :sky="sky" :location="location" :tonight="tonight"
-               :best-hour="bestWindow?.time ?? null" @time="scrubTime = $event" @failed="skyFailed = true" />
+               :best-hour="bestWindow?.time ?? null" @time="scrubTime = $event" @failed="skyFailed = true"
+               @expand="emit('expand')" />
   <section class="bento">
     <!-- Conditions: the hero — "is tonight worth it?" -->
     <article v-if="tonight" class="panel ov-card tile-hero card-conditions">

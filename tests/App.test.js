@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import App from '../src/App.vue'
 import { DEMO_LOCATION } from '../src/composables/useLocation'
@@ -175,6 +175,15 @@ async function mountHome() {
   await flushPromises()
   return w
 }
+
+// jsdom has no WebGL: every GL call becomes a no-op so the sky renders its overlay.
+const stubGl = () => {
+  vi.stubGlobal('WebGLRenderingContext', function () {})
+  const gl = new Proxy({}, { get: () => () => ({}) })
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(gl)
+}
+afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
+const dock = (w, label) => w.findAll('.view-switch button').find((b) => b.text() === label)
 
 describe('App integration', () => {
   it('home view renders overview cards from all three data sources', async () => {
@@ -459,5 +468,33 @@ describe('App integration', () => {
     expect(w.find('[role="alert"]').text()).toMatch(/US only/)
     expect(w.find('.location-picker').exists()).toBe(true)
     expect(engine.tonight).not.toHaveBeenCalled()
+  })
+
+  it('sky page: opens from the dock with the location header, and explains when WebGL is missing', async () => {
+    const w = await mountHome()
+    await dock(w, 'sky').trigger('click')
+    await flushPromises()
+    expect(w.find('.sky-page').exists()).toBe(true)
+    expect(w.find('.sky-page').text()).toContain('WebGL is unavailable')
+    expect(w.find('.app-header').text()).toContain('Big Bend National Park, TX')
+  })
+
+  it('sky page: the tile expands into it at the same time and zoom, and home keeps them', async () => {
+    stubGl()
+    vi.stubGlobal('matchMedia', () => ({ matches: true })) // reduced motion: no intro, no view transition
+    const w = await mountHome()
+    const tile = w.find('.sky-tile')
+    await tile.find('[aria-label="zoom in"]').trigger('click')
+    const range = tile.find('.sky-range')
+    await range.setValue(String(Number(range.attributes('min')) + 60 * 60_000))
+    const shown = tile.find('.sky-time').text()
+    await tile.find('.sky-expand').trigger('click')
+    await flushPromises()
+    const page = w.find('.sky-page')
+    expect(page.find('.sky-time').text()).toBe(shown)
+    expect(page.find('[aria-label="zoom out"]').attributes('disabled')).toBeUndefined()
+    await dock(w, 'home').trigger('click')
+    await flushPromises()
+    expect(w.find('.sky-tile .sky-time').text()).toBe(shown)
   })
 })

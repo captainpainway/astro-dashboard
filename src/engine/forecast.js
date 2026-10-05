@@ -162,3 +162,8 @@ export async function buildForecast(location, { date } = {}, now = new Date()) {
     errors,
   }
 }
+
+/** The dark hour with the best score, or null when no hour is dark. */
+export function bestDarkHour(hours) {
+  return hours.filter((h) => h.isDark).reduce((a, b) => (b.score > (a?.score ?? -Infinity) ? b : a), null)
+}

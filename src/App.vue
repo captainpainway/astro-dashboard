@@ -16,8 +16,10 @@ import ForecastView from './components/ForecastView.vue'
 import LunarView from './components/LunarView.vue'
 import OverviewView from './components/OverviewView.vue'
 import OutlookView from './components/OutlookView.vue'
+import SkyPage from './components/SkyPage.vue'
 import NightTimes from './components/NightTimes.vue'
 import { clearWeatherCache } from './api'
+import { bestDarkHour } from './engine/forecast'
 import LocationPicker from './components/LocationPicker.vue'
 import { isDisplayable } from './format'
 
@@ -29,8 +31,9 @@ const forecast = useForecast(location)
 const lunar = useLunar(location)
 const outlook = useOutlook(location)
 const sky = useSkyView() // the sky's time, direction and zoom, shared by the home tile and the sky page
+const skyBestHour = computed(() => bestDarkHour(forecast.data.value?.hours ?? [])?.time ?? null)
 
-const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'lunar'
+const view = ref('home') // 'home' | 'sky' | 'tonight' | 'forecast' | 'outlook' | 'lunar'
 
 // Crossfade between pages where the View Transitions API is available (see style.css for why it's not a slide).
 function setView(v) {
@@ -102,7 +105,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
 <template>
   <div class="shell">
   <AppDock :model-value="view" @update:model-value="setView" :loading="dockLoading" @refresh="refresh" />
-  <main class="page" :class="{ 'page-wide': view === 'home' }">
+  <main class="page" :class="{ 'page-wide': view === 'home', 'page-full': view === 'sky' }">
 
     <template v-if="view === 'home'">
       <AppHeader :night="null" :at-local="null" :location="location"
@@ -115,7 +118,15 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
       <OverviewView :sky="sky" :location="location" :tonight="data" :forecast="forecast.data.value" :lunar="lunar.data.value"
                    :twilight="data?.twilight ?? forecast.data.value?.twilight ?? null"
                    :tonight-loading="loading" :forecast-loading="forecast.loading.value"
-                   :lunar-loading="lunar.loading.value" />
+                   :lunar-loading="lunar.loading.value" @expand="setView('sky')" />
+    </template>
+
+    <template v-else-if="view === 'sky'">
+      <AppHeader :night="null" :at-local="null" :location="location"
+                 :generated-at="data?.generatedAt ?? ''" @change-location="pickerOpen = !pickerOpen" />
+      <LocationPicker v-if="pickerOpen" :location="location" :is-demo="isDemo" :error="locationError" :resolving="resolving"
+                      @set="setCoordinates" @locate="locateMe" @reset="reset" />
+      <SkyPage :sky="sky" :location="location" :tonight="data" :best-hour="skyBestHour" />
     </template>
 
     <template v-else-if="view === 'tonight'">

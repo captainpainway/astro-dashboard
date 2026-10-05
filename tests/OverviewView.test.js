@@ -508,6 +508,14 @@ describe('SkyPanorama overlay and time', () => {
     expect(top()).toBeGreaterThan(before + 30)
   })
 
+  it('asks for the full sky page from the expand button', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    await w.find('.sky-expand').trigger('click')
+    expect(w.emitted('expand')).toHaveLength(1)
+  })
+
   it('turns the view with the arrow keys', async () => {
     at(NIGHT)
     media({ reduce: true })
