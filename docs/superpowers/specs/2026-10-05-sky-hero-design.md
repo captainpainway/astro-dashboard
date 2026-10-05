@@ -12,17 +12,19 @@ breadth. A relief-lit Moon for the lunar view is agreed as later polish in its o
 
 ## Outcome
 
-1. The site is deployed to GitHub Pages at `astrodash.mary.codes` (Phase 6 of `CLIENT_SIDE_PLAN.md`).
-2. The home page opens with a full-width **sky hero tile** above the existing bento: a WebGL horizon panorama of
+Deployment (Phase 6 of `CLIENT_SIDE_PLAN.md`: GitHub Pages at `astrodash.mary.codes`) is **out of scope** here and
+gets its own plan once this work is done.
+
+1. The home page opens with a full-width **sky hero tile** above the existing bento: a WebGL horizon panorama of
    tonight's sky for the current location, showing
    - a twilight sky driven by the real Sun altitude, with a terrain silhouette;
    - stars to magnitude 5, constellation lines and constellation names;
    - the planets and a phase-correct Moon;
    - a ring on each of the top 5 targets per instrument (deduplicated, so up to 10 rings).
-3. A sunset→sunrise **scrubber** moves the sky through the night and highlights the matching chip in the hourly strip.
-4. In daytime the tile plays a short **intro**: time runs from sunset to tonight's best dark hour while the camera
+2. A sunset→sunrise **scrubber** moves the sky through the night and highlights the matching chip in the hourly strip.
+3. In daytime the tile plays a short **intro**: time runs from sunset to tonight's best dark hour while the camera
    turns from the sunset glow to the #1 target. At night it opens at the current time.
-5. A README case study (GIF, pitch, architecture, decisions, credits) and a Lighthouse / accessibility polish pass.
+4. A README case study (GIF, pitch, architecture, decisions, credits) and a Lighthouse / accessibility polish pass.
 
 ## Non-goals
 
@@ -104,7 +106,7 @@ Props: `location`, `tonight`, `forecast`. Emits `time` (epoch ms) and `failed`.
 
 - **Tile:** a `<section>` labelled "Sky over {place} tonight". `aspect-ratio: 2.6 / 1`, `4 / 3` below 700 px, reserved
   before the first draw. A small "credits" link in a corner to
-  `https://github.com/captainpainway/astro-dashboard#credits`.
+  `credits.txt`, a static file in `public/` that ships with the site (the GitHub repo is private).
 - **Camera:** horizontal field `clamp(width / 7, 90, 180)` degrees; pitch default 25°, range 5–85°; yaw wraps 360°.
   Drag (Draggable on a proxy, inertia flick) turns and tilts. With the sky focused, ←/→ turn 10° and ↑/↓ tilt 5°.
 - **Overlay** (absolutely positioned from `camera.project`):
@@ -163,16 +165,13 @@ Props: `location`, `tonight`, `forecast`. Emits `time` (epoch ms) and `failed`.
 
 ## Delivery order
 
-1. **Deploy (Phase 6).** Remove the `/api` proxy from `vite.config.js` (`src/api.js` has no server code left); add
-   `public/CNAME` (`astrodash.mary.codes`) and `.github/workflows/deploy.yml` (on push to `main`: `npm ci`,
-   `npm test`, `npm run build`, upload and deploy to Pages). **Owner steps** (outward-facing, not done by Claude):
-   DNS `CNAME astrodash → captainpainway.github.io`, repo Settings → Pages → source "GitHub Actions", and the push.
-2. **Sky hero.** `sky.json` → `sky.js` + tests → `SkyCanvas` → `SkyPanorama` → `OverviewView`/`App` wiring + tests →
+1. **Sky hero.** `sky.json` → `sky.js` + tests → `SkyCanvas` → `SkyPanorama` → `OverviewView`/`App` wiring + tests →
    browser check.
-3. **Polish + README.** Fix what Lighthouse and the accessibility pass find. README: intro GIF, one-paragraph pitch,
+2. **Polish + README.** Fix what Lighthouse and the accessibility pass find. README: intro GIF, one-paragraph pitch,
    architecture diagram, decisions (no server, client-side ephemeris, hand-written WebGL, no three.js), and Credits:
    NASA JWST background image, NASA SVS CGI Moon Kit, USGS/IAU gazetteer, Astronomical League checklist, NWS,
-   Open-Meteo, and d3-celestial with its full BSD-3 notice.
+   Open-Meteo, and d3-celestial, pointing to `public/credits.txt`, which carries d3-celestial's full BSD-3 notice
+   and any library licence banner the build does not keep.
 
 ## Risks
 
@@ -183,7 +182,6 @@ Props: `location`, `tonight`, `forecast`. Emits `time` (epoch ms) and `failed`.
 - **Label clutter** when targets and constellation names overlap near the zenith; names fade first, rings stay.
 - **Mobile GPU cost** of the full-screen sky shader at DPR 2; drop to DPR 1.5 on small screens if the frame budget
   fails.
-- **Deploy needs owner action**; until DNS and Pages are set, the site is reachable only at the default Pages URL.
 
 ## Proof
 
@@ -207,11 +205,10 @@ Props: `location`, `tonight`, `forecast`. Emits `time` (epoch ms) and `failed`.
 ## Files
 
 New: `src/engine/sky.js`, `src/engine/sky.json`, `src/components/SkyCanvas.vue`, `src/components/SkyPanorama.vue`,
-`tests/sky.test.js`, `public/CNAME`, `.github/workflows/deploy.yml`, `README.md`.
-Edited: `src/components/OverviewView.vue`, `src/App.vue`, `src/style.css`, `vite.config.js`,
-`tests/OverviewView.test.js`.
+`tests/sky.test.js`, `public/credits.txt`, `README.md`, `docs/sky-intro.gif`.
+Edited: `src/components/OverviewView.vue`, `src/App.vue`, `src/style.css`, `tests/OverviewView.test.js`.
 
 ## Estimate
 
-About 235k tokens: deploy ~25k, `sky.json` + `sky.js` + tests ~45k, `SkyCanvas` ~40k, `SkyPanorama` ~60k, wiring and
+About 210k tokens: `sky.json` + `sky.js` + tests ~45k, `SkyCanvas` ~40k, `SkyPanorama` ~60k, wiring and
 component tests ~20k, browser and Lighthouse checks ~30k, README ~15k.
