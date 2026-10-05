@@ -6,6 +6,7 @@ import SkyPanorama from '../src/components/SkyPanorama.vue'
 import { nightRange } from '../src/engine/sky'
 import { toLocalIso } from '../src/engine/time'
 import { fmtTime } from '../src/format'
+import { useSkyView } from '../src/composables/useSkyView'
 
 const tonight = {
   mode: 'window',
@@ -229,7 +230,7 @@ describe('OverviewView sky tile', () => {
 
   it('shows the sky tile above the bento when WebGL works', async () => {
     stubGl()
-    const w = mount(OverviewView, { props: { ...allProps, location } })
+    const w = mount(OverviewView, { props: { ...allProps, location, sky: useSkyView() } })
     await flushPromises()
     expect(w.find('.sky-tile canvas').exists()).toBe(true)
     expect(w.find('.sky-tile').attributes('aria-label')).toBe('Sky over Big Bend National Park, TX tonight')
@@ -237,7 +238,7 @@ describe('OverviewView sky tile', () => {
   })
 
   it('drops the sky tile and keeps the bento when WebGL is missing', async () => {
-    const w = mount(OverviewView, { props: { ...allProps, location } }) // jsdom has no WebGLRenderingContext
+    const w = mount(OverviewView, { props: { ...allProps, location, sky: useSkyView() } }) // jsdom has no WebGLRenderingContext
     await flushPromises()
     expect(w.find('.sky-tile').exists()).toBe(false)
     expect(w.find('.card-conditions').exists()).toBe(true)
@@ -245,7 +246,7 @@ describe('OverviewView sky tile', () => {
 
   it('drops the sky tile when the WebGL context is lost', async () => {
     stubGl()
-    const w = mount(OverviewView, { props: { ...allProps, location } })
+    const w = mount(OverviewView, { props: { ...allProps, location, sky: useSkyView() } })
     await flushPromises()
     w.find('.sky-tile canvas').element.dispatchEvent(new Event('webglcontextlost'))
     await flushPromises()
@@ -276,7 +277,7 @@ const media = ({ reduce = false, coarse = false } = {}) => vi.stubGlobal('matchM
 const at = (date, extra = {}) => { vi.useFakeTimers({ toFake: ['Date'], ...extra }); vi.setSystemTime(date) }
 const mountSky = async (props = {}) => {
   stubGl()
-  const w = mount(OverviewView, { props: { ...allProps, location, tonight: skyTonight, forecast: skyForecast, ...props } })
+  const w = mount(OverviewView, { props: { ...allProps, location, sky: useSkyView(), tonight: skyTonight, forecast: skyForecast, ...props } })
   await flushPromises()
   return w
 }

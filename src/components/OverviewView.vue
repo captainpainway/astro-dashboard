@@ -8,6 +8,7 @@ import SkyPanorama from './SkyPanorama.vue'
 
 const props = defineProps({
   location: { type: Object, default: null },
+  sky: { type: Object, default: null }, // useSkyView()
   tonight: { type: Object, default: null },
   forecast: { type: Object, default: null },
   lunar: { type: Object, default: null },
@@ -60,7 +61,7 @@ const topLunar = computed(() => {
 
 <template>
   <div class="overview">
-  <SkyPanorama v-if="location && !skyFailed" :location="location" :tonight="tonight"
+  <SkyPanorama v-if="location && sky && !skyFailed" :sky="sky" :location="location" :tonight="tonight"
                :best-hour="bestWindow?.time ?? null" @time="scrubTime = $event" @failed="skyFailed = true" />
   <section class="bento">
     <!-- Conditions: the hero — "is tonight worth it?" -->

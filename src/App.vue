@@ -4,6 +4,7 @@ import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
 import { useLunar } from './composables/useLunar'
 import { useOutlook } from './composables/useOutlook'
+import { useSkyView } from './composables/useSkyView'
 import { DEMO_LOCATION, useLocation } from './composables/useLocation'
 import AppHeader from './components/AppHeader.vue'
 import AppDock from './components/AppDock.vue'
@@ -27,6 +28,7 @@ const { data, loading, error, load } = useTonight(location)
 const forecast = useForecast(location)
 const lunar = useLunar(location)
 const outlook = useOutlook(location)
+const sky = useSkyView() // the sky's time, direction and zoom, shared by the home tile and the sky page
 
 const view = ref('home') // 'home' | 'tonight' | 'forecast' | 'outlook' | 'lunar'
 
@@ -110,7 +112,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
       <p v-if="error" class="error">failed to load: {{ error }}</p>
       <p v-if="forecast.error.value" class="error">hourly failed: {{ forecast.error.value }}</p>
       <p v-if="lunar.error.value" class="error">lunar failed: {{ lunar.error.value }}</p>
-      <OverviewView :location="location" :tonight="data" :forecast="forecast.data.value" :lunar="lunar.data.value"
+      <OverviewView :sky="sky" :location="location" :tonight="data" :forecast="forecast.data.value" :lunar="lunar.data.value"
                    :twilight="data?.twilight ?? forecast.data.value?.twilight ?? null"
                    :tonight-loading="loading" :forecast-loading="forecast.loading.value"
                    :lunar-loading="lunar.loading.value" />
