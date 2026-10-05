@@ -122,16 +122,33 @@ export function turnTarget(view, { alt, az }, lift = 0) {
   return { yaw: view.yaw + (((az - view.yaw) % 360) + 540) % 360 - 180, pitch: clamp(alt - lift, 25, 85) }
 }
 
-/** The first `per` displayable targets of each instrument, one entry per id listing every instrument that has it. */
-export function topTargets(instruments, per = 5) {
+/**
+ * Displayable targets of each instrument (only the first `per` of each when given), one entry per id listing every
+ * instrument that has it and the best score among them.
+ */
+export function allTargets(instruments, per = Infinity) {
   const byId = new Map()
   for (const [instrument, list] of Object.entries(instruments ?? {})) {
     for (const t of list.filter(isDisplayable).slice(0, per)) {
-      if (byId.has(t.id)) byId.get(t.id).instruments.push(instrument)
-      else byId.set(t.id, { ...t, instruments: [instrument] })
+      const seen = byId.get(t.id)
+      if (seen) {
+        seen.instruments.push(instrument)
+        seen.score = Math.max(seen.score, t.score)
+      } else byId.set(t.id, { ...t, instruments: [instrument] })
     }
   }
   return [...byId.values()]
+}
+
+/** The first `per` displayable targets of each instrument (the home tile's rings). */
+export const topTargets = (instruments, per = 5) => allTargets(instruments, per)
+
+/** The sky page's list: `instrument` ('all' or a key), optionally only targets above the horizon in `frame`. */
+export function filterTargets(targets, { instrument = 'all', upOnly = false } = {}, frame = null) {
+  return targets
+    .filter((t) => instrument === 'all' || t.instruments.includes(instrument))
+    .filter((t) => !upOnly || (frame && (targetHorizon(t, frame)?.[2] ?? -1) > 0))
+    .sort((a, b) => b.score - a.score)
 }
 
 const CATALOG = new Map([

@@ -4,7 +4,7 @@ import expected from './fixtures/tonight-expected.json'
 import { altaz, observerFor, starAltAz, twilightEvents } from '../src/engine/astro'
 import { toLocalIso } from '../src/engine/time'
 import {
-  altAzOf, camera, darkness, edgeMarker, fieldOfView, horizonVector, introEnd, moonPath, nightRange, rotate, skyAt,
+  allTargets, altAzOf, camera, filterTargets, darkness, edgeMarker, fieldOfView, horizonVector, introEnd, moonPath, nightRange, rotate, skyAt,
   starLimit, targetHorizon, targetVector, terrainSeed, topTargets, turnTarget, unitVector,
 } from '../src/engine/sky'
 
@@ -167,6 +167,22 @@ describe('targets', () => {
     expect(targetHorizon({ id: 'Moon', targetClass: 'moon' }, frame)).toEqual(horizonVector(frame.moon))
     expect(targetHorizon({ id: 'M45', targetClass: 'messier' }, frame)).toEqual(rotate(frame.rot, targetVector('M45')))
     expect(targetHorizon({ id: 'nowhere', targetClass: 'messier' }, frame)).toBeNull()
+  })
+
+  it('lists every displayable target once, with every instrument and the best score', () => {
+    const t = (id, score) => ({ id, name: id, score })
+    const all = allTargets({ a: [t('M1', 50), t('M2', 40)], b: [t('M2', 70), t('M3', 0)] })
+    expect(all.map((x) => [x.id, x.instruments, x.score])).toEqual([['M1', ['a'], 50], ['M2', ['a', 'b'], 70]])
+    expect(allTargets(null)).toEqual([])
+  })
+
+  it('filters by instrument and by "above the horizon", best score first', () => {
+    const frame = skyAt(BIG_BEND, NIGHT)
+    const t = (id, score, instruments) => ({ id, name: id, targetClass: 'messier', score, instruments })
+    const list = [t('M42', 40, ['dob_8inch']), t('M45', 95, ['dob_8inch', 'dwarf_mini']), t('nowhere', 30, ['dwarf_mini'])]
+    expect(filterTargets(list, {}, frame).map((x) => x.id)).toEqual(['M45', 'M42', 'nowhere'])
+    expect(filterTargets(list, { instrument: 'dwarf_mini' }, frame).map((x) => x.id)).toEqual(['M45', 'nowhere'])
+    expect(filterTargets(list, { upOnly: true }, frame).map((x) => x.id)).toEqual(['M45']) // M42 is down at midnight
   })
 })
 

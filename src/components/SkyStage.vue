@@ -27,9 +27,12 @@ const props = defineProps({
   sky: { type: Object, required: true }, // useSkyView(): time, view and zoom, shared by the tile and the sky page
   location: { type: Object, required: true },
   targets: { type: Array, required: true }, // tonight-plan targets to ring, each with `instruments` (see topTargets)
+  selectedId: { type: String, default: null }, // the target picked on the sky page; its tooltip stays up
+  hoverId: { type: String, default: null }, // a target hovered in the sky page's list
+  emphasis: { type: Object, default: null }, // Set of ids ringed at full strength; the other rings are dimmed
   immersive: { type: Boolean, default: false }, // sky page: plain wheel zooms, one finger drags both ways
 })
-const emit = defineEmits(['failed'])
+const emit = defineEmits(['failed', 'update:selectedId'])
 
 const DEG = 180 / Math.PI
 const NAMES = skyData.names.map(([abbr, name, ra, dec]) => ({ abbr, name, v: unitVector(ra, dec) }))
@@ -97,7 +100,8 @@ const ringStyle = (r) => {
 }
 const ringLabel = (r) => `${r.name}, ${r.targetClass}, ${Math.round(r.alt)}° up, ${compass(r.az)}`
 const ringHover = ref(null)
-const selected = computed(() => rings.value.find((r) => r.id === ringHover.value))
+const shownId = computed(() => ringHover.value ?? props.hoverId ?? props.selectedId)
+const selected = computed(() => rings.value.find((r) => r.id === shownId.value))
 
 // The time is announced once it has been still for half a second, not on every scrub step.
 const status = ref('')
@@ -170,7 +174,11 @@ function onPointerUp(e) {
   if (pinch && fingers.size < 2) { pinch = null; drag?.enable() }
 }
 
-const onEsc = (e) => { if (e.key === 'Escape') ringHover.value = null }
+const onEsc = (e) => {
+  if (e.key !== 'Escape') return
+  ringHover.value = null
+  emit('update:selectedId', null)
+}
 
 let drag = null
 let observer = null
@@ -222,9 +230,10 @@ onBeforeUnmount(() => {
       <circle r="9" class="sky-moon-dark" />
       <path :d="moonDisc.path" :transform="`rotate(${moonDisc.angle})`" class="sky-moon-lit" />
     </svg>
-    <button v-for="r in rings" :key="r.id" class="sky-ring" :class="{ active: r.id === ringHover }" :style="ringStyle(r)"
+    <button v-for="r in rings" :key="r.id" class="sky-ring"
+            :class="{ active: r.id === shownId, dim: emphasis && !emphasis.has(r.id) }" :style="ringStyle(r)"
             :aria-label="ringLabel(r)" @mouseenter="ringHover = r.id" @mouseleave="ringHover = null"
-            @focus="ringHover = r.id" @blur="ringHover = null" />
+            @focus="ringHover = r.id" @blur="ringHover = null" @click="emit('update:selectedId', r.id)" />
     <button v-for="r in edges" :key="`edge-${r.id}`" class="sky-edge" :style="pos(r.edge)" :aria-label="`Turn to ${r.name}`"
             @click="sky.turnTo(r)">{{ r.edge.arrow }} {{ r.name }}</button>
     <Transition :css="false" @enter="tipIn" @leave="tipOut">

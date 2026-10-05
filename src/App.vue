@@ -126,7 +126,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
                  :generated-at="data?.generatedAt ?? ''" @change-location="pickerOpen = !pickerOpen" />
       <LocationPicker v-if="pickerOpen" :location="location" :is-demo="isDemo" :error="locationError" :resolving="resolving"
                       @set="setCoordinates" @locate="locateMe" @reset="reset" />
-      <SkyPage :sky="sky" :location="location" :tonight="data" :best-hour="skyBestHour" />
+      <SkyPage :sky="sky" :location="location" :tonight="data" :best-hour="skyBestHour" :loading="loading" :error="error" />
     </template>
 
     <template v-else-if="view === 'tonight'">

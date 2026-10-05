@@ -451,13 +451,45 @@ a:hover { text-decoration: underline; }
 
 /* Sky page (SkyPage.vue): one panel filling the viewport below the header */
 .page-full { max-width: none; min-height: 100dvh; display: flex; flex-direction: column; }
-.sky-page { flex: 1; min-height: 420px; display: flex; flex-direction: column; padding: 0; overflow: hidden;
+.sky-page { flex: 1 1 0px; min-height: 420px; display: flex; flex-direction: column; padding: 0; overflow: hidden;
   margin-bottom: 0; }
-.sky-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); position: relative; }
+.sky-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
+  position: relative; }
 .sky-main { position: relative; min-height: 0; display: flex; flex-direction: column; }
 .sky-page .sky-stage { flex: 1; min-height: 0; aspect-ratio: auto; }
 .sky-stage.immersive { touch-action: none; }
 .sky-nogl { margin: auto; padding: 2rem; text-align: center; }
+.sky-toolbar { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1rem; flex-wrap: wrap; }
+.sky-toolbar .sky-targets-toggle { margin-left: auto; }
+.sky-body.panel-open { grid-template-columns: minmax(0, 1fr) 300px; }
+.sky-targets { display: flex; flex-direction: column; min-height: 0; background: var(--glass-bg-dense);
+  border-left: 1px solid var(--glass-border); }
+.sky-targets-head { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.9rem 0.2rem; }
+.sky-targets-head h2 { margin: 0; font-size: 1rem; }
+.sky-targets-close { min-width: 24px; min-height: 24px; color: var(--muted); background: none; border: 0; }
+.sky-targets-filter { display: flex; flex-wrap: wrap; gap: 0.35rem; padding: 0.3rem 0.9rem; }
+.sky-targets-up { display: flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0.9rem 0.5rem; }
+.sky-targets > p { padding: 0 0.9rem; }
+.sky-target-list { flex: 1; min-height: 0; overflow-y: auto; list-style: none; margin: 0; padding: 0 0.4rem 0.6rem; }
+.sky-target-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 0.6rem; width: 100%;
+  padding: 0.45rem 0.5rem; text-align: left; color: var(--text); background: none; border: 1px solid transparent;
+  border-radius: 8px; }
+.sky-target-row:hover, .sky-target-row:focus-visible { background: var(--glass-control); }
+.sky-target-row.active { border-color: var(--accent); }
+.sky-swatch { grid-row: span 2; display: flex; flex-direction: column; gap: 2px; padding-top: 4px; }
+.sky-swatch i { width: 10px; height: 10px; border-radius: 50%; }
+.sky-target-name { grid-column: 2; font-weight: 600; }
+.sky-target-meta { grid-column: 2; }
+.sky-target-where { grid-column: 3; grid-row: 1 / span 2; align-self: center; color: var(--muted);
+  font-variant-numeric: tabular-nums; }
+.sky-ring.dim { opacity: .45; }
+.sky-ring.dim:hover, .sky-ring.dim.active, .sky-ring.dim:focus-visible { opacity: 1; }
+@media (max-width: 700px) {
+  .sky-body.panel-open { grid-template-columns: minmax(0, 1fr); }
+  .sky-targets { position: absolute; inset: auto 0 0 0; height: 60%; z-index: 7; border-left: 0;
+    border-top: 1px solid var(--glass-edge); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: var(--glass-bg-menu); } /* over the sky, so opaque enough that rings don't show through */
+}
 @media (max-width: 700px) {
   .sky-stage { aspect-ratio: 4 / 3; }
   .sky-scrub { flex-wrap: wrap; row-gap: 0.5rem; } /* slider on its own row; zoom and time below */
