@@ -276,6 +276,11 @@ describe('search', () => {
     expect(searchSky(index, 'sat')[0]).toMatchObject({ id: 'Saturn', kind: 'target' })
   })
 
+  it('finds both halves of Serpens, which share one abbreviation', () => {
+    const halves = searchSky(index, 'serpens').filter((e) => e.kind === 'constellation').map((e) => e.name)
+    expect(halves.sort()).toEqual(['Serpens Caput', 'Serpens Cauda'])
+  })
+
   it('finds named stars and the Moon', () => {
     expect(searchSky(index, 'vega')[0]).toMatchObject({ name: 'Vega', kind: 'star' })
     expect(searchSky(index, 'MOON')[0]).toMatchObject({ kind: 'moon' })

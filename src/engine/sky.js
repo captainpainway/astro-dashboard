@@ -264,7 +264,7 @@ export function searchIndex(instruments) {
   catalogs.watchlist.forEach((o) =>
     add({ name: o.designation, id: o.designation, kind: 'variable', aliases: [], v: unitVector(o.raHours, o.decDegrees) }))
   skyData.names.forEach(([abbr, name, ra, dec]) =>
-    add({ name, id: abbr, kind: 'constellation', aliases: [abbr], v: unitVector(ra, dec) }))
+    add({ name, id: name, kind: 'constellation', aliases: [abbr], v: unitVector(ra, dec) })) // Serpens' two halves share 'Ser'
   skyData.starNames.forEach(([name, ra, dec]) => add({ name, id: name, kind: 'star', aliases: [], v: unitVector(ra, dec) }))
   return entries
 }

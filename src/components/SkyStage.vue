@@ -245,7 +245,7 @@ onBeforeUnmount(() => {
        @pointerup="onPointerUp" @pointercancel="onPointerUp">
     <SkyCanvas :frame="frame" :cam="cam" :seed="seed" :layers="layers" @failed="emit('failed')" />
     <template v-if="layers.names">
-      <span v-for="n in labels" :key="n.abbr" class="sky-name" :style="pos(n.p)" aria-hidden="true">{{ n.name }}</span>
+      <span v-for="n in labels" :key="n.name" class="sky-name" :style="pos(n.p)" aria-hidden="true">{{ n.name }}</span>
     </template>
     <span v-for="(s, i) in starLabels" :key="i" class="sky-star-name" :style="pos(s.p)" aria-hidden="true">{{ s.name }}</span>
     <span v-for="o in dsos" :key="o.id" class="sky-dso" :style="pos(o.p)" aria-hidden="true"
