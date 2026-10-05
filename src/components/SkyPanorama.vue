@@ -50,8 +50,18 @@ const positioned = computed(() => targets.value.flatMap((t) => {
   return v ? [{ ...t, ...altAzOf(v), v }] : []
 }))
 const placed = computed(() => positioned.value.filter((r) => r.alt > 0).map((r) => ({ ...r, p: cam.value.project(r.v) })))
-const rings = computed(() => placed.value.filter((r) => r.p.onScreen))
-const edges = computed(() => placed.value.filter((r) => !r.p.onScreen).map((r) => ({ ...r, edge: edgeMarker(r.v, cam.value) })))
+// A ring needs its whole 24px inside the tile; nearer the edge than that, the target gets an edge marker instead.
+const inside = ({ p }) => p.onScreen && p.x >= 12 && p.x <= size.width - 12 && p.y >= 12 && p.y <= size.height - 12
+const rings = computed(() => placed.value.filter(inside))
+// Best-scoring first; a marker that would overlap one already placed is skipped until the view turns.
+// Chip width is estimated from the label (~7px a character plus padding) since layout isn't measured.
+const edges = computed(() => placed.value.filter((r) => !inside(r)).sort((a, b) => b.score - a.score)
+  .reduce((kept, r) => {
+    const edge = edgeMarker(r.v, cam.value)
+    const w = 7 * (r.name.length + 2) + 20
+    const clear = kept.every((k) => Math.abs(k.edge.x - edge.x) >= (k.w + w) / 2 || Math.abs(k.edge.y - edge.y) >= 24)
+    return clear ? [...kept, { ...r, edge, w }] : kept
+  }, []))
 const planets = computed(() => frame.value.planets.filter((pl) => pl.alt > 0)
   .map((pl) => ({ ...pl, p: cam.value.project(horizonVector(pl)) })).filter((pl) => pl.p.onScreen))
 const labels = computed(() => NAMES.flatMap((n) => {

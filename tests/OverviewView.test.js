@@ -393,6 +393,33 @@ describe('SkyPanorama overlay and time', () => {
     expect(edgeLabels(w)).not.toContain('Turn to Saturn')
   })
 
+  it('keeps edge markers from overlapping, favouring the best targets', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const crab = target('M1', 'Crab Nebula supernova remnant', 'messier', 20) // near M45 with a long name
+    const w = await mountSky({ tonight: { ...skyTonight, instruments: { ...skyTonight.instruments, dwarf_mini: [crab] } } })
+    for (let i = 0; i < 18; i++) await w.find('.sky-stage').trigger('keydown', { key: 'ArrowLeft' }) // face away
+    const chips = w.findAll('.sky-edge').map((b) =>
+      ({ x: parseFloat(b.element.style.left), y: parseFloat(b.element.style.top), w: 7 * b.text().length + 20 }))
+    expect(edgeLabels(w)).toContain('Turn to Pleiades')
+    for (const [i, a] of chips.entries()) {
+      for (const b of chips.slice(i + 1)) expect(Math.abs(a.x - b.x) >= (a.w + b.w) / 2 || Math.abs(a.y - b.y) >= 24).toBe(true)
+    }
+  })
+
+  it('never draws a ring cut off by the tile edge', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    for (let i = 0; i < 36; i++) {
+      for (const r of w.findAll('.sky-ring')) {
+        const [x, y] = [parseFloat(r.element.style.left), parseFloat(r.element.style.top)]
+        expect(x >= 12 && x <= 988 && y >= 12 && y <= 373, `${x},${y}`).toBe(true) // jsdom tile is 1000 × 385
+      }
+      await w.find('.sky-stage').trigger('keydown', { key: i % 2 ? 'ArrowRight' : 'ArrowUp' })
+    }
+  })
+
   it('turns the view with the arrow keys', async () => {
     at(NIGHT)
     media({ reduce: true })

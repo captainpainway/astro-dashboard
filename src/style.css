@@ -420,7 +420,7 @@ a:hover { text-decoration: underline; }
 .sky-moon { position: absolute; width: 22px; height: 22px; transform: translate(-50%, -50%); pointer-events: none; }
 .sky-moon-dark { fill: #2a2f3d; }
 .sky-moon-lit { fill: #f4f1e6; }
-.sky-ring { position: absolute; width: 22px; height: 22px; padding: 0; transform: translate(-50%, -50%); border-radius: 50%;
+.sky-ring { position: absolute; width: 24px; height: 24px; padding: 0; transform: translate(-50%, -50%); border-radius: 50%;
   background: transparent; border: 2px solid; border-color: var(--ring-a) var(--ring-a) var(--ring-b) var(--ring-b);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, .5); cursor: pointer; }
 .sky-ring:hover, .sky-ring:focus-visible, .sky-ring.active { outline: 2px solid var(--ring-a); outline-offset: 3px; }
