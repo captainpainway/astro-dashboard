@@ -245,3 +245,51 @@ export function moonPath(illum, r) {
   const rx = Math.abs(2 * illum - 1) * r
   return `M 0 ${-r} A ${r} ${r} 0 0 1 0 ${r} A ${rx} ${r} 0 0 ${illum > 0.5 ? 1 : 0} 0 ${-r} Z`
 }
+
+const norm = (s) => s.toLowerCase().replace(/\s+/g, '')
+const KIND_ORDER = ['target', 'planet', 'moon', 'deep-sky', 'variable', 'constellation', 'star']
+
+/** Everything search can find. Tonight's targets come first and win over their catalogue or planet copies. */
+export function searchIndex(instruments) {
+  const entries = allTargets(instruments).map((t) => ({ name: t.name, id: t.id, kind: 'target', aliases: [t.id], target: t }))
+  const taken = new Set(entries.flatMap((e) => [norm(e.id), norm(e.name)]))
+  const add = (e) => {
+    if ([e.id, e.name].some((k) => taken.has(norm(k)))) return
+    taken.add(norm(e.id))
+    entries.push(e)
+  }
+  PLANETS.forEach((p) => add({ name: cap(p), id: cap(p), kind: 'planet', aliases: [] }))
+  add({ name: 'Moon', id: 'Moon', kind: 'moon', aliases: [] })
+  DEEP_SKY.forEach((o) => add({ name: o.name, id: o.id, kind: 'deep-sky', aliases: [o.id], v: o.v }))
+  catalogs.watchlist.forEach((o) =>
+    add({ name: o.designation, id: o.designation, kind: 'variable', aliases: [], v: unitVector(o.raHours, o.decDegrees) }))
+  skyData.names.forEach(([abbr, name, ra, dec]) =>
+    add({ name, id: abbr, kind: 'constellation', aliases: [abbr], v: unitVector(ra, dec) }))
+  skyData.starNames.forEach(([name, ra, dec]) => add({ name, id: name, kind: 'star', aliases: [], v: unitVector(ra, dec) }))
+  return entries
+}
+
+/** Up to `limit` entries for `query`: exact name or id first, then word prefixes, then substrings; ties by kind, name. */
+export function searchSky(index, query, limit = 8) {
+  const q = norm(query ?? '')
+  if (!q) return []
+  const rank = (e) => {
+    const keys = [e.name, e.id, ...e.aliases].filter(Boolean)
+    if (keys.some((k) => norm(k) === q)) return 0
+    if (keys.some((k) => norm(k).startsWith(q) || k.toLowerCase().split(/[^a-z0-9]+/).some((w) => w && w.startsWith(q)))) return 1
+    if (keys.some((k) => norm(k).includes(q))) return 2
+    return -1
+  }
+  return index.map((e) => ({ e, r: rank(e) })).filter(({ r }) => r >= 0)
+    .sort((a, b) => a.r - b.r || KIND_ORDER.indexOf(a.e.kind) - KIND_ORDER.indexOf(b.e.kind) || a.e.name.localeCompare(b.e.name))
+    .slice(0, limit)
+    .map(({ e }) => e)
+}
+
+/** Horizon vector of a search entry in `frame`. */
+export function entryHorizon(entry, frame) {
+  if (entry.target) return targetHorizon(entry.target, frame)
+  if (entry.kind === 'planet') return horizonVector(frame.planets.find((p) => p.id === entry.id))
+  if (entry.kind === 'moon') return horizonVector(frame.moon)
+  return rotate(frame.rot, entry.v)
+}

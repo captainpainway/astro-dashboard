@@ -1,10 +1,13 @@
 <script setup>
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { ZOOM_STEP } from '../composables/useSkyView'
-import { allTargets, altAzOf, filterTargets, playStep, stepTime, targetHorizon } from '../engine/sky'
+import {
+  allTargets, altAzOf, entryHorizon, filterTargets, playStep, searchIndex, stepTime, targetHorizon,
+} from '../engine/sky'
 import { reduceMotion } from '../motion'
 import SkyLayersMenu, { loadLayers, saveLayers } from './SkyLayersMenu.vue'
 import SkyScrubber from './SkyScrubber.vue'
+import SkySearch from './SkySearch.vue'
 import SkyStage from './SkyStage.vue'
 import SkyTargetPanel from './SkyTargetPanel.vue'
 
@@ -18,7 +21,7 @@ const props = defineProps({
 })
 
 const HOUR = 3_600_000
-const failed = ref(false) // no WebGL: the list still works
+const failed = ref(false) // no WebGL: the list and search still work
 const instrument = ref('all')
 const upOnly = ref(false)
 const selectedId = ref(null)
@@ -41,6 +44,28 @@ props.sky.follow(() => props.location, { targets: () => shown.value, bestHour: (
 function pick(row) {
   selectedId.value = row.id
   if (row.pos && !failed.value) props.sky.turnTo(row.pos)
+}
+
+// Search: turn to the pick and mark it; below the horizon, say so instead (the toast is also the live region).
+const index = computed(() => searchIndex(props.tonight?.instruments))
+const highlight = ref(null)
+const notice = ref('')
+let noticeTimer = 0
+function say(text) {
+  notice.value = text
+  clearTimeout(noticeTimer)
+  noticeTimer = setTimeout(() => { notice.value = '' }, 4000)
+}
+function onFind(entry) {
+  highlight.value = entry
+  if (entry.target) selectedId.value = entry.id
+  const at = altAzOf(entryHorizon(entry, props.sky.frame))
+  if (!failed.value) props.sky.turnTo(at)
+  if (at.alt <= 0) say(`${entry.name} is below the horizon at ${props.sky.timeLabel}`)
+}
+function clearFind() {
+  highlight.value = null
+  notice.value = ''
 }
 
 // Play runs the night at an hour per second (with reduced motion, a jump of an hour each second) and stops at sunrise.
@@ -83,13 +108,21 @@ function jump(t) {
 const step = (dir) => jump(stepTime(props.sky.time, props.sky.range, dir * HOUR))
 const jumpNow = () => jump(Math.min(props.sky.range.end.getTime(), Math.max(props.sky.range.start.getTime(), Date.now())))
 
-watch(() => props.location, pause)
-onBeforeUnmount(pause)
+watch(() => props.location, () => {
+  pause()
+  clearFind()
+  selectedId.value = null
+})
+onBeforeUnmount(() => {
+  pause()
+  clearTimeout(noticeTimer)
+})
 </script>
 
 <template>
   <section class="panel sky-page" :aria-label="`Sky over ${location.name}`">
     <div class="sky-toolbar">
+      <SkySearch :index="index" :frame="sky.frame" @pick="onFind" @clear="clearFind" />
       <SkyLayersMenu v-model="layers" />
       <button class="show-more sky-targets-toggle" :aria-expanded="panelOpen" @click="panelOpen = !panelOpen">
         Targets ({{ rows.length }})
@@ -98,8 +131,10 @@ onBeforeUnmount(pause)
     <div class="sky-body" :class="{ 'panel-open': panelOpen }">
       <div class="sky-main">
         <SkyStage v-if="!failed" v-model:selected-id="selectedId" :sky="sky" :location="location" :targets="shown"
-                  :hover-id="hoverId" :emphasis="emphasis" :layers="layers" immersive @failed="failed = true" />
+                  :hover-id="hoverId" :emphasis="emphasis" :layers="layers" :highlight="highlight" immersive
+                  @failed="failed = true" />
         <p v-else class="sky-nogl muted">Your browser can't draw the sky (WebGL is unavailable).</p>
+        <p class="sky-notice" role="status" aria-live="polite">{{ notice }}</p>
       </div>
       <SkyTargetPanel v-if="panelOpen" v-model:instrument="instrument" v-model:up-only="upOnly" :rows="rows"
                       :selected-id="selectedId" :loading="loading && !tonight" :error="error" @pick="pick"

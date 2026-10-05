@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import SkyPage from '../src/components/SkyPage.vue'
 import { useSkyView } from '../src/composables/useSkyView'
-import { stepTime } from '../src/engine/sky'
+import { nightRange, stepTime } from '../src/engine/sky'
 import { toLocalIso } from '../src/engine/time'
 import { fmtTime } from '../src/format'
 import skyData from '../src/engine/sky.json'
@@ -268,5 +268,64 @@ describe('SkyPage layers', () => {
     await openLayers(w)
     await layerBox(w, 'Deep-sky catalogue').setValue(true)
     expect(w.findAll('.sky-dso').length).toBeGreaterThan(0)
+  })
+})
+
+const searchBox = (w) => w.find('.sky-search-input')
+const find = async (w, text) => {
+  await searchBox(w).setValue(text)
+  await searchBox(w).trigger('keydown', { key: 'Enter' })
+}
+
+describe('SkyPage search', () => {
+  it('turns to a found star and marks it', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    await find(w, 'polaris')
+    expect(w.find('.sky-pick').exists()).toBe(true)
+    expect(w.find('.sky-tip').text()).toContain('Polaris')
+  })
+
+  it('says when the pick is below the horizon', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    await find(w, 'acrux') // never rises at 29°N
+    expect(w.find('.sky-notice').text()).toBe('Acrux is below the horizon at 12:00 AM')
+    expect(w.find('.sky-pick').exists()).toBe(false)
+  })
+
+  it('moves through results with the arrow keys and clears with Escape', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    await searchBox(w).setValue('veil')
+    await searchBox(w).trigger('keydown', { key: 'ArrowDown' })
+    await searchBox(w).trigger('keydown', { key: 'Enter' })
+    expect(searchBox(w).element.value).toBe('Veil Nebula (Western)')
+    await searchBox(w).trigger('keydown', { key: 'Escape' })
+    expect(searchBox(w).element.value).toBe('')
+    expect(w.find('.sky-pick').exists()).toBe(false)
+  })
+
+  it('focuses the search box with /', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: '/', bubbles: true }))
+    expect(document.activeElement).toBe(searchBox(w).element)
+  })
+
+  it('re-opens the sky in the new night and drops the pick when the location changes', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w, sky } = await mountPage()
+    await find(w, 'polaris')
+    const seattle = { name: 'Seattle, WA', latitude: 47.61, longitude: -122.33, timezone: 'America/Los_Angeles' }
+    await w.setProps({ location: seattle })
+    await flushPromises()
+    expect(sky.range.start.getTime()).toBe(nightRange(seattle, new Date()).start.getTime())
+    expect(w.find('.sky-pick').exists()).toBe(false)
   })
 })

@@ -13,7 +13,7 @@ import { Draggable } from 'gsap/Draggable'
 import { InertiaPlugin } from 'gsap/InertiaPlugin'
 import skyData from '../engine/sky.json'
 import {
-  DEEP_SKY, altAzOf, camera, darkness, edgeMarker, fieldOfView, horizonVector, moonPath, rotate, targetHorizon, terrainSeed,
+  DEEP_SKY, altAzOf, camera, entryHorizon, darkness, edgeMarker, fieldOfView, horizonVector, moonPath, rotate, targetHorizon, terrainSeed,
   unitVector,
 } from '../engine/sky'
 import { ZOOM_STEP } from '../composables/useSkyView'
@@ -32,6 +32,7 @@ const props = defineProps({
   hoverId: { type: String, default: null }, // a target hovered in the sky page's list
   emphasis: { type: Object, default: null }, // Set of ids ringed at full strength; the other rings are dimmed
   layers: { type: Object, default: () => DEFAULT_LAYERS }, // see SkyLayersMenu
+  highlight: { type: Object, default: null }, // a search entry to mark with a dashed ring
   immersive: { type: Boolean, default: false }, // sky page: plain wheel zooms, one finger drags both ways
 })
 const emit = defineEmits(['failed', 'update:selectedId'])
@@ -95,6 +96,12 @@ const starLabels = computed(() =>
 const dsos = computed(() => (props.layers.deepSky ? visible(DEEP_SKY) : []))
 const dsoTip = ref(null)
 const dso = computed(() => dsos.value.find((o) => o.id === dsoTip.value))
+const pick = computed(() => {
+  if (!props.highlight) return null
+  const v = entryHorizon(props.highlight, frame.value)
+  const p = cam.value.project(v)
+  return v[2] > 0 && inside({ p }) ? { ...props.highlight, ...altAzOf(v), p } : null
+})
 const moonDisc = computed(() => {
   const { moon, sun } = frame.value
   if (moon.alt <= 0) return null
@@ -276,6 +283,16 @@ onBeforeUnmount(() => {
         <span class="moon-tip-item">
           <strong>{{ dso.name }}</strong>
           <span class="muted small">{{ dso.type?.replace(/_/g, ' ') }} · magnitude {{ dso.magnitude ?? '—' }}</span>
+        </span>
+      </span>
+    </Transition>
+    <span v-if="pick" class="sky-pick" :style="pos(pick.p)" aria-hidden="true" />
+    <Transition :css="false" @enter="tipIn" @leave="tipOut">
+      <span v-if="pick && !selected && !dso" :key="`pick-${pick.kind}-${pick.id}`" class="moon-tip sky-tip" role="tooltip"
+            :style="pos(pick.p)">
+        <span class="moon-tip-item">
+          <strong>{{ pick.name }}</strong>
+          <span class="muted small">{{ pick.kind }} · {{ Math.round(pick.alt) }}° up, {{ compass(pick.az) }}</span>
         </span>
       </span>
     </Transition>

@@ -4,7 +4,7 @@ import expected from './fixtures/tonight-expected.json'
 import { altaz, observerFor, starAltAz, twilightEvents } from '../src/engine/astro'
 import { toLocalIso } from '../src/engine/time'
 import {
-  DEEP_SKY, allTargets, altAzOf, eclipticLine, gridLines, meridianLine, camera, filterTargets, playStep, stepTime, darkness, edgeMarker, fieldOfView, horizonVector, introEnd, moonPath, nightRange, rotate, skyAt,
+  DEEP_SKY, allTargets, altAzOf, eclipticLine, entryHorizon, searchIndex, searchSky, gridLines, meridianLine, camera, filterTargets, playStep, stepTime, darkness, edgeMarker, fieldOfView, horizonVector, introEnd, moonPath, nightRange, rotate, skyAt,
   starLimit, targetHorizon, targetVector, terrainSeed, topTargets, turnTarget, unitVector,
 } from '../src/engine/sky'
 
@@ -256,5 +256,45 @@ describe('line layers and catalogues', () => {
     expect(sky.starNames).toHaveLength(216)
     expect(sky.starNames.every(([, , , mag]) => mag <= 3.5)).toBe(true)
     expect(sky.starNames.map(([name]) => name)).toEqual(expect.arrayContaining(['Polaris', 'Vega', 'Acrux']))
+  })
+})
+
+describe('search', () => {
+  const index = searchIndex({ dob_8inch: [
+    { id: 'M45', name: 'Pleiades', targetClass: 'messier', score: 90 },
+    { id: 'Saturn', name: 'Saturn', targetClass: 'planet', score: 60 },
+  ] })
+
+  it('finds ids with or without spaces, once each, and names by word prefix', () => {
+    expect(searchSky(index, 'm 45')[0]).toMatchObject({ id: 'M45', kind: 'target' })
+    expect(searchSky(index, 'M45').filter((e) => e.id === 'M45')).toHaveLength(1)
+    expect(searchSky(index, 'veil').map((e) => e.name)).toEqual(['Veil Nebula (Eastern)', 'Veil Nebula (Western)'])
+  })
+
+  it("puts exact matches first, then tonight's targets", () => {
+    expect(searchSky(index, 'orion')[0]).toMatchObject({ name: 'Orion', kind: 'constellation' })
+    expect(searchSky(index, 'sat')[0]).toMatchObject({ id: 'Saturn', kind: 'target' })
+  })
+
+  it('finds named stars and the Moon', () => {
+    expect(searchSky(index, 'vega')[0]).toMatchObject({ name: 'Vega', kind: 'star' })
+    expect(searchSky(index, 'MOON')[0]).toMatchObject({ kind: 'moon' })
+  })
+
+  it('returns nothing for empty, blank or unmatched queries, never throws, and returns at most 8', () => {
+    expect(searchSky(index, '')).toEqual([])
+    expect(searchSky(index, '   ')).toEqual([])
+    expect(searchSky(index, 'zzzz')).toEqual([])
+    expect(Array.isArray(searchSky(index, '(*'))).toBe(true)
+    expect(searchSky(index, 'm')).toHaveLength(8)
+  })
+
+  it('places entries in the frame like the rest of the sky', () => {
+    const frame = skyAt(BIG_BEND, NIGHT)
+    const vega = searchSky(index, 'vega')[0]
+    expect(entryHorizon(vega, frame)).toEqual(rotate(frame.rot, vega.v))
+    const saturn = searchSky(index, 'saturn')[0]
+    expect(entryHorizon(saturn, frame)).toEqual(targetHorizon(saturn.target, frame))
+    expect(entryHorizon(searchSky(index, 'moon')[0], frame)).toEqual(horizonVector(frame.moon))
   })
 })
