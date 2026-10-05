@@ -32,12 +32,15 @@ const NAMES = skyData.names.map(([abbr, name, ra, dec]) => ({ abbr, name, v: uni
 
 const stage = ref(null)
 const size = reactive({ width: 1000, height: 385 }) // jsdom has no layout; the ResizeObserver takes over in browsers
-const view = reactive({ yaw: 180, pitch: 25 })
+const view = reactive({ yaw: 180, pitch: 25, zoom: 1 })
 const now = ref(new Date())
 const time = ref(now.value.getTime())
 const range = computed(() => nightRange(props.location, now.value))
 const frame = computed(() => skyAt(props.location, new Date(time.value)))
-const cam = computed(() => camera({ ...view, hfov: fieldOfView(size.width), width: size.width, height: size.height }))
+// Zoom narrows the field down to 4× or 30°, whichever is wider: sky.json has no stars fainter than magnitude 5.
+const zoomMax = computed(() => Math.min(4, fieldOfView(size.width) / 30))
+const cam = computed(() =>
+  camera({ ...view, hfov: fieldOfView(size.width) / Math.min(view.zoom, zoomMax.value), width: size.width, height: size.height }))
 const seed = computed(() => terrainSeed(props.location))
 const dark = computed(() => darkness(frame.value))
 const targets = computed(() => topTargets(props.tonight?.instruments))
@@ -142,6 +145,7 @@ function face(date, animate) {
 function open() {
   stopMotion()
   touched = false
+  view.zoom = 1
   now.value = new Date()
   const { start, end } = range.value
   const t = now.value.getTime()
@@ -176,8 +180,18 @@ function onScrub(e) {
   touch()
   time.value = Number(e.target.value)
 }
+const ZOOM_STEP = 1.5
+const clampZoom = (z) => Math.min(zoomMax.value, Math.max(1, z))
+function zoomBy(factor, animate = true) {
+  touch()
+  const zoom = clampZoom(view.zoom * factor)
+  if (animate && !reduceMotion()) gsap.to(view, { zoom, duration: 0.3, ease: 'power2.out' })
+  else view.zoom = zoom
+}
+const ZOOM_KEYS = { '+': ZOOM_STEP, '=': ZOOM_STEP, '-': 1 / ZOOM_STEP, _: 1 / ZOOM_STEP }
 const KEYS = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, 5], ArrowDown: [0, -5] }
 function onKey(e) {
+  if (ZOOM_KEYS[e.key]) { e.preventDefault(); return zoomBy(ZOOM_KEYS[e.key]) }
   const k = KEYS[e.key]
   if (!k) return
   e.preventDefault()
@@ -191,6 +205,42 @@ function turnTo(r) {
   if (reduceMotion()) Object.assign(view, goal)
   else gsap.to(view, { ...goal, duration: 0.8, ease: 'power2.inOut' })
 }
+// A plain scroll keeps scrolling the page (the tile is at the top of it) and shows how to zoom instead.
+// Ctrl + scroll zooms; trackpad pinches arrive as Ctrl + wheel too.
+const hint = ref('')
+let hintTimer = 0
+function onWheel(e) {
+  if (!e.ctrlKey && !e.metaKey) {
+    hint.value = `${/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'} + scroll to zoom`
+    clearTimeout(hintTimer)
+    hintTimer = setTimeout(() => { hint.value = '' }, 1500)
+    return
+  }
+  e.preventDefault()
+  hint.value = ''
+  zoomBy(Math.exp(-e.deltaY * 0.002), false)
+}
+
+// Two fingers zoom by how far apart they move; the drag pauses until fewer than two are down.
+const fingers = new Map()
+let pinch = null
+const spanOf = () => { const [a, b] = [...fingers.values()]; return Math.hypot(a.x - b.x, a.y - b.y) }
+function onPointerDown(e) {
+  fingers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+  if (fingers.size !== 2) return
+  drag?.disable()
+  pinch = { span: spanOf() || 1, zoom: view.zoom }
+}
+function onPointerMove(e) {
+  if (!fingers.has(e.pointerId)) return
+  fingers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+  if (pinch) { touch(); view.zoom = clampZoom(pinch.zoom * spanOf() / pinch.span) }
+}
+function onPointerUp(e) {
+  fingers.delete(e.pointerId)
+  if (pinch && fingers.size < 2) { pinch = null; drag?.enable() }
+}
+
 const onEsc = (e) => { if (e.key === 'Escape') selectedId.value = null }
 
 watch(targets, () => { if (!touched && !intro) face(new Date(time.value), true) })
@@ -230,14 +280,17 @@ onBeforeUnmount(() => {
   drag?.kill()
   observer?.disconnect()
   clearTimeout(statusTimer)
+  clearTimeout(hintTimer)
   document.removeEventListener('keydown', onEsc)
 })
 </script>
 
 <template>
   <section class="panel sky-tile" :aria-label="`Sky over ${location.name} tonight`" :style="{ '--dark': dark }">
-    <div ref="stage" class="sky-stage" tabindex="0" aria-label="sky view: drag or use the arrow keys to look around"
-         @keydown="onKey">
+    <div ref="stage" class="sky-stage" tabindex="0"
+         aria-label="sky view: drag or use the arrow keys to look around, + and − to zoom"
+         @keydown="onKey" @wheel="onWheel" @pointerdown="onPointerDown" @pointermove="onPointerMove"
+         @pointerup="onPointerUp" @pointercancel="onPointerUp">
       <SkyCanvas :frame="frame" :cam="cam" :seed="seed" @failed="emit('failed')" />
       <span v-for="n in labels" :key="n.abbr" class="sky-name" :style="pos(n.p)" aria-hidden="true">{{ n.name }}</span>
       <span v-for="c in compassMarks" :key="c.az" class="sky-compass" :style="pos(c.p)" aria-hidden="true">{{ c.label }}</span>
@@ -261,6 +314,7 @@ onBeforeUnmount(() => {
           </span>
         </span>
       </Transition>
+      <p v-if="hint" class="sky-hint" aria-hidden="true">{{ hint }}</p>
     </div>
     <div class="sky-scrub">
       <div class="sky-track">
@@ -268,6 +322,10 @@ onBeforeUnmount(() => {
                :step="STEP" :value="time" :aria-valuetext="timeLabel" @input="onScrub">
         <i v-if="nowTick != null" class="sky-tick" :style="{ left: `${nowTick}%` }" title="now" />
         <i v-if="bestTick != null" class="sky-tick sky-tick-best" :style="{ left: `${bestTick}%` }" title="best hour" />
+      </div>
+      <div class="btn-group zoom" role="group" aria-label="zoom">
+        <button aria-label="zoom out" :disabled="view.zoom <= 1" @click="zoomBy(1 / ZOOM_STEP)">−</button>
+        <button aria-label="zoom in" :disabled="view.zoom >= zoomMax" @click="zoomBy(ZOOM_STEP)">+</button>
       </div>
       <span class="sky-time">{{ timeLabel }}</span>
       <a class="sky-credits small" href="credits.txt">credits</a>

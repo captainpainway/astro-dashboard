@@ -407,7 +407,8 @@ a:hover { text-decoration: underline; }
 
 /* Sky hero (SkyPanorama.vue): WebGL sky under an HTML overlay positioned in px from the stage's top-left */
 .sky-tile { padding: 0; overflow: hidden; margin: 1.25rem 0 0; }
-.sky-stage { position: relative; aspect-ratio: 2.6 / 1; cursor: grab; outline: none; overflow: hidden; }
+.sky-stage { position: relative; aspect-ratio: 2.6 / 1; cursor: grab; outline: none; overflow: hidden;
+  touch-action: pan-y; } /* the page keeps vertical swipes; pinches go to the sky's zoom */
 .sky-stage:active { cursor: grabbing; }
 .sky-stage:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
 .sky-name, .sky-compass, .sky-planet { position: absolute; pointer-events: none; white-space: nowrap; }
@@ -436,6 +437,9 @@ a:hover { text-decoration: underline; }
 .sky-tick-best { background: var(--good); }
 .sky-time { font-variant-numeric: tabular-nums; min-width: 5.5rem; }
 .sky-credits { color: var(--muted); }
+.sky-hint { position: absolute; left: 50%; top: 50%; margin: 0; transform: translate(-50%, -50%); padding: 0.4rem 0.9rem;
+  border-radius: 999px; font-size: 0.85rem; background: var(--glass-bg-menu); border: 1px solid var(--glass-edge);
+  pointer-events: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0);
   white-space: nowrap; border: 0; }
 .hour-chip.at { box-shadow: 0 0 0 2px var(--accent); }

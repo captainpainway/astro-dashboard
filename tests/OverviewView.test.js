@@ -284,6 +284,7 @@ const ringLabels = (w) => w.findAll('.sky-ring').map((b) => b.attributes('aria-l
 const edgeLabels = (w) => w.findAll('.sky-edge').map((b) => b.attributes('aria-label')).sort()
 const timeText = (w) => w.find('.sky-time').text()
 const atChips = (w) => w.findAll('.hour-chip').map((c) => c.classes().includes('at'))
+const near = (a, b, tol) => expect(Math.abs(a - b)).toBeLessThan(tol)
 
 describe('SkyPanorama overlay and time', () => {
   it('rings on-screen targets once each, pins the others to the edge, and skips targets below the horizon or unknown', async () => {
@@ -418,6 +419,73 @@ describe('SkyPanorama overlay and time', () => {
       }
       await w.find('.sky-stage').trigger('keydown', { key: i % 2 ? 'ArrowRight' : 'ArrowUp' })
     }
+  })
+
+  // How far the Pleiades ring sits from the centre of the 1000 × 385 jsdom tile: it grows as the view zooms in.
+  const spread = (w) => {
+    const s = w.find('.sky-ring').element.style
+    return Math.hypot(parseFloat(s.left) - 500, parseFloat(s.top) - 192.5)
+  }
+
+  it('zooms with the + and − buttons and keys, between the full field and 4×', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    const zoomIn = w.find('[aria-label="zoom in"]')
+    const zoomOut = w.find('[aria-label="zoom out"]')
+    const wide = spread(w)
+    expect(zoomOut.attributes('disabled')).toBeDefined()
+    await zoomIn.trigger('click')
+    expect(spread(w)).toBeGreaterThan(wide * 1.3)
+    for (let i = 0; i < 6; i++) await zoomIn.trigger('click')
+    expect(zoomIn.attributes('disabled')).toBeDefined()
+    near(spread(w) / wide, 4.5, 0.5) // 143° → 36°: stereographic magnifies by tan(35.7°) / tan(8.9°) ≈ 4.6
+    await w.find('.sky-stage').trigger('keydown', { key: '-' })
+    expect(spread(w)).toBeLessThan(wide * 3.5)
+    for (let i = 0; i < 6; i++) await w.find('.sky-stage').trigger('keydown', { key: '-' })
+    near(spread(w), wide, 0.01)
+    await w.find('.sky-stage').trigger('keydown', { key: '+' })
+    expect(spread(w)).toBeGreaterThan(wide * 1.3)
+  })
+
+  it('zooms with Ctrl + scroll, and leaves a plain scroll to the page with a hint', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    const stage = w.find('.sky-stage').element
+    const wide = spread(w)
+    const plain = new WheelEvent('wheel', { deltaY: -100, cancelable: true })
+    stage.dispatchEvent(plain)
+    await flushPromises()
+    expect(plain.defaultPrevented).toBe(false)
+    expect(spread(w)).toBe(wide)
+    expect(w.find('.sky-hint').text()).toMatch(/(Ctrl|⌘) \+ scroll to zoom/)
+    const ctrl = new WheelEvent('wheel', { deltaY: -100, ctrlKey: true, cancelable: true })
+    stage.dispatchEvent(ctrl)
+    await flushPromises()
+    expect(ctrl.defaultPrevented).toBe(true)
+    expect(spread(w)).toBeGreaterThan(wide * 1.1)
+  })
+
+  it('zooms with a two-finger pinch', async () => {
+    at(NIGHT)
+    media({ reduce: true, coarse: true })
+    const w = await mountSky()
+    const stage = w.find('.sky-stage').element
+    const pointer = (type, pointerId, clientX) =>
+      stage.dispatchEvent(Object.assign(new Event(type, { bubbles: true }), { pointerId, clientX, clientY: 200 }))
+    const wide = spread(w)
+    pointer('pointerdown', 1, 400)
+    pointer('pointerdown', 2, 500)
+    pointer('pointermove', 2, 600) // fingers twice as far apart
+    await flushPromises()
+    near(spread(w) / wide, 2, 0.3)
+    pointer('pointerup', 2, 600)
+    pointer('pointerup', 1, 400)
+    pointer('pointerdown', 3, 400)
+    pointer('pointermove', 3, 700) // one finger alone doesn't zoom
+    await flushPromises()
+    near(spread(w) / wide, 2, 0.3)
   })
 
   it('turns the view with the arrow keys', async () => {
