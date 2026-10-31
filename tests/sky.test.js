@@ -281,6 +281,7 @@ describe('search', () => {
     expect(searchSky(plain, 'whirlpool')[0]).toMatchObject({ id: 'M51', kind: 'deep-sky' })
     expect(searchSky(plain, 'ngc5194')[0]).toMatchObject({ id: 'M51', kind: 'deep-sky' })
     expect(searchSky(plain, "bode's")[0]).toMatchObject({ id: 'M81', kind: 'deep-sky' })
+    expect(searchSky(plain, 'pinwheel galaxy')[0]).toMatchObject({ id: 'M101', match: 'Pinwheel Galaxy' })
   })
 
   it('names the alias a result matched by, but not when its name or id matched', () => {
