@@ -83,7 +83,7 @@ export function buildLunar(location, now = new Date()) {
       const score = reliefScore(sunAlt, f.ageDays === 14) * (0.5 + 0.5 * Math.min(s.moonAlt / MOON_ALT_CAP, 1))
       if (!best || score > best.score) best = { score, sunAlt, moonAlt: s.moonAlt, t: s.t }
     }
-    return best && { id: f.id, name: f.name, tier: f.tier, kind: 'place', type: f.type, ageDays: f.ageDays,
+    return best && { id: f.id, name: f.name, wiki: f.wiki ?? null, tier: f.tier, kind: 'place', type: f.type, ageDays: f.ageDays,
                      lat: f.lat, lon: f.lon, score: round1(best.score), sunAlt: round1(best.sunAlt), moonAlt: round1(best.moonAlt),
                      bestTime: toLocalIso(best.t, tz), reason: reasonFor(f, best.sunAlt) }
   }
@@ -115,7 +115,7 @@ export function buildLunar(location, now = new Date()) {
         if (peak) { hit = { t: peak.t, alt: peak.alt, reason: `${label} crescent, Moon ${peak.alt.toFixed(0)}°` }; break }
       }
     }
-    return hit && { id: f.id, name: f.name, tier: f.tier, kind: 'phase', type: null, ageDays: null, score: PHASE_SCORE,
+    return hit && { id: f.id, name: f.name, wiki: f.wiki ?? null, tier: f.tier, kind: 'phase', type: null, ageDays: null, score: PHASE_SCORE,
                     sunAlt: null, moonAlt: round1(hit.alt), bestTime: toLocalIso(hit.t, tz), reason: hit.reason }
   }
   const phases = features.filter((f) => f.kind === 'phase').map(phaseRow).filter(Boolean)

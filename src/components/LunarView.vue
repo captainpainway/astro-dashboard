@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { fmtCoords, fmtTime, lunarEmpty } from '../format'
 import { useRowAnimation } from '../composables/useRowAnimation'
 import MoonMap from './MoonMap.vue'
+import WikiSummary from './WikiSummary.vue'
 
 const props = defineProps({
   features: { type: Array, required: true },
@@ -83,6 +84,7 @@ const deg = (x) => (x == null ? '—' : `${x.toFixed(0)}°`)
                   {{ f.type ?? 'phase-based feature, no fixed place' }}<template v-if="f.lat != null"> · {{ fmtCoords(f.lat, f.lon) }}</template><template v-if="f.ageDays"> · AL group ~{{ f.ageDays }} days old</template>
                 </p>
                 <p class="muted small">Moon {{ deg(f.moonAlt) }} up at its best time</p>
+                <WikiSummary :title="f.wiki" />
               </td>
             </tr>
           </template>

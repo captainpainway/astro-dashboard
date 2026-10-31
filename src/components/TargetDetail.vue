@@ -1,7 +1,8 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { compass, fmtDms, fmtHours, fmtSize, fmtTime, objectTypeLabel, timeline } from '../format'
-import { targetEvents, targetPosition, wikiSummary, wikiTitle } from '../engine/targetInfo'
+import { targetEvents, targetPosition, wikiTitle } from '../engine/targetInfo'
+import WikiSummary from './WikiSummary.vue'
 
 const props = defineProps({
   target: { type: Object, required: true },
@@ -13,17 +14,9 @@ const emit = defineEmits(['sky']) // show this target on the sky page
 // Position is shown for the current moment, like Stellarium, and refreshed every minute while the row is open.
 const now = ref(new Date())
 let tick = null
-const wiki = ref(null)
-let alive = true
 
-onMounted(() => {
-  tick = setInterval(() => { now.value = new Date() }, 60_000)
-  wikiSummary(wikiTitle(props.target)).then((s) => { if (alive) wiki.value = s })
-})
-onUnmounted(() => {
-  alive = false
-  clearInterval(tick)
-})
+onMounted(() => { tick = setInterval(() => { now.value = new Date() }, 60_000) })
+onUnmounted(() => clearInterval(tick))
 
 const pos = computed(() => (props.location ? targetPosition(props.target, props.location, now.value) : null))
 const events = computed(() => (props.location ? targetEvents(props.target, props.location) : null))
@@ -83,11 +76,7 @@ const deg = (x) => `${x.toFixed(1)}°`
       <span class="muted small">{{ fmtTime(night.endLocal) }}</span>
     </div>
 
-    <div v-if="wiki" class="td-wiki">
-      <img v-if="wiki.thumbnail" :src="wiki.thumbnail" :alt="wiki.title" class="td-thumb" loading="lazy">
-      <p class="td-extract">{{ wiki.extract }}</p>
-      <p class="td-more small muted">more on <a :href="wiki.url" target="_blank" rel="noopener">Wikipedia</a></p>
-    </div>
+    <WikiSummary :title="wikiTitle(target)" />
 
     <p v-if="aliases.length" class="td-aka small">
       <span class="muted">also known as</span>

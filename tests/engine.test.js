@@ -181,6 +181,13 @@ describe('lunar.json', () => {
     expect(at('clavius-craterlets')).toMatchObject({ lat: at('clavius').lat, lon: at('clavius').lon })
     expect(at('lunar-rays')).toMatchObject({ kind: 'phase', when: 'full' })
   })
+
+  it('names the Wikipedia article for features that have one of their own, and none otherwise', () => {
+    expect(['plato', 'tycho', 'vallis-schroteri', 'j-herschel', 'man-in-the-moon'].map((id) => at(id).wiki))
+      .toEqual(['Plato (crater)', 'Tycho (lunar crater)', "Schroter's Valley", 'J. Herschel (crater)', 'Man in the Moon'])
+    expect([at('cassini-a').wiki, at('crab-in-the-moon').wiki]).toEqual([undefined, undefined])
+    expect(places.filter((f) => f.wiki)).toHaveLength(85)
+  })
 })
 
 describe('lunar geometry', () => {
@@ -246,6 +253,7 @@ describe('buildLunar (places)', () => {
     expect(r.features.slice(0, 10).map((f) => f.name)).toContain('Aristoteles')
     expect(r.features[0].reason).toMatch(/^terminator, Sun \d+°$/)
     expect(r.features[0]).toMatchObject({ lat: expect.any(Number), lon: expect.any(Number) })
+    expect(r.features.find((f) => f.id === 'aristoteles').wiki).toBe('Aristoteles (crater)')
     sorted(r)
   })
 

@@ -56,6 +56,27 @@ describe('LunarView', () => {
     expect(w.find('.detail-row').exists()).toBe(false)
   })
 
+  it('adds the Wikipedia summary and photo to an expanded row that names an article, and fetches nothing otherwise', async () => {
+    const fetch = vi.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({
+      type: 'standard', title: 'Copernicus (lunar crater)', extract: 'Copernicus is a lunar impact crater.',
+      thumbnail: { source: 'https://upload.wikimedia.org/copernicus.png' },
+      content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Copernicus_(lunar_crater)' } } }) }))
+    vi.stubGlobal('fetch', fetch)
+    const w = mountView({ features: [feature({ wiki: 'Copernicus (lunar crater)' }), feature({ id: 'x', name: 'No article' })] })
+    await w.findAll('tr.data-row')[0].trigger('click')
+    await flushPromises()
+    const block = w.find('.detail-row .td-wiki')
+    expect(block.text()).toContain('Copernicus is a lunar impact crater.')
+    expect(block.find('img').attributes('src')).toBe('https://upload.wikimedia.org/copernicus.png')
+    expect(block.find('a').attributes('href')).toBe('https://en.wikipedia.org/wiki/Copernicus_(lunar_crater)')
+    expect(w.find('.detail-row').text()).toContain('~10 days old') // the facts stay above it
+
+    await w.findAll('tr.data-row')[1].trigger('click')
+    await flushPromises()
+    expect(w.find('.detail-row .td-wiki').exists()).toBe(false)
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
   it('says a phase row has no fixed place when expanded', async () => {
     const w = mountView({ features: [feature({ kind: 'phase', type: null, ageDays: null, sunAlt: null, name: 'Man in the Moon' })] })
     await w.find('tr.data-row').trigger('click')
