@@ -6,6 +6,7 @@ import { wikiSummary } from '../engine/targetInfo'
 const props = defineProps({ title: { type: String, default: null } })
 
 const wiki = ref(null)
+const photoFailed = ref(false) // photos still come from Wikimedia; offline, leave them out rather than show a broken one
 let alive = true
 onMounted(() => {
   if (props.title) wikiSummary(props.title).then((s) => { if (alive) wiki.value = s })
@@ -15,7 +16,8 @@ onUnmounted(() => { alive = false })
 
 <template>
   <div v-if="wiki" class="td-wiki">
-    <img v-if="wiki.thumbnail" :src="wiki.thumbnail" :alt="wiki.title" class="td-thumb" loading="lazy">
+    <img v-if="wiki.thumbnail && !photoFailed" :src="wiki.thumbnail" :alt="wiki.title" class="td-thumb" loading="lazy"
+         @error="photoFailed = true">
     <p class="td-extract">{{ wiki.extract }}</p>
     <p class="td-more small muted">
       more on <a :href="wiki.url" target="_blank" rel="noopener">Wikipedia</a> · text

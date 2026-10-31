@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { moonVisibleTimes } from '../src/engine/moonview'
 import LunarView from '../src/components/LunarView.vue'
-import lunarWiki from '../src/engine/lunarWiki.json'
+import wikiSummaries from '../src/engine/wikiSummaries.json'
 
 const feature = (over = {}) => ({
   id: 'copernicus', name: 'Copernicus', tier: 'binoculars', kind: 'place', type: 'Crater', ageDays: 10, lat: 9.62, lon: -20.08,
@@ -60,7 +60,7 @@ describe('LunarView', () => {
   it('adds the bundled Wikipedia summary and photo to an expanded row that names an article, without a request', async () => {
     const fetch = vi.fn()
     vi.stubGlobal('fetch', fetch)
-    const copernicus = lunarWiki['Copernicus (lunar crater)']
+    const copernicus = wikiSummaries['Copernicus (lunar crater)']
     const w = mountView({ features: [feature({ wiki: 'Copernicus (lunar crater)' }), feature({ id: 'x', name: 'No article' })] })
     await w.findAll('tr.data-row')[0].trigger('click')
     await vi.waitFor(() => expect(w.find('.detail-row .td-wiki').exists()).toBe(true))

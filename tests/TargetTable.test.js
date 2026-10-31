@@ -1,7 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
 import TargetTable from '../src/components/TargetTable.vue'
+import wikiSummaries from '../src/engine/wikiSummaries.json'
 
 const night = { startLocal: '2026-08-30T21:00:00-04:00', endLocal: '2026-08-31T05:00:00-04:00' }
 const targets = [
@@ -15,9 +16,6 @@ const targets = [
     altAtBest: 88, azAtBest: 330, moonInterference: 0.7, notes: 'globular' },
 ]
 
-// Expanded rows ask Wikipedia for a summary; keep tests offline.
-const wikiFetch = vi.fn(() => Promise.resolve({ ok: false, status: 404, json: () => Promise.resolve({}) }))
-beforeEach(() => vi.stubGlobal('fetch', wikiFetch))
 afterEach(() => vi.unstubAllGlobals())
 
 describe('TargetTable', () => {
@@ -120,8 +118,7 @@ describe('TargetTable expanded row (Stellarium-style details)', () => {
     sizeArcmin: [45, 30], aliases: ['NGC 6523', 'LBN 25'] }
   const nightOct = { startLocal: '2026-10-31T19:00:00-05:00', endLocal: '2026-11-01T06:00:00-05:00' }
 
-  async function open(fetchImpl, target = lagoon) {
-    if (fetchImpl) vi.stubGlobal('fetch', fetchImpl)
+  async function open(target = lagoon) {
     const w = mount(TargetTable, { props: { targets: [target], night: nightOct, location: loc, sortKey: 'score' } })
     await w.find('tr.data-row').trigger('click')
     await flushPromises()
@@ -143,17 +140,24 @@ describe('TargetTable expanded row (Stellarium-style details)', () => {
     expect(names).toEqual(['M8', 'NGC 6523', 'LBN 25'])
   })
 
-  it('shows the Wikipedia summary, image and link when there is an article', async () => {
-    const fetch = vi.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({
-      type: 'standard', title: 'Lagoon Nebula', extract: 'The Lagoon Nebula is a giant emission nebula.',
-      thumbnail: { source: 'https://upload.wikimedia.org/lagoon.jpg' },
-      content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Lagoon_Nebula' } } }) }))
-    // Summaries are cached per title for the session, so use one the other tests haven't asked for
-    const w = await open(fetch, { ...lagoon, id: 'M17' })
-    expect(fetch.mock.calls[0][0]).toContain('/page/summary/Messier_17')
-    expect(w.find('.td-extract').text()).toBe('The Lagoon Nebula is a giant emission nebula.')
-    expect(w.find('.td-thumb').attributes('src')).toBe('https://upload.wikimedia.org/lagoon.jpg')
-    expect(w.find('.td-more a').attributes('href')).toBe('https://en.wikipedia.org/wiki/Lagoon_Nebula')
+  it('shows the bundled Wikipedia summary, image and link without asking Wikipedia', async () => {
+    const fetch = vi.fn()
+    vi.stubGlobal('fetch', fetch)
+    const want = wikiSummaries['Messier 8']
+    const w = await open()
+    await vi.waitFor(() => expect(w.find('.td-wiki').exists()).toBe(true))
+    expect(w.find('.td-extract').text()).toBe(want.extract)
+    expect(w.find('.td-thumb').attributes('src')).toBe(want.thumbnail)
+    expect(w.find('.td-more a').attributes('href')).toBe(want.url)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('leaves the photo out when it fails to load (offline), keeping the text', async () => {
+    const w = await open()
+    await vi.waitFor(() => expect(w.find('.td-thumb').exists()).toBe(true))
+    await w.find('.td-thumb').trigger('error')
+    expect(w.find('.td-thumb').exists()).toBe(false)
+    expect(w.find('.td-extract').text()).toBe(wikiSummaries['Messier 8'].extract)
   })
 
   it('links to the target on the sky page', async () => {
@@ -163,7 +167,9 @@ describe('TargetTable expanded row (Stellarium-style details)', () => {
   })
 
   it('leaves the summary out when Wikipedia has none', async () => {
-    expect((await open()).find('.td-wiki').exists()).toBe(false)
+    const w = await open({ ...lagoon, id: 'Stock 2', name: 'Stock 2', targetClass: 'cluster' })
+    await flushPromises()
+    expect(w.find('.td-wiki').exists()).toBe(false)
   })
 })
 

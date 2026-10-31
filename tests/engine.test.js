@@ -11,7 +11,7 @@ import twilight from './fixtures/twilight.json'
 import horizons from './fixtures/lunar-horizons.json'
 import tonight from './fixtures/tonight-expected.json'
 import lunar from '../src/engine/lunar.json'
-import lunarWiki from '../src/engine/lunarWiki.json'
+import wikiSummaries from '../src/engine/wikiSummaries.json'
 import points from './fixtures/nws-points.json'
 import grid from './fixtures/nws-forecastGridData.json'
 import forecast from './fixtures/nws-forecast.json'
@@ -190,12 +190,11 @@ describe('lunar.json', () => {
     expect(places.filter((f) => f.wiki)).toHaveLength(85)
   })
 
-  it('ships a summary with a photo for every named article (scripts/fetch-lunar-wiki.mjs)', () => {
-    const titles = new Set(lunar.map((f) => f.wiki).filter(Boolean))
-    expect(Object.keys(lunarWiki).sort()).toEqual([...titles].sort())
-    for (const s of Object.values(lunarWiki)) {
-      expect(s.extract.length, s.title).toBeGreaterThan(40)
-      expect(s.thumbnail, s.title).toMatch(/^https:\/\//)
+  it('ships a summary with a photo for every named article (scripts/fetch-wiki-summaries.mjs)', () => {
+    for (const title of new Set(lunar.map((f) => f.wiki).filter(Boolean))) {
+      const s = wikiSummaries[title]
+      expect(s?.extract.length, title).toBeGreaterThan(40)
+      expect(s.thumbnail, title).toMatch(/^https:\/\//)
     }
   })
 })

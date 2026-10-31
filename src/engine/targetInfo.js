@@ -68,40 +68,12 @@ export function wikiTitle(t) {
   return m ? `Messier ${m[1]}` : t.id
 }
 
-const SUMMARY_API = 'https://en.wikipedia.org/api/rest_v1/page/summary/'
-const summaries = new Map()
-// Lunar summaries ship with the app (scripts/fetch-lunar-wiki.mjs): Wikipedia rarely has them cached, ~0.5 s live.
-let bundled = null
-const bundledSummaries = () => (bundled ??= import('./lunarWiki.json').then((m) => m.default))
+// Summaries ship with the app (scripts/fetch-wiki-summaries.mjs) and load on first use: they work offline, and rarely
+// read lunar articles no longer wait ~0.5 s on Wikipedia's cache.
+let summaries = null
 
-/**
- * The page summary for a Wikipedia title as { title, extract, thumbnail, url }, or null when there's no article (or
- * only a disambiguation page). Bundled lunar summaries are used as-is; others are fetched and kept for the session,
- * and a failed request (network, 429, 5xx) is retried next time.
- */
-export function wikiSummary(title) {
-  if (!summaries.has(title)) {
-    const request = bundledSummaries().then((local) => local[title] ?? fetchSummary(title))
-      .catch(() => {
-        summaries.delete(title)
-        return null
-      })
-    summaries.set(title, request)
-  }
-  return summaries.get(title)
-}
-
-function fetchSummary(title) {
-  return fetch(SUMMARY_API + encodeURIComponent(title.replaceAll(' ', '_')))
-    .then((res) => {
-      if (res.status === 404) return null
-      if (!res.ok) throw new Error(`Wikipedia ${res.status}`)
-      return res.json()
-    })
-    .then((d) => (d?.type === 'standard' && d.extract ? {
-      title: d.title,
-      extract: d.extract,
-      thumbnail: d.thumbnail?.source ?? null,
-      url: d.content_urls?.desktop?.page ?? `https://en.wikipedia.org/wiki/${encodeURIComponent(d.title)}`,
-    } : null))
+/** The bundled summary of a Wikipedia article as { title, extract, thumbnail, url }, or null when there's none. */
+export async function wikiSummary(title) {
+  summaries ??= import('./wikiSummaries.json').then((m) => m.default)
+  return (await summaries)[title] ?? null
 }
