@@ -283,6 +283,16 @@ describe('search', () => {
     expect(searchSky(plain, "bode's")[0]).toMatchObject({ id: 'M81', kind: 'deep-sky' })
   })
 
+  it('names the alias a result matched by, but not when its name or id matched', () => {
+    const plain = searchIndex({ dob_8inch: [{ id: 'M31', name: 'M31', targetClass: 'messier', score: 80 }] })
+    expect(searchSky(plain, 'andromeda galaxy')[0]).toMatchObject({ id: 'M31', match: 'Andromeda Galaxy' })
+    expect(searchSky(plain, 'ngc5194')[0]).toMatchObject({ id: 'M51', match: 'NGC 5194' })
+    expect(searchSky(plain, 'pleiades')[0]).toMatchObject({ id: 'M45', match: null })
+    expect(searchSky(plain, 'm31')[0]).toMatchObject({ id: 'M31', match: null })
+    expect(searchSky(plain, 'ori')[0]).toMatchObject({ name: 'Orion', match: 'Ori' }) // exact abbreviation beats a prefix
+    expect(searchSky(plain, 'orio').find((e) => e.name === 'Orion')).toMatchObject({ match: null })
+  })
+
   it("puts exact matches first, then tonight's targets", () => {
     expect(searchSky(index, 'orion')[0]).toMatchObject({ name: 'Orion', kind: 'constellation' })
     expect(searchSky(index, 'sat')[0]).toMatchObject({ id: 'Saturn', kind: 'target' })

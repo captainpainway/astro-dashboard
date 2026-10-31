@@ -275,21 +275,31 @@ export function searchIndex(instruments) {
   return entries
 }
 
-/** Up to `limit` entries for `query`: exact name or id first, then word prefixes, then substrings; ties by kind, name. */
+/**
+ * Up to `limit` entries for `query`: exact name or id first, then word prefixes, then substrings; ties by kind, name.
+ * Each comes back with `match`: the alias it was found by, or null when its name or id matched as well.
+ */
 export function searchSky(index, query, limit = 8) {
   const q = norm(query ?? '')
   if (!q) return []
-  const rank = (e) => {
-    const keys = [e.name, e.id, ...e.aliases].filter(Boolean)
-    if (keys.some((k) => norm(k) === q)) return 0
-    if (keys.some((k) => norm(k).startsWith(q) || k.toLowerCase().split(/[^a-z0-9]+/).some((w) => w && w.startsWith(q)))) return 1
-    if (keys.some((k) => norm(k).includes(q))) return 2
-    return -1
+  const level = (k) => {
+    if (norm(k) === q) return 0
+    if (norm(k).startsWith(q) || k.toLowerCase().split(/[^a-z0-9]+/).some((w) => w && w.startsWith(q))) return 1
+    return norm(k).includes(q) ? 2 : -1
   }
-  return index.map((e) => ({ e, r: rank(e) })).filter(({ r }) => r >= 0)
+  const rank = (e) => {
+    let best = { r: -1, key: null }
+    for (const key of [e.name, e.id, ...e.aliases].filter(Boolean)) { // name and id first, so they win ties
+      const r = level(key)
+      if (r >= 0 && (best.r < 0 || r < best.r)) best = { r, key }
+    }
+    return best
+  }
+  const shown = (e, key) => [e.name, e.id].some((k) => norm(k) === norm(key))
+  return index.map((e) => ({ e, ...rank(e) })).filter(({ r }) => r >= 0)
     .sort((a, b) => a.r - b.r || KIND_ORDER.indexOf(a.e.kind) - KIND_ORDER.indexOf(b.e.kind) || a.e.name.localeCompare(b.e.name))
     .slice(0, limit)
-    .map(({ e }) => e)
+    .map(({ e, key }) => ({ ...e, match: shown(e, key) ? null : key }))
 }
 
 /** Horizon vector of a search entry in `frame`. */

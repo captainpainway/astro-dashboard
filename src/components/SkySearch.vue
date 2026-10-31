@@ -70,7 +70,8 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onSlash))
     <ul v-if="open && query" id="sky-search-list" role="listbox" class="sky-search-list">
       <li v-for="(r, i) in results" :id="`sky-search-${i}`" :key="`${r.kind}-${r.id}`" role="option"
           :aria-selected="i === active" :class="{ active: i === active }" @mousedown.prevent="choose(r)">
-        <strong>{{ r.name }}</strong><span v-if="r.id !== r.name" class="muted sky-search-id">{{ r.id }}</span>
+        <strong>{{ r.name }}</strong><span v-if="r.id !== r.name" class="muted sky-search-id">{{ r.id }}</span><span
+          v-if="r.match" class="muted sky-search-id sky-search-alias">· {{ r.match }}</span>
         <span class="muted small">{{ KIND[r.kind] }}<template v-if="frame"> · {{ where(r) }}</template></span>
       </li>
       <li v-if="!results.length" class="muted small sky-search-none" role="option" aria-disabled="true">No matches</li>

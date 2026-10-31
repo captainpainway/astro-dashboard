@@ -368,6 +368,18 @@ describe('SkyPage search', () => {
     expect(w.find('.sky-tip').text()).toContain('Polaris')
   })
 
+  it('shows the alias a result was found by', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    await searchBox(w).setValue('whirlpool')
+    const first = w.find('.sky-search-list li')
+    expect(first.find('strong').text()).toBe('M51')
+    expect(first.find('.sky-search-alias').text()).toBe('· Whirlpool Galaxy')
+    await searchBox(w).setValue('vega')
+    expect(w.find('.sky-search-list li .sky-search-alias').exists()).toBe(false)
+  })
+
   it('says when the pick is below the horizon', async () => {
     at(NIGHT)
     media({ reduce: true })
