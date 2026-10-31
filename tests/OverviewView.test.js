@@ -322,6 +322,22 @@ describe('SkyPanorama overlay and time', () => {
     expect(w.find('.sky-tip').exists()).toBe(false)
   })
 
+  it('keeps a clicked ring’s tooltip up with a link to the target in Tonight', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const w = await mountSky()
+    const ring = w.find('.sky-ring')
+    await ring.trigger('mouseenter')
+    expect(w.find('.sky-tip-link').exists()).toBe(false) // hover alone shows no link
+    await ring.trigger('click')
+    await ring.trigger('mouseleave')
+    await flushPromises()
+    const link = w.find('.sky-tip-link')
+    expect(link.text()).toBe('Details in Tonight →')
+    await link.trigger('click')
+    expect(w.emitted('details')).toEqual([[{ id: 'M45', instrument: 'dob_8inch' }]])
+  })
+
   it('opens at the current time at night, in the site time zone, and highlights that hour', async () => {
     at(NIGHT)
     media({ reduce: true })

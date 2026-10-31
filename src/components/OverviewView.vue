@@ -17,7 +17,7 @@ const props = defineProps({
   forecastLoading: { type: Boolean, default: false },
   lunarLoading: { type: Boolean, default: false },
 })
-const emit = defineEmits(['expand'])
+const emit = defineEmits(['expand', 'details']) // details: a sky tile target to open in Tonight
 const skyFailed = ref(false)
 
 const INSTRUMENT_LABELS = { dob_8inch: '8" Dobsonian', dwarf_mini: 'Dwarf Mini' }
@@ -61,7 +61,7 @@ const topLunar = computed(() => {
   <div class="overview">
   <SkyPanorama v-if="location && sky && !skyFailed" :sky="sky" :location="location" :tonight="tonight"
                :best-hour="bestWindow?.time ?? null" @time="scrubTime = $event" @failed="skyFailed = true"
-               @expand="emit('expand')" />
+               @expand="emit('expand')" @details="emit('details', $event)" />
   <section class="bento">
     <!-- Conditions: the hero — "is tonight worth it?" -->
     <article v-if="tonight" class="panel ov-card tile-hero card-conditions">

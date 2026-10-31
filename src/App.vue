@@ -131,7 +131,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
       <OverviewView :sky="sky" :location="location" :tonight="data" :forecast="forecast.data.value" :lunar="lunar.data.value"
                    :twilight="data?.twilight ?? forecast.data.value?.twilight ?? null"
                    :tonight-loading="loading" :forecast-loading="forecast.loading.value"
-                   :lunar-loading="lunar.loading.value" @expand="setView('sky')" />
+                   :lunar-loading="lunar.loading.value" @expand="setView('sky')" @details="openInTonight" />
     </template>
 
     <template v-else-if="view === 'sky'">
