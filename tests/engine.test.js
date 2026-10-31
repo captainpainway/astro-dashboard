@@ -199,12 +199,16 @@ describe('lunar geometry', () => {
   it('scores low-Sun relief best, shadow zero, and full-Moon features by high Sun', () => {
     const relief = (h) => reliefScore(h, false)
     expect([-5, 0].map(relief)).toEqual([0, 0])
-    expect(relief(1.5)).toBeCloseTo(50)
-    expect([3, 8, 15].map(relief)).toEqual([100, 100, 100])
-    expect(relief(27.5)).toBeCloseTo(50)
+    expect(relief(4)).toBeCloseTo(50)
+    expect(relief(8)).toBe(100)
+    expect(relief(3)).toBeLessThan(relief(6)) // a single peak, not a plateau
+    expect(relief(15)).toBeLessThan(relief(10))
+    expect(relief(24)).toBeCloseTo(50)
     expect(relief(40)).toBe(0)
-    expect(reliefScore(22.5, true)).toBeCloseTo(50)
-    expect(reliefScore(60, true)).toBe(100)
+    expect(reliefScore(22.5, true)).toBeCloseTo(45)
+    expect(reliefScore(45, true)).toBeCloseTo(90)
+    expect(reliefScore(60, true)).toBeLessThan(reliefScore(80, true))
+    expect(reliefScore(90, true)).toBe(100)
     expect(reliefScore(-3, true)).toBe(0)
   })
 })
@@ -271,6 +275,13 @@ describe('buildLunar (places)', () => {
     expect(r.errors).toEqual([])
     expect(r.moon.note).toMatch(/\(\d+% illuminated\)$/)
     expect(r.location).toEqual(BIG_BEND)
+  })
+
+  it('last-quarter night with a high Moon: scores spread out instead of piling up at 100', () => {
+    const r = night('2026-11-01T00:30:00Z') // was 35 features tied at 100
+    expect(r.features.filter((f) => f.score === 100).length).toBeLessThanOrEqual(2)
+    expect(new Set(r.features.slice(0, 10).map((f) => f.score)).size).toBeGreaterThanOrEqual(8)
+    sorted(r)
   })
 
   it('works without an elevation', () => {

@@ -34,18 +34,21 @@ export function sunAltitudeAt({ lat, lon }, sub) {
   return Math.asin(Math.max(-1, Math.min(1, s))) / RAD // rounding can push s just past ±1
 }
 
+const RELIEF_PEAK = 8 // Sun altitude (°) with the longest useful shadows
 /**
- * 0-100 for how well the Sun's altitude shows a feature: relief is best with the Sun 3-15° up
- * (long shadows) and fades out by 40°; rays and albedo features (`highSun`) want a high Sun.
+ * 0-100 for how well the Sun's altitude shows a feature: relief peaks with the Sun 8° up (long shadows) and fades
+ * to 0 at the terminator and by 40°; rays and albedo features (`highSun`) reach 90 by a 45° Sun, then creep to 100
+ * overhead so they don't tie.
  */
 export function reliefScore(sunAlt, highSun) {
   if (sunAlt <= 0) return 0
-  if (highSun) return Math.min(sunAlt / 45, 1) * 100
-  if (sunAlt < 3) return (sunAlt / 3) * 100
-  return sunAlt <= 15 ? 100 : Math.max(0, (40 - sunAlt) / 25) * 100
+  if (highSun) return sunAlt < 45 ? (sunAlt / 45) * 90 : 90 + (Math.min(sunAlt, 90) - 45) / 45 * 10
+  if (sunAlt < RELIEF_PEAK) return (sunAlt / RELIEF_PEAK) * 100
+  return Math.max(0, (40 - sunAlt) / (40 - RELIEF_PEAK)) * 100
 }
 
 const MIN_MOON_ALT = 10 // below this the Moon isn't worth observing
+const MOON_ALT_CAP = 60 // Moon height counts up to here, like target height on Tonight
 const MIN_SCORE = 25 // hide features that are barely lit or barely placed
 const DAY_DEG = 360 / 29.530589 // Moon's mean elongation per day
 const PHASE_SCORE = 50 // ponytail: fixed mid-list score; rank phase rows by Moon altitude if it matters
@@ -77,7 +80,7 @@ export function buildLunar(location, now = new Date()) {
     let best = null
     for (const s of up) {
       const sunAlt = sunAltitudeAt(f, s.sub)
-      const score = reliefScore(sunAlt, f.ageDays === 14) * (0.5 + 0.5 * Math.min(s.moonAlt / 45, 1))
+      const score = reliefScore(sunAlt, f.ageDays === 14) * (0.5 + 0.5 * Math.min(s.moonAlt / MOON_ALT_CAP, 1))
       if (!best || score > best.score) best = { score, sunAlt, moonAlt: s.moonAlt, t: s.t }
     }
     return best && { id: f.id, name: f.name, tier: f.tier, kind: 'place', type: f.type, ageDays: f.ageDays,
