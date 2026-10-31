@@ -19,6 +19,7 @@ const props = defineProps({
   loading: { type: Boolean, default: false }, // tonight's plan is loading
   error: { type: String, default: null }, // tonight's plan failed
 })
+const emit = defineEmits(['details']) // { id, instrument }: open that target's row in Tonight
 
 const HOUR = 3_600_000
 const failed = ref(false) // no WebGL: the list and search still work
@@ -40,6 +41,14 @@ const rows = computed(() => shown.value.map((t) => {
 // The ten best of what the list shows ring at full strength; the rest are dimmed until hovered or picked.
 const emphasis = computed(() => new Set(shown.value.slice(0, 10).map((t) => t.id)))
 props.sky.follow(() => props.location, { targets: () => shown.value, bestHour: () => props.bestHour })
+
+// Open a target's expanded row in Tonight, on the instrument tab the list is filtered to when it's one of the target's.
+function openDetails(t) {
+  if (!t) return
+  pause()
+  const prefer = t.instruments.includes(instrument.value) ? instrument.value : null
+  emit('details', { id: t.id, instrument: prefer ?? t.instruments[0] })
+}
 
 function pick(row) {
   selectedId.value = row.id
@@ -131,7 +140,8 @@ onBeforeUnmount(() => {
     <div class="sky-body">
       <div class="sky-main">
         <SkyStage v-if="!failed" v-model:selected-id="selectedId" :sky="sky" :location="location" :targets="shown"
-                  :hover-id="hoverId" :emphasis="emphasis" :layers="layers" :highlight="highlight" immersive
+                  :hover-id="hoverId" :emphasis="emphasis" :layers="layers" :highlight="highlight" immersive details
+                  @details="openDetails(all.find((t) => t.id === $event))"
                   @failed="failed = true" />
         <p v-else class="sky-nogl muted">Your browser can't draw the sky (WebGL is unavailable).</p>
         <p class="sky-notice" role="status" aria-live="polite">{{ notice }}</p>
@@ -139,7 +149,7 @@ onBeforeUnmount(() => {
       <Transition name="sky-slide">
         <SkyTargetPanel v-if="panelOpen" v-model:instrument="instrument" v-model:up-only="upOnly" :rows="rows"
                         :selected-id="selectedId" :loading="loading && !tonight" :error="error" @pick="pick"
-                        @hover="hoverId = $event" @close="panelOpen = false" />
+                        @hover="hoverId = $event" @close="panelOpen = false" @details="openDetails" />
       </Transition>
     </div>
     <div class="sky-scrub sky-timebar">

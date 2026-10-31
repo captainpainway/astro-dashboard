@@ -34,8 +34,9 @@ const props = defineProps({
   layers: { type: Object, default: () => DEFAULT_LAYERS }, // see SkyLayersMenu
   highlight: { type: Object, default: null }, // a search entry to mark with a dashed ring
   immersive: { type: Boolean, default: false }, // sky page: plain wheel zooms, one finger drags both ways
+  details: { type: Boolean, default: false }, // sky page: the picked target's tooltip links to its row in Tonight
 })
-const emit = defineEmits(['failed', 'update:selectedId'])
+const emit = defineEmits(['failed', 'update:selectedId', 'details'])
 
 const DEG = 180 / Math.PI
 const NAMES = skyData.names.map(([abbr, name, ra, dec]) => ({ abbr, name, v: unitVector(ra, dec) }))
@@ -269,12 +270,15 @@ onBeforeUnmount(() => {
               @click="sky.turnTo(r)">{{ r.edge.arrow }} {{ r.name }}</button>
     </template>
     <Transition :css="false" @enter="tipIn" @leave="tipOut">
-      <span v-if="selected" :key="selected.id" class="moon-tip sky-tip" role="tooltip" :style="pos(selected.p)">
+      <span v-if="selected" :key="selected.id" class="moon-tip sky-tip"
+            :class="{ 'sky-tip-linked': details && selected.id === selectedId }" role="tooltip" :style="pos(selected.p)">
         <span class="moon-tip-item">
           <strong>{{ selected.name }}</strong>
           <span class="muted small">{{ selected.targetClass }} · {{ Math.round(selected.alt) }}° up, {{ compass(selected.az) }}</span>
           <span class="muted small">Best at {{ fmtTime(selected.bestTime) }}</span>
           <span class="muted small">{{ selected.instruments.map((i) => INSTRUMENTS[i]?.label ?? i).join(' · ') }}</span>
+          <button v-if="details && selected.id === selectedId" type="button" class="sky-tip-link small"
+                  @click.stop="emit('details', selected.id)">Details in Tonight →</button>
         </span>
       </span>
     </Transition>

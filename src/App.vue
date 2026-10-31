@@ -75,6 +75,13 @@ const activeInstrument = computed(() =>
     : instruments.value[0])
 const activeTargets = computed(() => data.value?.instruments?.[activeInstrument.value] ?? [])
 const visibleCount = (ins) => (data.value?.instruments?.[ins] ?? []).filter(isDisplayable).length
+// A target to open in the tonight list (from the sky page): its row is expanded and scrolled to, then this clears.
+const focusId = ref(null)
+function openInTonight({ id, instrument: ins }) {
+  instrument.value = ins
+  focusId.value = id
+  setView('tonight')
+}
 const instrumentLabels = {
   dob_8inch: '8" Dobsonian',
   dwarf_mini: 'Dwarf Mini',
@@ -126,7 +133,8 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
                  :generated-at="data?.generatedAt ?? ''" @change-location="pickerOpen = !pickerOpen" />
       <LocationPicker v-if="pickerOpen" :location="location" :is-demo="isDemo" :error="locationError" :resolving="resolving"
                       @set="setCoordinates" @locate="locateMe" @reset="reset" />
-      <SkyPage :sky="sky" :location="location" :tonight="data" :best-hour="skyBestHour" :loading="loading" :error="error" />
+      <SkyPage :sky="sky" :location="location" :tonight="data" :best-hour="skyBestHour" :loading="loading" :error="error"
+               @details="openInTonight" />
     </template>
 
     <template v-else-if="view === 'tonight'">
@@ -147,7 +155,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
       </button>
     </nav>
     <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :location="data.location"
-                 :sort-key="sortKey" />
+                 :sort-key="sortKey" :focus-id="focusId" @focused="focusId = null" />
     <p v-else-if="data && !loading" class="muted">no targets match the current filters</p>
     <p v-if="loading && !data" class="muted">loading tonight's plan…</p>
     </template>

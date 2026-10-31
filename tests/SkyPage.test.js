@@ -117,6 +117,31 @@ describe('SkyPage targets', () => {
     expect(w.find('.sky-tip').exists()).toBe(false)
   })
 
+  it('links each row to its details in Tonight, on the tab the list is filtered to', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    const details = (name) => w.find(`.sky-target-details[aria-label="${name} details in Tonight"]`)
+    await details('Pleiades').trigger('click')
+    expect(w.emitted('details').at(-1)).toEqual([{ id: 'M45', instrument: 'dob_8inch' }])
+    await chip(w, 'Dwarf Mini').trigger('click')
+    await details('Pleiades').trigger('click')
+    expect(w.emitted('details').at(-1)).toEqual([{ id: 'M45', instrument: 'dwarf_mini' }])
+    expect(w.find('.sky-ring.active').exists()).toBe(false) // the link doesn't also pick the target
+  })
+
+  it('puts a Tonight link in the picked target’s tooltip only', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage()
+    expect(w.find('.sky-tip-link').exists()).toBe(false)
+    await row(w, 'Pleiades').trigger('click')
+    const link = w.find('.sky-tip-link')
+    expect(link.text()).toBe('Details in Tonight →')
+    await link.trigger('click')
+    expect(w.emitted('details').at(-1)).toEqual([{ id: 'M45', instrument: 'dob_8inch' }])
+  })
+
   it('hides and shows the list', async () => {
     at(NIGHT)
     media({ reduce: true })

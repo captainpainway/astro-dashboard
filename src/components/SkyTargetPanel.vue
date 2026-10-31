@@ -11,7 +11,7 @@ const props = defineProps({
   loading: { type: Boolean, default: false },
   error: { type: String, default: null },
 })
-const emit = defineEmits(['update:instrument', 'update:upOnly', 'pick', 'hover', 'close'])
+const emit = defineEmits(['update:instrument', 'update:upOnly', 'pick', 'hover', 'close', 'details'])
 
 const CHIPS = [['all', 'All'], ['dob_8inch', '8" Dob'], ['dwarf_mini', 'Dwarf Mini']]
 const list = ref(null)
@@ -43,7 +43,7 @@ watch(() => props.selectedId, async (id) => {
     <p v-else-if="error" class="error small">{{ error }}</p>
     <p v-else-if="!rows.length" class="muted small">No targets match these filters</p>
     <ul v-else ref="list" class="sky-target-list">
-      <li v-for="r in rows" :key="r.id" :data-id="r.id">
+      <li v-for="r in rows" :key="r.id" :data-id="r.id" class="sky-target-item">
         <button class="sky-target-row" :class="{ active: r.id === selectedId }" @click="emit('pick', r)"
                 @mouseenter="emit('hover', r.id)" @mouseleave="emit('hover', null)"
                 @focus="emit('hover', r.id)" @blur="emit('hover', null)">
@@ -54,6 +54,8 @@ watch(() => props.selectedId, async (id) => {
           <span class="sky-target-meta muted small">{{ r.targetClass }} · best {{ fmtTime(r.bestTime) }}</span>
           <span class="sky-target-where small">{{ where(r) }}</span>
         </button>
+        <button class="sky-target-details" :aria-label="`${r.name} details in Tonight`" title="Details in Tonight"
+                @click="emit('details', r)">↗</button>
       </li>
     </ul>
   </aside>

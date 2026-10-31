@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { compass, fmtTime, isDisplayable, pct } from '../format'
 import TargetDetail from './TargetDetail.vue'
 import { useRowAnimation } from '../composables/useRowAnimation'
@@ -9,7 +9,9 @@ const props = defineProps({
   night: { type: Object, default: null },
   location: { type: Object, default: null },
   sortKey: { type: String, default: 'score' },
+  focusId: { type: String, default: null }, // expand this target's row and scroll to it (a link from the sky page)
 })
+const emit = defineEmits(['focused'])
 
 const LIMIT = 25
 
@@ -29,6 +31,20 @@ const sorted = computed(() => {
 const visible = computed(() => showAll.value ? sorted.value : sorted.value.slice(0, LIMIT))
 
 const table = ref(null)
+
+watch(() => props.focusId, async (id) => {
+  if (!id) return
+  const at = sorted.value.findIndex((t) => t.id === id)
+  if (at >= 0) {
+    if (at >= LIMIT) showAll.value = true
+    expandedId.value = id
+    await nextTick()
+    const row = [...(table.value?.querySelectorAll('tr.data-row') ?? [])][at]
+    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    row?.scrollIntoView?.({ block: 'center', behavior: still ? 'auto' : 'smooth' })
+  }
+  emit('focused')
+}, { immediate: true })
 const { onBeforeEnter, onEnter, onLeave } = useRowAnimation(table, visible)
 
 function moonClass(mi) {

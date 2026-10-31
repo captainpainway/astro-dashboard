@@ -506,6 +506,17 @@ a:hover { text-decoration: underline; }
   border-radius: 8px; }
 .sky-target-row:hover, .sky-target-row:focus-visible { background: var(--glass-control); }
 .sky-target-row.active { border-color: var(--accent); }
+/* Each row's ↗ opens the target in Tonight; it sits beside the row button, not inside it */
+.sky-target-item { display: flex; align-items: stretch; gap: 0.15rem; }
+.sky-target-item .sky-target-row { flex: 1; min-width: 0; }
+.sky-target-details { flex: none; width: 2rem; padding: 0; color: var(--muted); background: none; border: 1px solid transparent;
+  border-radius: 8px; font-size: 1rem; }
+.sky-target-details:hover, .sky-target-details:focus-visible { color: var(--accent); background: var(--glass-control); }
+/* The picked target's tooltip takes clicks so its Tonight link works; hover-only tooltips stay click-through */
+.sky-tip-linked { pointer-events: auto; }
+.moon-tip-item > .sky-tip-link { display: inline-block; margin-top: 0.3rem; padding: 0; color: var(--accent); background: none;
+  border: 0; font: inherit; cursor: pointer; }
+.sky-tip-link:hover { text-decoration: underline; }
 .sky-swatch { grid-row: span 2; display: flex; flex-direction: column; gap: 2px; padding-top: 4px; }
 .sky-swatch i { width: 10px; height: 10px; border-radius: 50%; }
 .sky-target-name { grid-column: 2; font-weight: 600; }

@@ -160,3 +160,23 @@ describe('TargetTable expanded row (Stellarium-style details)', () => {
     expect((await open()).find('.td-wiki').exists()).toBe(false)
   })
 })
+
+describe('TargetTable focus (opened from the sky page)', () => {
+  const many = Array.from({ length: 30 }, (_, i) => ({ ...targets[1], id: `T${i}`, name: `Target ${i}`, score: 90 - i }))
+
+  it('expands the focused row, showing every target when it is past the top 25, then reports back', async () => {
+    const w = mount(TargetTable, { props: { targets: many, night, sortKey: 'score', focusId: 'T28' } })
+    await flushPromises()
+    expect(w.findAll('tr.data-row')).toHaveLength(30)
+    expect(w.find('tr.data-row.open .name').text()).toBe('Target 28')
+    expect(w.find('.detail-row').exists()).toBe(true)
+    expect(w.emitted('focused')).toHaveLength(1)
+  })
+
+  it('ignores an id that is not in the list', async () => {
+    const w = mount(TargetTable, { props: { targets, night, sortKey: 'score', focusId: 'nope' } })
+    await flushPromises()
+    expect(w.find('tr.data-row.open').exists()).toBe(false)
+    expect(w.emitted('focused')).toHaveLength(1)
+  })
+})
