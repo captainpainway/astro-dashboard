@@ -1,6 +1,7 @@
 <script setup>
 import { nextTick, ref, watch } from 'vue'
 import { compass, fmtTime } from '../format'
+import { reduceMotion } from '../motion'
 import { INSTRUMENTS } from './SkyStage.vue'
 
 const props = defineProps({
@@ -17,12 +18,28 @@ const CHIPS = [['all', 'All'], ['dob_8inch', '8" Dob'], ['dwarf_mini', 'Dwarf Mi
 const list = ref(null)
 const where = (r) => (!r.pos ? '—' : r.pos.alt > 0 ? `${Math.round(r.pos.alt)}° ${compass(r.pos.az)}` : 'below horizon')
 
-// A ring picked on the sky brings its row into view.
+// The picked target's row is kept in view: when it's picked on the sky, and when the panel opens or the list first
+// renders with a pick already made (e.g. arriving from Tonight). Only the list scrolls, never the page around it.
+// A row that's partly visible is nudged in; one that's out of sight is centred, smoothly unless it's the first show.
+function reveal(id, smooth) {
+  const ul = list.value
+  const li = ul && [...ul.children].find((el) => el.dataset.id === id)
+  if (!li) return
+  const box = ul.getBoundingClientRect()
+  const row = li.getBoundingClientRect()
+  const top = row.top - box.top + ul.scrollTop
+  const bottom = top + row.height
+  const { scrollTop: from, clientHeight: h } = ul
+  if (top >= from && bottom <= from + h) return
+  const seen = bottom > from && top < from + h
+  const goal = !seen ? top - (h - row.height) / 2 : top < from ? top : bottom - h
+  ul.scrollTo?.({ top: Math.max(0, goal), behavior: smooth && !reduceMotion() ? 'smooth' : 'auto' })
+}
 watch(() => props.selectedId, async (id) => {
   await nextTick()
-  const li = [...(list.value?.children ?? [])].find((el) => el.dataset.id === id)
-  li?.scrollIntoView?.({ block: 'nearest' })
+  reveal(id, true)
 })
+watch(list, (ul) => { if (ul && props.selectedId) reveal(props.selectedId, false) }, { flush: 'post' })
 </script>
 
 <template>

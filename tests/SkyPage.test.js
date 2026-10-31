@@ -174,6 +174,30 @@ describe('SkyPage targets', () => {
     expect(w.find('.sky-target-row.active .sky-target-name').text()).toBe('Pleiades')
   })
 
+  it('scrolls the list to a target picked before the panel shows it (from Tonight), centring it', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    // jsdom has no layout: a 100px list of 50px rows, scrolled to the top
+    const ROW = 50
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
+      const i = this.parentElement?.classList.contains('sky-target-list') ? [...this.parentElement.children].indexOf(this) : -1
+      return { top: i < 0 ? 0 : i * ROW, height: i < 0 ? 100 : ROW, bottom: i < 0 ? 100 : (i + 1) * ROW }
+    })
+    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(100)
+    const scrollTo = vi.fn()
+    HTMLElement.prototype.scrollTo = scrollTo
+    try {
+      const { w } = await mountPage({ focusId: 'nowhere' }) // the fifth row
+      expect(rowNames(w).indexOf('Nowhere')).toBe(4)
+      expect(scrollTo).toHaveBeenLastCalledWith({ top: 4 * ROW - (100 - ROW) / 2, behavior: 'auto' })
+      scrollTo.mockClear()
+      await row(w, 'Pleiades').trigger('click') // already in view: no scroll
+      expect(scrollTo).not.toHaveBeenCalled()
+    } finally {
+      delete HTMLElement.prototype.scrollTo
+    }
+  })
+
   it('hides and shows the list', async () => {
     at(NIGHT)
     media({ reduce: true })
