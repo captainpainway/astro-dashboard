@@ -11,7 +11,7 @@ const props = defineProps({
   sortKey: { type: String, default: 'score' },
   focusId: { type: String, default: null }, // expand this target's row and scroll to it (a link from the sky page)
 })
-const emit = defineEmits(['focused'])
+const emit = defineEmits(['focused', 'sky']) // sky → a target id to show on the sky page
 
 const LIMIT = 25
 
@@ -91,7 +91,7 @@ function moonClass(mi) {
         </tr>
         <tr v-if="expandedId === t.id" :key="`${t.id}:detail`" class="detail-row">
           <td colspan="8">
-            <TargetDetail :target="t" :location="location" :night="night" />
+            <TargetDetail :target="t" :location="location" :night="night" @sky="emit('sky', $event)" />
           </td>
         </tr>
       </template>

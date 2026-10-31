@@ -8,6 +8,7 @@ const props = defineProps({
   location: { type: Object, default: null },
   night: { type: Object, default: null },
 })
+const emit = defineEmits(['sky']) // show this target on the sky page
 
 // Position is shown for the current moment, like Stellarium, and refreshed every minute while the row is open.
 const now = ref(new Date())
@@ -37,10 +38,13 @@ const deg = (x) => `${x.toFixed(1)}°`
 
 <template>
   <div class="target-detail">
-    <p class="td-kind">
-      <span class="td-type">{{ objectTypeLabel(target) }}</span>
-      <template v-if="pos"> in {{ pos.constellation }}</template>
-    </p>
+    <div class="td-head">
+      <p class="td-kind">
+        <span class="td-type">{{ objectTypeLabel(target) }}</span>
+        <template v-if="pos"> in {{ pos.constellation }}</template>
+      </p>
+      <button type="button" class="show-more td-sky" @click="emit('sky', target.id)">Show in sky →</button>
+    </div>
     <p v-if="target.notes" class="notes">{{ target.notes }}</p>
 
     <dl class="td-facts">

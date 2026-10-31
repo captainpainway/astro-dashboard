@@ -206,6 +206,8 @@ a:hover { text-decoration: underline; }
 .target-detail { padding: 0.35rem 0.15rem 0.5rem; }
 .td-kind { margin: 0 0 0.15rem; color: var(--muted); }
 .td-type { color: var(--accent); font-weight: 500; }
+.td-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.td-sky { flex: none; }
 .td-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.45rem 1.5rem; margin: 0.6rem 0 0.4rem; }
 .td-facts > div { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
 .td-facts dt { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }

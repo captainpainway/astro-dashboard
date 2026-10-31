@@ -156,6 +156,12 @@ describe('TargetTable expanded row (Stellarium-style details)', () => {
     expect(w.find('.td-more a').attributes('href')).toBe('https://en.wikipedia.org/wiki/Lagoon_Nebula')
   })
 
+  it('links to the target on the sky page', async () => {
+    const w = await open()
+    await w.find('.td-sky').trigger('click')
+    expect(w.emitted('sky')).toEqual([['M8']])
+  })
+
   it('leaves the summary out when Wikipedia has none', async () => {
     expect((await open()).find('.td-wiki').exists()).toBe(false)
   })

@@ -18,8 +18,10 @@ const props = defineProps({
   bestHour: { type: String, default: null }, // ISO start of the best dark hour, once the forecast is in
   loading: { type: Boolean, default: false }, // tonight's plan is loading
   error: { type: String, default: null }, // tonight's plan failed
+  focusId: { type: String, default: null }, // a target to pick and turn to on opening (a link from Tonight)
 })
-const emit = defineEmits(['details']) // { id, instrument }: open that target's row in Tonight
+// details → { id, instrument }: open that target's row in Tonight. focused: focusId has been shown (or can't be).
+const emit = defineEmits(['details', 'focused'])
 
 const HOUR = 3_600_000
 const failed = ref(false) // no WebGL: the list and search still work
@@ -122,6 +124,32 @@ watch(() => props.location, () => {
   clearFind()
   selectedId.value = null
 })
+
+// Opened from a Tonight row: pick the target and turn to it. If it's below the horizon at the sky's time, move the
+// time to its best time tonight (kept within the night) and say so.
+function showTarget(t) {
+  pause()
+  clearFind()
+  instrument.value = 'all'
+  upOnly.value = false
+  selectedId.value = t.id
+  const up = (v) => v && v[2] > 0
+  let v = targetHorizon(t, props.sky.frame)
+  if (!up(v) && t.bestTime) {
+    const { start, end } = props.sky.range
+    props.sky.setTime(Math.min(end.getTime(), Math.max(start.getTime(), Date.parse(t.bestTime))))
+    v = targetHorizon(t, props.sky.frame)
+    say(up(v) ? `Showing ${t.name} at its best time, ${props.sky.timeLabel}`
+      : `${t.name} is below the horizon at ${props.sky.timeLabel}`)
+  }
+  if (v && !failed.value) props.sky.turnTo(altAzOf(v))
+}
+watch(() => [props.focusId, all.value], () => {
+  if (!props.focusId) return
+  const t = all.value.find((x) => x.id === props.focusId)
+  if (t) showTarget(t)
+  if (t || props.tonight) emit('focused') // without the plan yet, wait for it
+}, { immediate: true })
 onBeforeUnmount(() => {
   pause()
   clearTimeout(noticeTimer)

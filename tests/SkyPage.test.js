@@ -142,6 +142,38 @@ describe('SkyPage targets', () => {
     expect(w.emitted('details').at(-1)).toEqual([{ id: 'M45', instrument: 'dob_8inch' }])
   })
 
+  it('opened from Tonight, picks the target and keeps the time when it is up', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w, sky } = await mountPage({ focusId: 'Saturn' })
+    const time = sky.time
+    expect(w.find('.sky-target-row.active .sky-target-name').text()).toBe('Saturn')
+    expect(w.emitted('focused')).toHaveLength(1)
+    expect(sky.time).toBe(time)
+    expect(sky.view.pitch).toBeGreaterThan(30) // turned up toward Saturn, 54° up
+  })
+
+  it('opened from Tonight for a target below the horizon, moves to its best time and says so', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w, sky } = await mountPage({ focusId: 'M42' })
+    const { start, end } = sky.range
+    const best = Date.parse(target('M42').bestTime)
+    expect(sky.time).toBe(Math.min(end.getTime(), Math.max(start.getTime(), best)))
+    expect(w.find('.sky-notice').text()).toMatch(/Orion Nebula/)
+    expect(w.find('.sky-target-row.active .sky-target-name').text()).toBe('Orion Nebula')
+  })
+
+  it('waits for the plan before showing a target from Tonight', async () => {
+    at(NIGHT)
+    media({ reduce: true })
+    const { w } = await mountPage({ focusId: 'M45', tonight: null })
+    expect(w.emitted('focused')).toBeUndefined()
+    await w.setProps({ tonight })
+    expect(w.emitted('focused')).toHaveLength(1)
+    expect(w.find('.sky-target-row.active .sky-target-name').text()).toBe('Pleiades')
+  })
+
   it('hides and shows the list', async () => {
     at(NIGHT)
     media({ reduce: true })
