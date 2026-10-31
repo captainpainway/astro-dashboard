@@ -168,7 +168,9 @@ button { font: inherit; cursor: pointer; }
 .targets .az .dir { font-weight: 500; }
 .targets .az .deg { margin-left: 0.35em; }
 .detail-row td { white-space: normal; }
-.data-row { cursor: pointer; transition: background .12s; }
+/* No background transition: every frame of one re-blurs the glass panel around the table, so a 0.12s fade on hover or
+   on closing a row cost several slow frames. The highlight just switches. */
+.data-row { cursor: pointer; }
 .data-row.alt { background: rgba(255, 255, 255, .025); }
 .data-row:hover { background: rgba(255, 255, 255, .05); }
 .data-row.open { background: rgba(122, 162, 255, .1); }

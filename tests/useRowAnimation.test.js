@@ -33,4 +33,21 @@ describe('useRowAnimation', () => {
     onBeforeEnter(tr)
     expect(tr.firstChild.style.opacity).toBe('0')
   })
+
+  it('removes a closing detail row at once, while other rows fade out', async () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false }))
+    const { onLeave } = hooks()
+    const detail = row()
+    detail.className = 'detail-row'
+    const detailLeft = vi.fn()
+    onLeave(detail, detailLeft)
+    expect(detailLeft).toHaveBeenCalledTimes(1)
+    expect(detail.style.opacity).toBe('')
+
+    const data = row()
+    const dataLeft = vi.fn()
+    onLeave(data, dataLeft)
+    await Promise.resolve()
+    expect(dataLeft).not.toHaveBeenCalled() // still fading
+  })
 })

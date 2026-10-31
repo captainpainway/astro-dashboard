@@ -60,6 +60,10 @@ export function useRowAnimation(table, rows) {
     const finish = () => { leaving.delete(el); done() }
     if (reduceMotion()) return finish()
     leaving.add(el)
+    // A closing detail row goes at once, and the rows below move straight back up, just as they move straight down
+    // when it opens. Fading or gliding inside the blurred glass panel re-blurs the panel on every frame, which made
+    // closing lag well behind the click.
+    if (el.classList.contains('detail-row')) return finish()
     gsap.killTweensOf(el)
     gsap.to(el, { opacity: 0, x: 12, duration: 0.2, ease: 'power1.in', onComplete: () => queueRemoval(finish) })
   }
