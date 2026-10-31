@@ -47,6 +47,9 @@ export function altaz(body, date, observer) {
 
 export const altitude = (body, date, observer) => altaz(body, date, observer).alt
 
+/** Apparent visual magnitude of a planet (or the Sun/Moon) at `date`. */
+export const magnitude = (body, date) => Illumination(BODIES[body], date).mag
+
 /** Alt/az of a fixed J2000 RA/Dec object; precession and nutation to `date` are applied (~0.4° otherwise). */
 export function starAltAz(raHours, decDeg, date, observer) {
   const v = RotateVector(Rotation_EQJ_EQD(date), VectorFromSphere(new Spherical(decDeg, raHours * 15, 1), date))

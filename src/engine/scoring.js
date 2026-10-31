@@ -1,10 +1,32 @@
 import catalogs from './catalogs.json'
-import { PLANETS, altaz, moonIllumination, moonIsWaxing, observerFor, starAltAz } from './astro'
+import { PLANETS, altaz, magnitude, moonIllumination, moonIsWaxing, observerFor, starAltAz } from './astro'
 import { round1 } from './forecast'
 import { toLocalIso } from './time'
 
 const STEP = 15 * 60_000
 const MIN_ALT = 15 // degrees; below this a target isn't listed
+// Height counts up to here and no further: past ~60° the view barely improves (airmass ~1.15), so between targets that
+// are all well placed, brightness and moonlight decide.
+const ALT_CAP = 60
+const height = (best) => Math.min(best.alt, ALT_CAP)
+/** Brightness bonus, the same for planets and deep-sky objects: 8 − magnitude, never negative (0 when unknown). */
+const brightness = (mag) => (mag == null ? 0 : Math.max(0, 8 - mag))
+const priorityBonus = (priority) => (4 - priority) * 2 // watchlist variables; priority 1 is the highest
+const MOON_BONUS = 5
+const BRIGHTEST_PLANET_MAG = -4.9 // Venus at its greatest brilliancy
+
+/**
+ * The highest raw score the formula can give: full height plus the largest bonus any class can earn. Raw scores are
+ * shown on a fixed 1–100 scale against this, so a score means the same thing every night (a moonlit night reads lower).
+ */
+export const SCORE_CEILING = ALT_CAP + Math.max(
+  brightness(BRIGHTEST_PLANET_MAG),
+  ...[...catalogs.messier, ...catalogs.ngc].map((o) => brightness(o.magnitude)),
+  priorityBonus(1),
+  MOON_BONUS,
+)
+/** Raw score → 1–100 (0 → 1, the ceiling → 100); 0 or below stays 0 so the target is hidden as before. */
+export const normalizeScore = (raw) => (raw > 0 ? Math.min(100, 1 + 99 * raw / SCORE_CEILING) : 0)
 
 export const TARGET_CLASSES = ['planet', 'moon', 'variable', 'messier', 'nebula', 'cluster']
 // The owner's two instruments (astro-cli config/equipment.yaml), shown to every visitor as-is.
@@ -47,7 +69,7 @@ function toTarget(tz, { id, name, targetClass, score, above, best, moonInterfere
   const iso = (s) => toLocalIso(s.t, tz)
   return {
     id, name, targetClass,
-    score: round1(score),
+    score: round1(normalizeScore(score)),
     maxAlt: round1(best.alt),
     bestTime: iso(best),
     window: { start: iso(above[0]), end: iso(above.at(-1)) },
@@ -61,7 +83,10 @@ function toTarget(tz, { id, name, targetClass, score, above, best, moonInterfere
 
 /**
  * Ranked targets per instrument over the sample `times` (a night grid, or a single instant).
- * Score = peak altitude, minus a moonlight penalty for deep-sky classes, plus magnitude/priority bonuses.
+ * Score = peak altitude counted up to 60°, then by class: planets + brightness (8 − magnitude at best time); deep-sky
+ * + brightness − 40 × moon interference; variables + 2 × (4 − priority); the Moon + 5. Shown on a fixed 1–100 scale
+ * (see SCORE_CEILING); 0 for a raw score of 0 or below, which hides the target.
+ * (astro-cli scores by full peak altitude with a flat +10 for planets; this deliberately differs.)
  */
 export function generatePlan(location, times, classes = TARGET_CLASSES) {
   const observer = observerFor(location)
@@ -96,24 +121,23 @@ export function generatePlan(location, times, classes = TARGET_CLASSES) {
     const curve = fixedCurve(obj)
     return scored(curve, (best) => {
       const moonInterference = MOON_PENALISED.has(targetClass) ? interference(curve) : 0
-      const bonus = obj.magnitude == null ? 0 : Math.max(0, 8 - obj.magnitude)
       const { raHours, decDegrees, magnitude, type: objectType, sizeArcmin, aliases } = obj
       return { id: obj.id, name: obj.name ?? obj.id, targetClass, notes: obj.notes, moonInterference,
-               score: best.alt - moonInterference * 40 + bonus,
+               score: height(best) - moonInterference * 40 + brightness(obj.magnitude),
                facts: { raHours, decDegrees, magnitude, objectType, sizeArcmin, aliases } }
     })
   }
   const planet = (key) => {
     const name = key[0].toUpperCase() + key.slice(1)
     return scored(sample((t) => altaz(key, t, observer)),
-      (best) => ({ id: name, name, targetClass: 'planet', score: best.alt + 10 }))
+      (best) => ({ id: name, name, targetClass: 'planet', score: height(best) + brightness(magnitude(key, best.t)) }))
   }
   const moon = () => scored(moonCurve, (best) => ({
-    id: 'Moon', name: 'Moon', targetClass: 'moon', score: best.alt + 5, notes: moonNote(mid),
+    id: 'Moon', name: 'Moon', targetClass: 'moon', score: height(best) + MOON_BONUS, notes: moonNote(mid),
   }))
   const variable = (star) => (star.raHours == null || star.decDegrees == null ? null : scored(fixedCurve(star), (best) => ({
     id: star.designation, name: star.designation, targetClass: 'variable',
-    score: best.alt + (4 - star.priority) * 2,
+    score: height(best) + priorityBonus(star.priority),
     facts: { raHours: star.raHours, decDegrees: star.decDegrees },
     notes: star.chartId ? `chart ${star.chartId}${star.notes ? ` — ${star.notes}` : ''}` : star.notes,
   })))

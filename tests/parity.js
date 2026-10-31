@@ -47,7 +47,9 @@ export function expectRow(got, want, tol) {
   }
 }
 
-const PLAN_TOL = { score: 0.5, maxAlt: 0.2, altAtBest: 0.2, azAtBest: 1.5, moonInterference: 0.02 }
+// Scores and so rankings deliberately differ from astro-cli (height capped at 60°, planets scored by brightness; see
+// generatePlan), so parity covers what the two engines still share: positions, times, moonlight and labels.
+const PLAN_TOL = { maxAlt: 0.2, altAtBest: 0.2, azAtBest: 1.5, moonInterference: 0.02 }
 const STEP_MS = 15 * 60_000
 // astro-cli labels the Moon from illuminated fraction only (a waning Moon reads "Waxing"); compare just the percentage.
 const noteOf = (t) => (t.targetClass === 'moon' ? t.notes.replace(/^[^(]+/, '') : t.notes)
@@ -64,7 +66,6 @@ export function expectPlan(got, want, { interference = true } = {}) {
     const w = new Map(want[ins].map((t) => [t.id, t]))
     const scores = got[ins].map((t) => t.score)
     expect(scores, `${ins} sorted`).toEqual([...scores].sort((a, b) => b - a))
-    if (want[ins].length) expect(want[ins].slice(0, 3).map((t) => t.id), `${ins} top`).toContain(got[ins][0].id)
     for (const id of new Set([...g.keys(), ...w.keys()])) {
       const a = g.get(id)
       const b = w.get(id)

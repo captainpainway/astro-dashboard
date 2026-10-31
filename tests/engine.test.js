@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { buildLunar, reliefScore, subsolarPoint, sunAltitudeAt } from '../src/engine/lunar'
 import { rateConditions } from '../src/engine/rating'
-import { altaz as engineAltaz, darkWindow, observerFor, twilightEvents } from '../src/engine/astro'
+import { altaz as engineAltaz, darkWindow, magnitude, observerFor, twilightEvents } from '../src/engine/astro'
+import catalogs from '../src/engine/catalogs.json'
 import { BIG_BEND, expectPlan, expectTwilight } from './parity'
-import { generatePlan, timeGrid } from '../src/engine/scoring'
+import { SCORE_CEILING, generatePlan, normalizeScore, timeGrid } from '../src/engine/scoring'
 import altaz from './fixtures/altaz.json'
 import rating from './fixtures/rating.json'
 import twilight from './fixtures/twilight.json'
@@ -71,12 +72,12 @@ describe('generatePlan vs astro-cli', () => {
   const grid = (night) => timeGrid(new Date(night.startUtc), new Date(night.endUtc))
   const moonNote = (plan) => plan.dob_8inch.find((t) => t.id === 'Moon')?.notes
 
-  it('ranks the night of 2026-10-03 like astro-cli (window mode)', () => {
+  it('places and times the night of 2026-10-03 like astro-cli (window mode)', () => {
     const { night, instruments } = tonight.window
     expectPlan(generatePlan(BIG_BEND, grid(night)), instruments)
   })
 
-  it('ranks the sky at 22:30 like astro-cli (instant mode)', () => {
+  it('places the sky at 22:30 like astro-cli (instant mode)', () => {
     const at = new Date(tonight.instant.at.utc)
     expectPlan(generatePlan(BIG_BEND, [at]), tonight.instant.instruments, { interference: false })
   })
@@ -99,6 +100,54 @@ describe('generatePlan vs astro-cli', () => {
     const night = (startUtc) => timeGrid(new Date(startUtc), new Date(Date.parse(startUtc) + 8 * 3_600_000))
     expect(moonNote(generatePlan(BIG_BEND, night('2026-10-04T02:00:00Z'), ['moon']))).toMatch(/^(Last Quarter|Waning) /)
     expect(moonNote(generatePlan(BIG_BEND, night('2026-10-18T02:00:00Z'), ['moon']))).toMatch(/^(First Quarter|Waxing) /)
+  })
+})
+
+describe('generatePlan scores', () => {
+  // 2026-10-31 at Big Bend: Uranus peaks at 81°, Jupiter and Saturn are up, M45 peaks 85° with the Moon about.
+  const night = darkWindow(BIG_BEND, new Date('2026-10-31T23:00:00Z'))
+  const plan = generatePlan(BIG_BEND, timeGrid(night.start, night.end))
+  const find = (id) => plan.dob_8inch.find((t) => t.id === id)
+  const brightness = (mag) => Math.max(0, 8 - mag)
+  const mag = new Map(catalogs.messier.map((o) => [o.id, o.magnitude])) // the Dobsonian list scores Messier entries
+
+  it('counts height only up to 60°', () => {
+    const high = plan.dob_8inch.filter((t) => t.targetClass === 'variable' && t.maxAlt > 60)
+    expect(high.length).toBeGreaterThan(0)
+    for (const t of high) expect(t.score).toBeLessThanOrEqual(normalizeScore(60 + 6) + 0.05) // capped height + top priority
+  })
+
+  it('gives planets the brightness bonus at their best time, not a flat bonus', () => {
+    for (const t of plan.dob_8inch.filter((x) => x.targetClass === 'planet')) {
+      const want = Math.min(t.maxAlt, 60) + brightness(magnitude(t.id.toLowerCase(), new Date(t.bestTime)))
+      expect(t.score, t.id).toBeCloseTo(normalizeScore(want), 0)
+    }
+  })
+
+  it('scores deep-sky objects by capped height, brightness and moonlight', () => {
+    const t = find('M45')
+    expect(t.maxAlt).toBeGreaterThan(60)
+    const raw = 60 - 40 * t.moonInterference + brightness(mag.get('M45'))
+    expect(Math.abs(t.score - normalizeScore(raw))).toBeLessThan(0.8) // moonInterference is rounded to 0.01
+  })
+
+  it('shows scores on a fixed 1–100 scale whose ceiling is the formula’s maximum', () => {
+    // Venus at its brightest (8 − (−4.9) = 12.9) is the largest bonus, over the Pleiades (6.8) and priority 1 (6)
+    expect(SCORE_CEILING).toBeCloseTo(72.9, 5)
+    expect(normalizeScore(SCORE_CEILING)).toBe(100)
+    expect(normalizeScore(SCORE_CEILING + 5)).toBe(100)
+    expect(normalizeScore(0.01)).toBeCloseTo(1, 1)
+    expect([normalizeScore(0), normalizeScore(-12)]).toEqual([0, 0]) // hidden, as before
+    const scores = [...plan.dob_8inch, ...plan.dwarf_mini].map((t) => t.score)
+    expect(scores.every((x) => x === 0 || (x >= 1 && x <= 100))).toBe(true)
+  })
+
+  it('no longer puts faint Uranus above bright, well-placed planets', () => {
+    const uranus = find('Uranus')
+    const bright = plan.dob_8inch.filter((t) => ['Jupiter', 'Saturn'].includes(t.id) && t.maxAlt >= 60)
+    expect(uranus.maxAlt).toBeGreaterThan(80)
+    for (const p of bright) expect(p.score, p.id).toBeGreaterThan(uranus.score)
+    expect(plan.dob_8inch[0].id).not.toBe('Uranus')
   })
 })
 
