@@ -271,6 +271,18 @@ describe('search', () => {
     expect(searchSky(index, 'veil').map((e) => e.name)).toEqual(['Veil Nebula (Eastern)', 'Veil Nebula (Western)'])
   })
 
+  it("finds catalogue objects and tonight's unnamed Messier targets by common name and NGC number", () => {
+    // Tonight's Messier rows are named by id (M45), but the catalogue knows them as the Pleiades, NGC 224, ...
+    const plain = searchIndex({ dob_8inch: [{ id: 'M45', name: 'M45', targetClass: 'messier', score: 90 },
+                                            { id: 'M31', name: 'M31', targetClass: 'messier', score: 80 }] })
+    expect(searchSky(plain, 'pleiades')[0]).toMatchObject({ id: 'M45', name: 'Pleiades', kind: 'target' })
+    expect(searchSky(plain, 'andromeda galaxy')[0]).toMatchObject({ id: 'M31', kind: 'target' }) // an alias, not its name
+    expect(searchSky(plain, 'NGC 224')[0]).toMatchObject({ id: 'M31', kind: 'target' })
+    expect(searchSky(plain, 'whirlpool')[0]).toMatchObject({ id: 'M51', kind: 'deep-sky' })
+    expect(searchSky(plain, 'ngc5194')[0]).toMatchObject({ id: 'M51', kind: 'deep-sky' })
+    expect(searchSky(plain, "bode's")[0]).toMatchObject({ id: 'M81', kind: 'deep-sky' })
+  })
+
   it("puts exact matches first, then tonight's targets", () => {
     expect(searchSky(index, 'orion')[0]).toMatchObject({ name: 'Orion', kind: 'constellation' })
     expect(searchSky(index, 'sat')[0]).toMatchObject({ id: 'Saturn', kind: 'target' })

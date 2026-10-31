@@ -175,8 +175,9 @@ const CATALOG = new Map([
 const deep = new Map(catalogs.messier.map((o) => [o.id, o]))
 for (const o of catalogs.ngc) deep.set(o.id, { ...deep.get(o.id), ...o })
 /** Deep-sky objects for the sky page's catalogue layer and search, with J2000 unit vectors. */
-export const DEEP_SKY = [...deep.values()].map((o) =>
-  ({ id: o.id, name: o.name ?? o.id, type: o.type, magnitude: o.magnitude, v: unitVector(o.raHours, o.decDegrees) }))
+export const DEEP_SKY = [...deep.values()].map((o) => ({ id: o.id, name: o.name ?? o.id, aliases: o.aliases ?? [],
+  type: o.type, magnitude: o.magnitude, v: unitVector(o.raHours, o.decDegrees) }))
+const DEEP_BY_ID = new Map(DEEP_SKY.map((o) => [o.id, o]))
 
 const OBLIQUITY = 23.4393 * RAD
 /** The ecliptic as J2000 segments `[a, b]` of unit vectors, every `step` degrees of longitude. */
@@ -251,7 +252,12 @@ const KIND_ORDER = ['target', 'planet', 'moon', 'deep-sky', 'variable', 'constel
 
 /** Everything search can find. Tonight's targets come first and win over their catalogue or planet copies. */
 export function searchIndex(instruments) {
-  const entries = allTargets(instruments).map((t) => ({ name: t.name, id: t.id, kind: 'target', aliases: [t.id], target: t }))
+  // A target hides its catalogue copy, so it takes that copy's name (Tonight names Messier rows by id) and aliases.
+  const entries = allTargets(instruments).map((t) => {
+    const o = DEEP_BY_ID.get(t.id)
+    return { name: t.name === t.id && o ? o.name : t.name, id: t.id, kind: 'target', aliases: [t.id, ...(o?.aliases ?? [])],
+             target: t }
+  })
   const taken = new Set(entries.flatMap((e) => [norm(e.id), norm(e.name)]))
   const add = (e) => {
     if ([e.id, e.name].some((k) => taken.has(norm(k)))) return
@@ -260,7 +266,7 @@ export function searchIndex(instruments) {
   }
   PLANETS.forEach((p) => add({ name: cap(p), id: cap(p), kind: 'planet', aliases: [] }))
   add({ name: 'Moon', id: 'Moon', kind: 'moon', aliases: [] })
-  DEEP_SKY.forEach((o) => add({ name: o.name, id: o.id, kind: 'deep-sky', aliases: [o.id], v: o.v }))
+  DEEP_SKY.forEach((o) => add({ name: o.name, id: o.id, kind: 'deep-sky', aliases: [o.id, ...o.aliases], v: o.v }))
   catalogs.watchlist.forEach((o) =>
     add({ name: o.designation, id: o.designation, kind: 'variable', aliases: [], v: unitVector(o.raHours, o.decDegrees) }))
   skyData.names.forEach(([abbr, name, ra, dec]) =>

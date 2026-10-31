@@ -553,6 +553,7 @@ a:hover { text-decoration: underline; }
   box-shadow: var(--glass-shadow); }
 .sky-search-list li { padding: 0.4rem 0.6rem; border-radius: 6px; cursor: pointer; }
 .sky-search-list li > .small { display: block; }
+.sky-search-id { margin-left: 0.4em; } /* the template compiler strips a leading space inside the span */
 .sky-search-list li.active { background: var(--glass-control-hover); }
 .sky-search-none { cursor: default; }
 .sky-pick { position: absolute; width: 34px; height: 34px; transform: translate(-50%, -50%); border-radius: 50%;
