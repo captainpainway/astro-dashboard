@@ -128,7 +128,7 @@ onBeforeUnmount(() => {
         Targets ({{ rows.length }})
       </button>
     </div>
-    <div class="sky-body" :class="{ 'panel-open': panelOpen }">
+    <div class="sky-body">
       <div class="sky-main">
         <SkyStage v-if="!failed" v-model:selected-id="selectedId" :sky="sky" :location="location" :targets="shown"
                   :hover-id="hoverId" :emphasis="emphasis" :layers="layers" :highlight="highlight" immersive
@@ -136,9 +136,11 @@ onBeforeUnmount(() => {
         <p v-else class="sky-nogl muted">Your browser can't draw the sky (WebGL is unavailable).</p>
         <p class="sky-notice" role="status" aria-live="polite">{{ notice }}</p>
       </div>
-      <SkyTargetPanel v-if="panelOpen" v-model:instrument="instrument" v-model:up-only="upOnly" :rows="rows"
-                      :selected-id="selectedId" :loading="loading && !tonight" :error="error" @pick="pick"
-                      @hover="hoverId = $event" @close="panelOpen = false" />
+      <Transition name="sky-slide">
+        <SkyTargetPanel v-if="panelOpen" v-model:instrument="instrument" v-model:up-only="upOnly" :rows="rows"
+                        :selected-id="selectedId" :loading="loading && !tonight" :error="error" @pick="pick"
+                        @hover="hoverId = $event" @close="panelOpen = false" />
+      </Transition>
     </div>
     <div class="sky-scrub sky-timebar">
       <button class="show-more sky-ctl" :aria-label="playing ? 'Pause' : 'Play the night'"

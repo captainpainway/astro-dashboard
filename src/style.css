@@ -485,9 +485,15 @@ a:hover { text-decoration: underline; }
 .sky-nogl { margin: auto; padding: 2rem; text-align: center; }
 .sky-toolbar { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1rem; flex-wrap: wrap; }
 .sky-toolbar .sky-targets-toggle { margin-left: auto; }
-.sky-body.panel-open { grid-template-columns: minmax(0, 1fr) 300px; }
-.sky-targets { display: flex; flex-direction: column; min-height: 0; background: var(--glass-bg-dense);
-  border-left: 1px solid var(--glass-border); }
+/* Targets panel slides in over the sky from the right rather than taking a column, so the sky keeps its size */
+.sky-targets { position: absolute; inset: 0 0 0 auto; width: min(300px, 100%); z-index: 7; display: flex;
+  flex-direction: column; min-height: 0; background: var(--glass-bg-dense); border-left: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
+.sky-slide-enter-active, .sky-slide-leave-active { transition: transform .28s cubic-bezier(.2, .8, .2, 1); }
+.sky-slide-enter-from, .sky-slide-leave-to { transform: translateX(100%); }
+@media (prefers-reduced-motion: reduce) {
+  .sky-slide-enter-active, .sky-slide-leave-active { transition: none; }
+}
 .sky-targets-head { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.9rem 0.2rem; }
 .sky-targets-head h2 { margin: 0; font-size: 1rem; }
 .sky-targets-close { min-width: 24px; min-height: 24px; color: var(--muted); background: none; border: 0; }
@@ -544,10 +550,10 @@ a:hover { text-decoration: underline; }
   .sky-timebar .sky-track { order: -1; } /* the slider gets the first row; the buttons wrap below it */
 }
 @media (max-width: 700px) {
-  .sky-body.panel-open { grid-template-columns: minmax(0, 1fr); }
-  .sky-targets { position: absolute; inset: auto 0 0 0; height: 60%; z-index: 7; border-left: 0;
+  .sky-targets { inset: auto 0 0 0; width: auto; height: 60%; border-left: 0;
     border-top: 1px solid var(--glass-edge); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     background: var(--glass-bg-menu); } /* over the sky, so opaque enough that rings don't show through */
+  .sky-slide-enter-from, .sky-slide-leave-to { transform: translateY(100%); }
 }
 @media (max-width: 700px) {
   .sky-stage { aspect-ratio: 4 / 3; }
