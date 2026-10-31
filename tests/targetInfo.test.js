@@ -95,6 +95,16 @@ describe('wikiSummary', () => {
     expect(fetch).toHaveBeenCalledTimes(3)
   })
 
+  it('serves bundled lunar summaries without a request, and fetches everything else', async () => {
+    const fetch = vi.fn(() => respond(404, {}))
+    vi.stubGlobal('fetch', fetch)
+    expect(await wikiSummary('Plato (crater)')).toMatchObject({ title: 'Plato (crater)',
+      extract: expect.stringMatching(/^Plato is a lava-filled lunar impact crater/), thumbnail: expect.any(String) })
+    expect(fetch).not.toHaveBeenCalled()
+    await wikiSummary('Not bundled test')
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
   it('skips disambiguation pages', async () => {
     vi.stubGlobal('fetch', vi.fn(() => respond(200, { type: 'disambiguation', title: 'X', extract: 'X may refer to' })))
     expect(await wikiSummary('Ambiguous test')).toBeNull()
