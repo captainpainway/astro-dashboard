@@ -121,3 +121,43 @@ export function timeline(night, target) {
     starPct: pos(target.bestTime),
   }
 }
+/** Sexagesimal parts of x rounded to `places` decimals of the last field, carrying 60s upward. */
+function sexagesimal(x, places) {
+  const scale = 10 ** places
+  const total = Math.round(Math.abs(x) * 3600 * scale)
+  const whole = Math.floor(total / (3600 * scale))
+  const min = Math.floor(total / (60 * scale)) % 60
+  const sec = (total % (60 * scale)) / scale
+  return [whole, String(min).padStart(2, '0'), sec.toFixed(places).padStart(places ? places + 3 : 2, '0')]
+}
+
+/** Right ascension or hour angle in hours, e.g. '18h 03m 40.4s'; '—' when unknown. */
+export function fmtHours(h) {
+  if (h == null) return '—'
+  const [hh, mm, ss] = sexagesimal(((h % 24) + 24) % 24, 1)
+  return `${String(hh % 24).padStart(2, '0')}h ${mm}m ${ss}s`
+}
+
+/** Signed angle in degrees, e.g. '−24° 22′ 49″'; '—' when unknown. */
+export function fmtDms(deg) {
+  if (deg == null) return '—'
+  const [d, m, s] = sexagesimal(deg, 0)
+  return `${deg < 0 ? '−' : '+'}${String(d).padStart(2, '0')}° ${m}′ ${s}″`
+}
+
+/** Apparent size from [major, minor] arcminutes, e.g. '45′ × 30′' or '1.5° × 0.7°' past a degree; null if unknown. */
+export function fmtSize(size) {
+  if (!size?.length) return null
+  const big = size[0] >= 60
+  const one = (a) => (big ? `${+(a / 60).toFixed(1)}°` : `${+a.toFixed(1)}′`)
+  return size.map(one).join(' × ')
+}
+
+const OBJECT_TYPES = { dbl: 'double star', ast: 'asterism', S: 'spiral galaxy' }
+const CLASS_TYPES = { planet: 'planet', moon: 'natural satellite', variable: 'variable star' }
+
+/** What a target is, e.g. 'emission nebula', 'globular cluster', 'planet'. */
+export function objectTypeLabel(t) {
+  if (t.objectType) return OBJECT_TYPES[t.objectType] ?? t.objectType.replaceAll('_', ' ')
+  return CLASS_TYPES[t.targetClass] ?? t.targetClass
+}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { fmtTime, fmtDateTime, pct, compass, timeline, weatherEmoji, fmtLocation, lunarEmpty, fmtMinutes } from '../src/format'
+import { fmtTime, fmtDateTime, pct, compass, timeline, weatherEmoji, fmtLocation, lunarEmpty, fmtMinutes,
+         fmtHours, fmtDms, fmtSize, objectTypeLabel } from '../src/format'
 
 describe('fmtTime', () => {
   it('formats ISO local times as h:mm AM/PM', () => {
@@ -110,5 +111,42 @@ describe('fmtMinutes', () => {
     expect(fmtMinutes(317)).toBe('5h 17m')
     expect(fmtMinutes(125)).toBe('2h 05m')
     expect(fmtMinutes(45)).toBe('45m')
+  })
+})
+
+describe('fmtHours / fmtDms (Stellarium-style RA, Dec and hour angle)', () => {
+  it('formats hours with tenths of a second', () => {
+    expect(fmtHours(18 + 3 / 60 + 40.4 / 3600)).toBe('18h 03m 40.4s')
+    expect(fmtHours(2.5)).toBe('02h 30m 00.0s')
+  })
+  it('carries rounding up through minutes and wraps at 24h', () => {
+    expect(fmtHours(23.999999)).toBe('00h 00m 00.0s')
+    expect(fmtHours(-1)).toBe('23h 00m 00.0s')
+  })
+  it('formats signed degrees with a true minus sign', () => {
+    expect(fmtDms(-(24 + 22 / 60 + 49 / 3600))).toBe('−24° 22′ 49″')
+    expect(fmtDms(5.5)).toBe('+05° 30′ 00″')
+    expect(fmtDms(59.99999)).toBe('+60° 00′ 00″')
+  })
+  it('shows a dash when unknown', () => {
+    expect([fmtHours(null), fmtDms(undefined)]).toEqual(['—', '—'])
+  })
+})
+
+describe('fmtSize', () => {
+  it('uses arcminutes, or degrees from a degree up', () => {
+    expect(fmtSize([45, 30])).toBe('45′ × 30′')
+    expect(fmtSize([16.5])).toBe('16.5′')
+    expect(fmtSize([177.83, 69.66])).toBe('3° × 1.2°')
+    expect(fmtSize(undefined)).toBeNull()
+  })
+})
+
+describe('objectTypeLabel', () => {
+  it('names catalogue types and target classes', () => {
+    expect(objectTypeLabel({ objectType: 'emission_nebula', targetClass: 'nebula' })).toBe('emission nebula')
+    expect(objectTypeLabel({ objectType: 'dbl', targetClass: 'messier' })).toBe('double star')
+    expect(objectTypeLabel({ targetClass: 'planet' })).toBe('planet')
+    expect(objectTypeLabel({ targetClass: 'variable' })).toBe('variable star')
   })
 })

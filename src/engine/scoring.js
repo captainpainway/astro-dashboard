@@ -43,7 +43,7 @@ export function halfHourGrid(start, end) {
   return out
 }
 
-function toTarget(tz, { id, name, targetClass, score, above, best, moonInterference, notes }) {
+function toTarget(tz, { id, name, targetClass, score, above, best, moonInterference, notes, facts }) {
   const iso = (s) => toLocalIso(s.t, tz)
   return {
     id, name, targetClass,
@@ -55,6 +55,7 @@ function toTarget(tz, { id, name, targetClass, score, above, best, moonInterfere
     azAtBest: Math.round(best.az),
     moonInterference: Math.round(moonInterference * 100) / 100,
     notes,
+    ...facts, // fixed objects: J2000 position and catalogue facts for the expanded row
   }
 }
 
@@ -96,8 +97,10 @@ export function generatePlan(location, times, classes = TARGET_CLASSES) {
     return scored(curve, (best) => {
       const moonInterference = MOON_PENALISED.has(targetClass) ? interference(curve) : 0
       const bonus = obj.magnitude == null ? 0 : Math.max(0, 8 - obj.magnitude)
+      const { raHours, decDegrees, magnitude, type: objectType, sizeArcmin, aliases } = obj
       return { id: obj.id, name: obj.name ?? obj.id, targetClass, notes: obj.notes, moonInterference,
-               score: best.alt - moonInterference * 40 + bonus }
+               score: best.alt - moonInterference * 40 + bonus,
+               facts: { raHours, decDegrees, magnitude, objectType, sizeArcmin, aliases } }
     })
   }
   const planet = (key) => {
@@ -111,6 +114,7 @@ export function generatePlan(location, times, classes = TARGET_CLASSES) {
   const variable = (star) => (star.raHours == null || star.decDegrees == null ? null : scored(fixedCurve(star), (best) => ({
     id: star.designation, name: star.designation, targetClass: 'variable',
     score: best.alt + (4 - star.priority) * 2,
+    facts: { raHours: star.raHours, decDegrees: star.decDegrees },
     notes: star.chartId ? `chart ${star.chartId}${star.notes ? ` — ${star.notes}` : ''}` : star.notes,
   })))
   const ngc = (cls) => catalogs.ngc.filter((o) => (TYPE_TO_CLASS[o.type] ?? o.type) === cls).map((o) => catalog(o, cls))

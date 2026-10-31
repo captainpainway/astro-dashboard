@@ -146,7 +146,8 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
         ({{ visibleCount(ins) }})
       </button>
     </nav>
-    <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :sort-key="sortKey" />
+    <TargetTable v-if="activeTargets.length" :targets="activeTargets" :night="night" :location="data.location"
+                 :sort-key="sortKey" />
     <p v-else-if="data && !loading" class="muted">no targets match the current filters</p>
     <p v-if="loading && !data" class="muted">loading tonight's plan…</p>
     </template>

@@ -1,11 +1,13 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { compass, fmtTime, isDisplayable, pct, timeline } from '../format'
+import { compass, fmtTime, isDisplayable, pct } from '../format'
+import TargetDetail from './TargetDetail.vue'
 import { useRowAnimation } from '../composables/useRowAnimation'
 
 const props = defineProps({
   targets: { type: Array, required: true },
   night: { type: Object, default: null },
+  location: { type: Object, default: null },
   sortKey: { type: String, default: 'score' },
 })
 
@@ -73,22 +75,7 @@ function moonClass(mi) {
         </tr>
         <tr v-if="expandedId === t.id" :key="`${t.id}:detail`" class="detail-row">
           <td colspan="8">
-            <p v-if="t.notes" class="notes">{{ t.notes }}</p>
-            <p class="muted small">
-              visible {{ fmtTime(t.window.start) }}–{{ fmtTime(t.window.end) }},
-              max altitude {{ t.maxAlt != null ? t.maxAlt.toFixed(0) + '°' : '—' }}
-            </p>
-            <div v-if="night" class="mini-timeline">
-              <span class="muted small">{{ fmtTime(night.startLocal) }}</span>
-              <div class="tl-track">
-                <div class="tl-bar"
-                     :style="{ left: `${timeline(night, t).leftPct}%`,
-                                width: `${timeline(night, t).widthPct}%` }" />
-                <span class="tl-star" role="img" aria-label="best time"
-                      :style="{ left: `${timeline(night, t).starPct}%` }" />
-              </div>
-              <span class="muted small">{{ fmtTime(night.endLocal) }}</span>
-            </div>
+            <TargetDetail :target="t" :location="location" :night="night" />
           </td>
         </tr>
       </template>

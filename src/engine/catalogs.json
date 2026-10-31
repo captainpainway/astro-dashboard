@@ -7,7 +7,16 @@
    "raHours": 5.567,
    "decDegrees": 22.0,
    "magnitude": 8.4,
-   "notes": "Crab nebula. Remnant of a supernova in the year 1054."
+   "notes": "Crab nebula. Remnant of a supernova in the year 1054.",
+   "sizeArcmin": [
+    8.0,
+    4.0
+   ],
+   "aliases": [
+    "Crab Nebula",
+    "NGC 1952",
+    "LBN 833"
+   ]
   },
   {
    "id": "M2",
@@ -16,7 +25,14 @@
    "raHours": 21.55,
    "decDegrees": -0.817,
    "magnitude": 6.5,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    8.4
+   ],
+   "aliases": [
+    "NGC 7089",
+    "MWSC 3526"
+   ]
   },
   {
    "id": "M3",
@@ -25,7 +41,14 @@
    "raHours": 13.7,
    "decDegrees": 28.367,
    "magnitude": 6.4,
-   "notes": "1000 stars approx. 40,000 ly distant. 500 variable stars."
+   "notes": "1000 stars approx. 40,000 ly distant. 500 variable stars.",
+   "sizeArcmin": [
+    16.2
+   ],
+   "aliases": [
+    "NGC 5272",
+    "MWSC 2152"
+   ]
   },
   {
    "id": "M4",
@@ -34,7 +57,14 @@
    "raHours": 16.383,
    "decDegrees": -26.517,
    "magnitude": 5.9,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    28.2
+   ],
+   "aliases": [
+    "NGC 6121",
+    "MWSC 2396"
+   ]
   },
   {
    "id": "M5",
@@ -43,7 +73,14 @@
    "raHours": 15.3,
    "decDegrees": 2.067,
    "magnitude": 5.8,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    15.0
+   ],
+   "aliases": [
+    "NGC 5904",
+    "MWSC 2286"
+   ]
   },
   {
    "id": "M6",
@@ -52,7 +89,15 @@
    "raHours": 17.667,
    "decDegrees": -32.253,
    "magnitude": 4.2,
-   "notes": "Butterfly cluster"
+   "notes": "Butterfly cluster",
+   "sizeArcmin": [
+    15.6
+   ],
+   "aliases": [
+    "Butterfly Cluster",
+    "NGC 6405",
+    "MWSC 2661"
+   ]
   },
   {
    "id": "M7",
@@ -61,7 +106,15 @@
    "raHours": 17.883,
    "decDegrees": -34.793,
    "magnitude": 3.3,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    22.2
+   ],
+   "aliases": [
+    "Ptolemy's Cluster",
+    "NGC 6475",
+    "MWSC 2739"
+   ]
   },
   {
    "id": "M8",
@@ -70,7 +123,16 @@
    "raHours": 18.05,
    "decDegrees": -24.387,
    "magnitude": 5.8,
-   "notes": "Lagoon nebula"
+   "notes": "Lagoon nebula",
+   "sizeArcmin": [
+    45.0,
+    30.0
+   ],
+   "aliases": [
+    "NGC 6523",
+    "NGC 6533",
+    "LBN 25"
+   ]
   },
   {
    "id": "M9",
@@ -79,7 +141,14 @@
    "raHours": 17.317,
    "decDegrees": -18.5,
    "magnitude": 7.9,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.9
+   ],
+   "aliases": [
+    "NGC 6333",
+    "MWSC 2567"
+   ]
   },
   {
    "id": "M10",
@@ -88,7 +157,14 @@
    "raHours": 16.95,
    "decDegrees": -4.1,
    "magnitude": 6.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    9.3
+   ],
+   "aliases": [
+    "NGC 6254",
+    "MWSC 2498"
+   ]
   },
   {
    "id": "M11",
@@ -97,7 +173,16 @@
    "raHours": 18.85,
    "decDegrees": -6.27,
    "magnitude": 5.8,
-   "notes": "Wild duck cluster"
+   "notes": "Wild duck cluster",
+   "sizeArcmin": [
+    9.0
+   ],
+   "aliases": [
+    "Amas de l'Ecu de Sobieski",
+    "Wild Duck Cluster",
+    "NGC 6705",
+    "MWSC 3008"
+   ]
   },
   {
    "id": "M12",
@@ -106,7 +191,14 @@
    "raHours": 16.783,
    "decDegrees": -1.933,
    "magnitude": 6.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    11.1
+   ],
+   "aliases": [
+    "NGC 6218",
+    "MWSC 2464"
+   ]
   },
   {
    "id": "M13",
@@ -115,7 +207,15 @@
    "raHours": 16.683,
    "decDegrees": 36.45,
    "magnitude": 5.9,
-   "notes": "Hercules cluster. 100,000 stars"
+   "notes": "Hercules cluster. 100,000 stars",
+   "sizeArcmin": [
+    16.5
+   ],
+   "aliases": [
+    "Hercules Globular Cluster",
+    "NGC 6205",
+    "MWSC 2445"
+   ]
   },
   {
    "id": "M14",
@@ -124,7 +224,14 @@
    "raHours": 17.617,
    "decDegrees": -3.233,
    "magnitude": 7.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    9.9
+   ],
+   "aliases": [
+    "NGC 6402",
+    "MWSC 2643"
+   ]
   },
   {
    "id": "M15",
@@ -133,7 +240,15 @@
    "raHours": 21.483,
    "decDegrees": 12.167,
    "magnitude": 6.4,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    11.1
+   ],
+   "aliases": [
+    "NGC 7078",
+    "MWSC 3518",
+    "PN G065.0-27.3"
+   ]
   },
   {
    "id": "M16",
@@ -142,7 +257,16 @@
    "raHours": 18.3,
    "decDegrees": -13.807,
    "magnitude": 6.0,
-   "notes": "Eagle nebula"
+   "notes": "Eagle nebula",
+   "sizeArcmin": [
+    120.0,
+    25.0
+   ],
+   "aliases": [
+    "NGC 6611",
+    "LBN 67",
+    "MWSC 2886"
+   ]
   },
   {
    "id": "M17",
@@ -151,7 +275,19 @@
    "raHours": 18.333,
    "decDegrees": -16.172,
    "magnitude": 7.0,
-   "notes": "Omega nebula"
+   "notes": "Omega nebula",
+   "sizeArcmin": [
+    12.6
+   ],
+   "aliases": [
+    "Checkmark Nebula",
+    "Lobster Nebula",
+    "Swan Nebula",
+    "omega Nebula",
+    "NGC 6618",
+    "LBN 60",
+    "MWSC 2896"
+   ]
   },
   {
    "id": "M18",
@@ -160,7 +296,14 @@
    "raHours": 18.317,
    "decDegrees": -17.102,
    "magnitude": 6.9,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.0
+   ],
+   "aliases": [
+    "NGC 6613",
+    "MWSC 2892"
+   ]
   },
   {
    "id": "M19",
@@ -169,7 +312,14 @@
    "raHours": 17.033,
    "decDegrees": -26.267,
    "magnitude": 7.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.5
+   ],
+   "aliases": [
+    "NGC 6273",
+    "MWSC 2519"
+   ]
   },
   {
    "id": "M20",
@@ -178,7 +328,15 @@
    "raHours": 18.033,
    "decDegrees": -22.972,
    "magnitude": 8.5,
-   "notes": "Trifid nebula"
+   "notes": "Trifid nebula",
+   "sizeArcmin": [
+    28.0
+   ],
+   "aliases": [
+    "NGC 6514",
+    "LBN 27",
+    "MWSC 2789"
+   ]
   },
   {
    "id": "M21",
@@ -187,7 +345,14 @@
    "raHours": 18.067,
    "decDegrees": -22.49,
    "magnitude": 5.9,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.0
+   ],
+   "aliases": [
+    "NGC 6531",
+    "MWSC 2796"
+   ]
   },
   {
    "id": "M22",
@@ -196,7 +361,14 @@
    "raHours": 18.6,
    "decDegrees": -23.9,
    "magnitude": 5.1,
-   "notes": "Excellent."
+   "notes": "Excellent.",
+   "sizeArcmin": [
+    12.6
+   ],
+   "aliases": [
+    "NGC 6656",
+    "MWSC 2961"
+   ]
   },
   {
    "id": "M23",
@@ -205,7 +377,14 @@
    "raHours": 17.95,
    "decDegrees": -18.985,
    "magnitude": 5.5,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    16.8
+   ],
+   "aliases": [
+    "NGC 6494",
+    "MWSC 2757"
+   ]
   },
   {
    "id": "M24",
@@ -214,7 +393,15 @@
    "raHours": 18.28,
    "decDegrees": -18.55,
    "magnitude": 4.5,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    120.0,
+    60.0
+   ],
+   "aliases": [
+    "Small Sgr Star Cloud",
+    "IC 4715"
+   ]
   },
   {
    "id": "M25",
@@ -223,7 +410,14 @@
    "raHours": 18.517,
    "decDegrees": -19.117,
    "magnitude": 4.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    14.1
+   ],
+   "aliases": [
+    "IC 4725",
+    "MWSC 2940"
+   ]
   },
   {
    "id": "M26",
@@ -232,7 +426,14 @@
    "raHours": 18.75,
    "decDegrees": -9.383,
    "magnitude": 8.0,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.0
+   ],
+   "aliases": [
+    "NGC 6694",
+    "MWSC 2987"
+   ]
   },
   {
    "id": "M27",
@@ -241,7 +442,15 @@
    "raHours": 19.983,
    "decDegrees": 22.717,
    "magnitude": 8.1,
-   "notes": "Dumbbell nebula"
+   "notes": "Dumbbell nebula",
+   "sizeArcmin": [
+    6.7
+   ],
+   "aliases": [
+    "Dumbbell Nebula",
+    "NGC 6853",
+    "PN G060.8-03.6"
+   ]
   },
   {
    "id": "M28",
@@ -250,7 +459,14 @@
    "raHours": 18.4,
    "decDegrees": -24.867,
    "magnitude": 6.9,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    5.1
+   ],
+   "aliases": [
+    "NGC 6626",
+    "MWSC 2908"
+   ]
   },
   {
    "id": "M29",
@@ -259,7 +475,14 @@
    "raHours": 20.383,
    "decDegrees": 38.523,
    "magnitude": 6.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    3.6
+   ],
+   "aliases": [
+    "NGC 6913",
+    "MWSC 3329"
+   ]
   },
   {
    "id": "M30",
@@ -268,7 +491,14 @@
    "raHours": 21.667,
    "decDegrees": -23.167,
    "magnitude": 7.5,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    9.0
+   ],
+   "aliases": [
+    "NGC 7099",
+    "MWSC 3543"
+   ]
   },
   {
    "id": "M31",
@@ -277,7 +507,15 @@
    "raHours": 0.7,
    "decDegrees": 41.267,
    "magnitude": 3.4,
-   "notes": "Andromeda galaxy"
+   "notes": "Andromeda galaxy",
+   "sizeArcmin": [
+    177.83,
+    69.66
+   ],
+   "aliases": [
+    "Andromeda Galaxy",
+    "NGC 224"
+   ]
   },
   {
    "id": "M32",
@@ -286,7 +524,14 @@
    "raHours": 0.7,
    "decDegrees": 40.85,
    "magnitude": 8.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.74,
+    4.86
+   ],
+   "aliases": [
+    "NGC 221"
+   ]
   },
   {
    "id": "M33",
@@ -295,7 +540,16 @@
    "raHours": 1.55,
    "decDegrees": 30.65,
    "magnitude": 5.7,
-   "notes": "Pinwheel galaxy"
+   "notes": "Pinwheel galaxy",
+   "sizeArcmin": [
+    62.09,
+    36.73
+   ],
+   "aliases": [
+    "Triangulum Galaxy",
+    "Triangulum Pinwheel",
+    "NGC 598"
+   ]
   },
   {
    "id": "M34",
@@ -304,7 +558,14 @@
    "raHours": 2.7,
    "decDegrees": 42.762,
    "magnitude": 5.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    22.5
+   ],
+   "aliases": [
+    "NGC 1039",
+    "MWSC 0223"
+   ]
   },
   {
    "id": "M35",
@@ -313,7 +574,14 @@
    "raHours": 6.133,
    "decDegrees": 24.333,
    "magnitude": 5.1,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    24.0
+   ],
+   "aliases": [
+    "NGC 2168",
+    "MWSC 0754"
+   ]
   },
   {
    "id": "M36",
@@ -322,7 +590,14 @@
    "raHours": 5.6,
    "decDegrees": 34.14,
    "magnitude": 6.0,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.2
+   ],
+   "aliases": [
+    "NGC 1960",
+    "MWSC 0594"
+   ]
   },
   {
    "id": "M37",
@@ -331,7 +606,14 @@
    "raHours": 5.867,
    "decDegrees": 32.553,
    "magnitude": 5.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    11.4
+   ],
+   "aliases": [
+    "NGC 2099",
+    "MWSC 0689"
+   ]
   },
   {
    "id": "M38",
@@ -340,7 +622,14 @@
    "raHours": 5.467,
    "decDegrees": 35.855,
    "magnitude": 6.4,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    9.6
+   ],
+   "aliases": [
+    "NGC 1912",
+    "MWSC 0557"
+   ]
   },
   {
    "id": "M39",
@@ -349,7 +638,14 @@
    "raHours": 21.517,
    "decDegrees": 48.433,
    "magnitude": 4.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    19.5
+   ],
+   "aliases": [
+    "NGC 7092",
+    "MWSC 3521"
+   ]
   },
   {
    "id": "M40",
@@ -367,7 +663,14 @@
    "raHours": 6.767,
    "decDegrees": -20.757,
    "magnitude": 4.5,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    12.0
+   ],
+   "aliases": [
+    "NGC 2287",
+    "MWSC 0978"
+   ]
   },
   {
    "id": "M42",
@@ -376,7 +679,17 @@
    "raHours": 5.583,
    "decDegrees": -5.383,
    "magnitude": 4.0,
-   "notes": "Great Orion nebula"
+   "notes": "Great Orion nebula",
+   "sizeArcmin": [
+    90.0,
+    60.0
+   ],
+   "aliases": [
+    "Great Orion Nebula",
+    "NGC 1976",
+    "LBN 974",
+    "MWSC 0582"
+   ]
   },
   {
    "id": "M43",
@@ -385,7 +698,15 @@
    "raHours": 5.583,
    "decDegrees": -5.27,
    "magnitude": 9.0,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    20.0,
+    15.0
+   ],
+   "aliases": [
+    "Mairan's Nebula",
+    "NGC 1982"
+   ]
   },
   {
    "id": "M44",
@@ -394,7 +715,16 @@
    "raHours": 8.667,
    "decDegrees": 19.667,
    "magnitude": 3.1,
-   "notes": "Beehive cluster.  358 stars approx. 500 ly distant"
+   "notes": "Beehive cluster.  358 stars approx. 500 ly distant",
+   "sizeArcmin": [
+    108.6
+   ],
+   "aliases": [
+    "Beehive",
+    "Praesepe Cluster",
+    "NGC 2632",
+    "MWSC 1527"
+   ]
   },
   {
    "id": "M45",
@@ -403,7 +733,14 @@
    "raHours": 3.783,
    "decDegrees": 24.117,
    "magnitude": 1.2,
-   "notes": "Pleiades"
+   "notes": "Pleiades",
+   "sizeArcmin": [
+    150.0
+   ],
+   "aliases": [
+    "Mel 22",
+    "MWSC 0305"
+   ]
   },
   {
    "id": "M46",
@@ -412,7 +749,14 @@
    "raHours": 7.683,
    "decDegrees": -14.81,
    "magnitude": 6.1,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    21.0
+   ],
+   "aliases": [
+    "NGC 2437",
+    "MWSC 1313"
+   ]
   },
   {
    "id": "M47",
@@ -421,7 +765,15 @@
    "raHours": 7.6,
    "decDegrees": -14.483,
    "magnitude": 4.4,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    19.8
+   ],
+   "aliases": [
+    "NGC 2422",
+    "NGC 2478",
+    "MWSC 1278"
+   ]
   },
   {
    "id": "M48",
@@ -430,7 +782,14 @@
    "raHours": 8.217,
    "decDegrees": -5.75,
    "magnitude": 5.8,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    28.2
+   ],
+   "aliases": [
+    "NGC 2548",
+    "MWSC 1454"
+   ]
   },
   {
    "id": "M49",
@@ -439,7 +798,14 @@
    "raHours": 12.483,
    "decDegrees": 8.0,
    "magnitude": 8.4,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    10.21,
+    8.38
+   ],
+   "aliases": [
+    "NGC 4472"
+   ]
   },
   {
    "id": "M50",
@@ -448,7 +814,14 @@
    "raHours": 7.033,
    "decDegrees": -8.333,
    "magnitude": 5.9,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    14.1
+   ],
+   "aliases": [
+    "NGC 2323",
+    "MWSC 1072"
+   ]
   },
   {
    "id": "M51",
@@ -457,7 +830,15 @@
    "raHours": 13.483,
    "decDegrees": 47.183,
    "magnitude": 8.1,
-   "notes": "Whirlpool galaxy"
+   "notes": "Whirlpool galaxy",
+   "sizeArcmin": [
+    13.71,
+    11.67
+   ],
+   "aliases": [
+    "Whirlpool Galaxy",
+    "NGC 5194"
+   ]
   },
   {
    "id": "M52",
@@ -466,7 +847,14 @@
    "raHours": 23.4,
    "decDegrees": 61.593,
    "magnitude": 6.9,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    9.9
+   ],
+   "aliases": [
+    "NGC 7654",
+    "MWSC 3725"
+   ]
   },
   {
    "id": "M53",
@@ -475,7 +863,14 @@
    "raHours": 13.2,
    "decDegrees": 18.167,
    "magnitude": 7.7,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    9.0
+   ],
+   "aliases": [
+    "NGC 5024",
+    "MWSC 2094"
+   ]
   },
   {
    "id": "M54",
@@ -484,7 +879,14 @@
    "raHours": 18.917,
    "decDegrees": -30.467,
    "magnitude": 7.7,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    5.1
+   ],
+   "aliases": [
+    "NGC 6715",
+    "MWSC 3023"
+   ]
   },
   {
    "id": "M55",
@@ -493,7 +895,14 @@
    "raHours": 19.65,
    "decDegrees": -30.95,
    "magnitude": 7.0,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    12.0
+   ],
+   "aliases": [
+    "NGC 6809",
+    "MWSC 3150"
+   ]
   },
   {
    "id": "M56",
@@ -502,7 +911,14 @@
    "raHours": 19.267,
    "decDegrees": 30.183,
    "magnitude": 8.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    5.8
+   ],
+   "aliases": [
+    "NGC 6779",
+    "MWSC 3077"
+   ]
   },
   {
    "id": "M57",
@@ -511,7 +927,15 @@
    "raHours": 18.883,
    "decDegrees": 33.017,
    "magnitude": 9.0,
-   "notes": "Ring nebula.  Looks like smoke ring."
+   "notes": "Ring nebula.  Looks like smoke ring.",
+   "sizeArcmin": [
+    1.27
+   ],
+   "aliases": [
+    "Ring Nebula",
+    "NGC 6720",
+    "PN G063.1+13.9"
+   ]
   },
   {
    "id": "M58",
@@ -520,7 +944,14 @@
    "raHours": 12.617,
    "decDegrees": 11.817,
    "magnitude": 9.8,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    5.01,
+    3.84
+   ],
+   "aliases": [
+    "NGC 4579"
+   ]
   },
   {
    "id": "M59",
@@ -529,7 +960,14 @@
    "raHours": 12.7,
    "decDegrees": 11.633,
    "magnitude": 9.8,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    4.55,
+    3.21
+   ],
+   "aliases": [
+    "NGC 4621"
+   ]
   },
   {
    "id": "M60",
@@ -538,7 +976,14 @@
    "raHours": 12.717,
    "decDegrees": 11.55,
    "magnitude": 8.8,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.78,
+    5.45
+   ],
+   "aliases": [
+    "NGC 4649"
+   ]
   },
   {
    "id": "M61",
@@ -547,7 +992,14 @@
    "raHours": 12.35,
    "decDegrees": 4.467,
    "magnitude": 9.7,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.89,
+    6.56
+   ],
+   "aliases": [
+    "NGC 4303"
+   ]
   },
   {
    "id": "M62",
@@ -556,7 +1008,14 @@
    "raHours": 17.017,
    "decDegrees": -30.1,
    "magnitude": 6.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.8
+   ],
+   "aliases": [
+    "NGC 6266",
+    "MWSC 2512"
+   ]
   },
   {
    "id": "M63",
@@ -565,7 +1024,15 @@
    "raHours": 13.25,
    "decDegrees": 42.017,
    "magnitude": 8.6,
-   "notes": "Sunflower galaxy"
+   "notes": "Sunflower galaxy",
+   "sizeArcmin": [
+    11.83,
+    7.16
+   ],
+   "aliases": [
+    "Sunflower Galaxy",
+    "NGC 5055"
+   ]
   },
   {
    "id": "M64",
@@ -574,7 +1041,16 @@
    "raHours": 12.933,
    "decDegrees": 21.667,
    "magnitude": 8.5,
-   "notes": "Black eye galaxy"
+   "notes": "Black eye galaxy",
+   "sizeArcmin": [
+    10.52,
+    5.33
+   ],
+   "aliases": [
+    "Black Eye Galaxy",
+    "Evil Eye Galaxy",
+    "NGC 4826"
+   ]
   },
   {
    "id": "M65",
@@ -583,7 +1059,14 @@
    "raHours": 11.3,
    "decDegrees": 13.083,
    "magnitude": 9.3,
-   "notes": "Leo's triplet"
+   "notes": "Leo's triplet",
+   "sizeArcmin": [
+    7.64,
+    1.97
+   ],
+   "aliases": [
+    "NGC 3623"
+   ]
   },
   {
    "id": "M66",
@@ -592,7 +1075,14 @@
    "raHours": 11.333,
    "decDegrees": 12.983,
    "magnitude": 9.0,
-   "notes": "Leo's triplet"
+   "notes": "Leo's triplet",
+   "sizeArcmin": [
+    10.28,
+    4.61
+   ],
+   "aliases": [
+    "NGC 3627"
+   ]
   },
   {
    "id": "M67",
@@ -601,7 +1091,14 @@
    "raHours": 8.85,
    "decDegrees": 11.8,
    "magnitude": 6.9,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    33.0
+   ],
+   "aliases": [
+    "NGC 2682",
+    "MWSC 1585"
+   ]
   },
   {
    "id": "M68",
@@ -610,7 +1107,14 @@
    "raHours": 12.65,
    "decDegrees": -26.733,
    "magnitude": 8.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.6
+   ],
+   "aliases": [
+    "NGC 4590",
+    "MWSC 2059"
+   ]
   },
   {
    "id": "M69",
@@ -619,7 +1123,15 @@
    "raHours": 18.517,
    "decDegrees": -32.333,
    "magnitude": 7.7,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    5.7
+   ],
+   "aliases": [
+    "NGC 6637",
+    "NGC 6634",
+    "MWSC 2936"
+   ]
   },
   {
    "id": "M70",
@@ -628,7 +1140,14 @@
    "raHours": 18.717,
    "decDegrees": -32.283,
    "magnitude": 8.1,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.6
+   ],
+   "aliases": [
+    "NGC 6681",
+    "MWSC 2981"
+   ]
   },
   {
    "id": "M71",
@@ -637,7 +1156,15 @@
    "raHours": 19.883,
    "decDegrees": 18.767,
    "magnitude": 8.3,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.9
+   ],
+   "aliases": [
+    "NGC 6838",
+    "NGC 6839",
+    "MWSC 3200"
+   ]
   },
   {
    "id": "M72",
@@ -646,7 +1173,14 @@
    "raHours": 20.883,
    "decDegrees": -12.533,
    "magnitude": 9.4,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    4.5
+   ],
+   "aliases": [
+    "NGC 6981",
+    "MWSC 3419"
+   ]
   },
   {
    "id": "M73",
@@ -655,7 +1189,10 @@
    "raHours": 20.983,
    "decDegrees": -12.633,
    "magnitude": 10.0,
-   "notes": "Very difficult, small grouping of stars"
+   "notes": "Very difficult, small grouping of stars",
+   "aliases": [
+    "NGC 6994"
+   ]
   },
   {
    "id": "M74",
@@ -664,7 +1201,14 @@
    "raHours": 1.6,
    "decDegrees": 15.783,
    "magnitude": 9.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    9.89,
+    9.33
+   ],
+   "aliases": [
+    "NGC 628"
+   ]
   },
   {
    "id": "M75",
@@ -673,7 +1217,14 @@
    "raHours": 20.1,
    "decDegrees": -21.917,
    "magnitude": 8.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    3.6
+   ],
+   "aliases": [
+    "NGC 6864",
+    "MWSC 3254"
+   ]
   },
   {
    "id": "M76",
@@ -682,7 +1233,18 @@
    "raHours": 1.7,
    "decDegrees": 51.567,
    "magnitude": 11.5,
-   "notes": "Cork nebula"
+   "notes": "Cork nebula",
+   "sizeArcmin": [
+    1.12
+   ],
+   "aliases": [
+    "Barbell Nebula",
+    "Cork Nebula",
+    "Little Dumbbell Nebula",
+    "NGC 650",
+    "NGC 0651",
+    "PN G130.9-10.5"
+   ]
   },
   {
    "id": "M77",
@@ -691,7 +1253,14 @@
    "raHours": 2.7,
    "decDegrees": -0.0,
    "magnitude": 8.8,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.11,
+    5.61
+   ],
+   "aliases": [
+    "NGC 1068"
+   ]
   },
   {
    "id": "M78",
@@ -700,7 +1269,14 @@
    "raHours": 5.767,
    "decDegrees": 0.067,
    "magnitude": 8.0,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    4.5
+   ],
+   "aliases": [
+    "NGC 2068",
+    "MWSC 0664"
+   ]
   },
   {
    "id": "M79",
@@ -709,7 +1285,14 @@
    "raHours": 5.4,
    "decDegrees": -24.517,
    "magnitude": 8.0,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.2
+   ],
+   "aliases": [
+    "NGC 1904",
+    "MWSC 0528"
+   ]
   },
   {
    "id": "M80",
@@ -718,7 +1301,14 @@
    "raHours": 16.283,
    "decDegrees": -22.967,
    "magnitude": 7.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    5.7
+   ],
+   "aliases": [
+    "NGC 6093",
+    "MWSC 2376"
+   ]
   },
   {
    "id": "M81",
@@ -727,7 +1317,15 @@
    "raHours": 9.917,
    "decDegrees": 69.05,
    "magnitude": 6.8,
-   "notes": "Bodes nebula"
+   "notes": "Bodes nebula",
+   "sizeArcmin": [
+    21.63,
+    11.25
+   ],
+   "aliases": [
+    "Bode's Galaxy",
+    "NGC 3031"
+   ]
   },
   {
    "id": "M82",
@@ -736,7 +1334,15 @@
    "raHours": 9.917,
    "decDegrees": 69.667,
    "magnitude": 8.4,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    10.99,
+    5.11
+   ],
+   "aliases": [
+    "Cigar Galaxy",
+    "NGC 3034"
+   ]
   },
   {
    "id": "M83",
@@ -745,7 +1351,16 @@
    "raHours": 13.617,
    "decDegrees": -29.85,
    "magnitude": 7.6,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    13.61,
+    13.21
+   ],
+   "aliases": [
+    "Southern Pinwheel Galaxy",
+    "NGC 5236",
+    "UGCA 366"
+   ]
   },
   {
    "id": "M84",
@@ -754,7 +1369,14 @@
    "raHours": 12.417,
    "decDegrees": 12.883,
    "magnitude": 9.3,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.41,
+    6.44
+   ],
+   "aliases": [
+    "NGC 4374"
+   ]
   },
   {
    "id": "M85",
@@ -763,7 +1385,14 @@
    "raHours": 12.417,
    "decDegrees": 18.183,
    "magnitude": 9.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.95,
+    5.35
+   ],
+   "aliases": [
+    "NGC 4382"
+   ]
   },
   {
    "id": "M86",
@@ -772,7 +1401,14 @@
    "raHours": 12.433,
    "decDegrees": 12.933,
    "magnitude": 9.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    11.53,
+    8.43
+   ],
+   "aliases": [
+    "NGC 4406"
+   ]
   },
   {
    "id": "M87",
@@ -781,7 +1417,15 @@
    "raHours": 12.5,
    "decDegrees": 12.383,
    "magnitude": 8.6,
-   "notes": "Virgo A"
+   "notes": "Virgo A",
+   "sizeArcmin": [
+    7.11,
+    6.67
+   ],
+   "aliases": [
+    "Virgo Galaxy",
+    "NGC 4486"
+   ]
   },
   {
    "id": "M88",
@@ -790,7 +1434,14 @@
    "raHours": 12.517,
    "decDegrees": 14.417,
    "magnitude": 9.5,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    8.65,
+    4.38
+   ],
+   "aliases": [
+    "NGC 4501"
+   ]
   },
   {
    "id": "M89",
@@ -799,7 +1450,14 @@
    "raHours": 12.583,
    "decDegrees": 12.55,
    "magnitude": 9.8,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    8.13,
+    8.0
+   ],
+   "aliases": [
+    "NGC 4552"
+   ]
   },
   {
    "id": "M90",
@@ -808,7 +1466,14 @@
    "raHours": 12.6,
    "decDegrees": 13.15,
    "magnitude": 9.5,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    9.12,
+    3.82
+   ],
+   "aliases": [
+    "NGC 4569"
+   ]
   },
   {
    "id": "M91",
@@ -817,7 +1482,14 @@
    "raHours": 12.583,
    "decDegrees": 14.483,
    "magnitude": 10.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    5.55,
+    4.52
+   ],
+   "aliases": [
+    "NGC 4548"
+   ]
   },
   {
    "id": "M92",
@@ -826,7 +1498,14 @@
    "raHours": 17.283,
    "decDegrees": 43.133,
    "magnitude": 6.5,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    14.4
+   ],
+   "aliases": [
+    "NGC 6341",
+    "MWSC 2557"
+   ]
   },
   {
    "id": "M93",
@@ -835,7 +1514,14 @@
    "raHours": 7.733,
    "decDegrees": -23.857,
    "magnitude": 6.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    15.0
+   ],
+   "aliases": [
+    "NGC 2447",
+    "MWSC 1324"
+   ]
   },
   {
    "id": "M94",
@@ -844,7 +1530,14 @@
    "raHours": 12.833,
    "decDegrees": 41.117,
    "magnitude": 8.1,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.74,
+    6.68
+   ],
+   "aliases": [
+    "NGC 4736"
+   ]
   },
   {
    "id": "M95",
@@ -853,7 +1546,14 @@
    "raHours": 10.717,
    "decDegrees": 11.7,
    "magnitude": 9.7,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.23,
+    4.45
+   ],
+   "aliases": [
+    "NGC 3351"
+   ]
   },
   {
    "id": "M96",
@@ -862,7 +1562,14 @@
    "raHours": 10.767,
    "decDegrees": 11.817,
    "magnitude": 9.2,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    8.26,
+    5.51
+   ],
+   "aliases": [
+    "NGC 3368"
+   ]
   },
   {
    "id": "M97",
@@ -871,7 +1578,15 @@
    "raHours": 11.233,
    "decDegrees": 55.017,
    "magnitude": 11.2,
-   "notes": "Owl nebula"
+   "notes": "Owl nebula",
+   "sizeArcmin": [
+    3.58
+   ],
+   "aliases": [
+    "Owl Nebula",
+    "NGC 3587",
+    "PN G148.4+57.0"
+   ]
   },
   {
    "id": "M98",
@@ -880,7 +1595,14 @@
    "raHours": 12.217,
    "decDegrees": 14.9,
    "magnitude": 10.1,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    11.04,
+    2.66
+   ],
+   "aliases": [
+    "NGC 4192"
+   ]
   },
   {
    "id": "M99",
@@ -889,7 +1611,16 @@
    "raHours": 12.3,
    "decDegrees": 14.4,
    "magnitude": 9.8,
-   "notes": "Pin Wheel Galaxy"
+   "notes": "Pin Wheel Galaxy",
+   "sizeArcmin": [
+    5.04,
+    4.74
+   ],
+   "aliases": [
+    "Coma Pinwheel",
+    "Virgo Cluster Pinwheel",
+    "NGC 4254"
+   ]
   },
   {
    "id": "M100",
@@ -898,7 +1629,14 @@
    "raHours": 12.367,
    "decDegrees": 15.817,
    "magnitude": 9.4,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    6.1,
+    5.62
+   ],
+   "aliases": [
+    "NGC 4321"
+   ]
   },
   {
    "id": "M101",
@@ -907,7 +1645,14 @@
    "raHours": 14.05,
    "decDegrees": 54.333,
    "magnitude": 7.7,
-   "notes": "101 is the same as 102"
+   "notes": "101 is the same as 102",
+   "sizeArcmin": [
+    23.99,
+    23.07
+   ],
+   "aliases": [
+    "NGC 5457"
+   ]
   },
   {
    "id": "M102",
@@ -916,7 +1661,14 @@
    "raHours": 15.1,
    "decDegrees": 55.75,
    "magnitude": 7.7,
-   "notes": "102 is the same as 101"
+   "notes": "102 is the same as 101",
+   "sizeArcmin": [
+    6.31,
+    2.72
+   ],
+   "aliases": [
+    "NGC 5866"
+   ]
   },
   {
    "id": "M103",
@@ -925,7 +1677,14 @@
    "raHours": 1.55,
    "decDegrees": 60.65,
    "magnitude": 7.4,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    4.5
+   ],
+   "aliases": [
+    "NGC 581",
+    "MWSC 0124"
+   ]
   },
   {
    "id": "M104",
@@ -934,7 +1693,16 @@
    "raHours": 12.65,
    "decDegrees": -11.617,
    "magnitude": 8.3,
-   "notes": "Sombrero galaxy"
+   "notes": "Sombrero galaxy",
+   "sizeArcmin": [
+    8.45,
+    4.91
+   ],
+   "aliases": [
+    "Sombrero Galaxy",
+    "NGC 4594",
+    "UGCA 293"
+   ]
   },
   {
    "id": "M105",
@@ -943,7 +1711,14 @@
    "raHours": 10.783,
    "decDegrees": 12.567,
    "magnitude": 9.3,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    4.89,
+    4.25
+   ],
+   "aliases": [
+    "NGC 3379"
+   ]
   },
   {
    "id": "M106",
@@ -952,7 +1727,14 @@
    "raHours": 12.3,
    "decDegrees": 47.3,
    "magnitude": 8.3,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    16.98,
+    7.24
+   ],
+   "aliases": [
+    "NGC 4258"
+   ]
   },
   {
    "id": "M107",
@@ -961,7 +1743,14 @@
    "raHours": 16.533,
    "decDegrees": -13.05,
    "magnitude": 8.1,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    7.8
+   ],
+   "aliases": [
+    "NGC 6171",
+    "MWSC 2422"
+   ]
   },
   {
    "id": "M108",
@@ -970,7 +1759,14 @@
    "raHours": 11.183,
    "decDegrees": 55.667,
    "magnitude": 10.0,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    3.98,
+    1.66
+   ],
+   "aliases": [
+    "NGC 3556"
+   ]
   },
   {
    "id": "M109",
@@ -979,7 +1775,14 @@
    "raHours": 11.95,
    "decDegrees": 53.367,
    "magnitude": 9.8,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    8.07,
+    5.64
+   ],
+   "aliases": [
+    "NGC 3992"
+   ]
   },
   {
    "id": "M110",
@@ -988,7 +1791,14 @@
    "raHours": 0.667,
    "decDegrees": 41.683,
    "magnitude": 8.0,
-   "notes": ""
+   "notes": "",
+   "sizeArcmin": [
+    16.22,
+    9.59
+   ],
+   "aliases": [
+    "NGC 205"
+   ]
   }
  ],
  "ngc": [
@@ -999,7 +1809,17 @@
    "raHours": 5.5883,
    "decDegrees": -5.39,
    "magnitude": 4.0,
-   "notes": "Brightest nebula. Pairs with M43. Winter target."
+   "notes": "Brightest nebula. Pairs with M43. Winter target.",
+   "sizeArcmin": [
+    90.0,
+    60.0
+   ],
+   "aliases": [
+    "Great Orion Nebula",
+    "NGC 1976",
+    "LBN 974",
+    "MWSC 0582"
+   ]
   },
   {
    "id": "M43",
@@ -1008,7 +1828,15 @@
    "raHours": 5.5833,
    "decDegrees": -5.27,
    "magnitude": 9.0,
-   "notes": "Companion to M42, same FOV."
+   "notes": "Companion to M42, same FOV.",
+   "sizeArcmin": [
+    20.0,
+    15.0
+   ],
+   "aliases": [
+    "Mairan's Nebula",
+    "NGC 1982"
+   ]
   },
   {
    "id": "M8",
@@ -1017,7 +1845,16 @@
    "raHours": 18.0375,
    "decDegrees": -24.1,
    "magnitude": 6.0,
-   "notes": "Large, pairs with M20 Trifid in same wide FOV."
+   "notes": "Large, pairs with M20 Trifid in same wide FOV.",
+   "sizeArcmin": [
+    45.0,
+    30.0
+   ],
+   "aliases": [
+    "NGC 6523",
+    "NGC 6533",
+    "LBN 25"
+   ]
   },
   {
    "id": "M20",
@@ -1026,7 +1863,15 @@
    "raHours": 18.0278,
    "decDegrees": -23.03,
    "magnitude": 6.3,
-   "notes": "Pairs with M8 Lagoon. Emission + reflection."
+   "notes": "Pairs with M8 Lagoon. Emission + reflection.",
+   "sizeArcmin": [
+    28.0
+   ],
+   "aliases": [
+    "NGC 6514",
+    "LBN 27",
+    "MWSC 2789"
+   ]
   },
   {
    "id": "M16",
@@ -1035,7 +1880,16 @@
    "raHours": 18.3108,
    "decDegrees": -13.78,
    "magnitude": 6.0,
-   "notes": "Pillars of Creation. Includes cluster NGC 6611."
+   "notes": "Pillars of Creation. Includes cluster NGC 6611.",
+   "sizeArcmin": [
+    120.0,
+    25.0
+   ],
+   "aliases": [
+    "NGC 6611",
+    "LBN 67",
+    "MWSC 2886"
+   ]
   },
   {
    "id": "M17",
@@ -1044,7 +1898,19 @@
    "raHours": 18.2083,
    "decDegrees": -13.78,
    "magnitude": 6.0,
-   "notes": "Bright, distinctive swan shape."
+   "notes": "Bright, distinctive swan shape.",
+   "sizeArcmin": [
+    12.6
+   ],
+   "aliases": [
+    "Checkmark Nebula",
+    "Lobster Nebula",
+    "Swan Nebula",
+    "omega Nebula",
+    "NGC 6618",
+    "LBN 60",
+    "MWSC 2896"
+   ]
   },
   {
    "id": "NGC 7000",
@@ -1053,7 +1919,15 @@
    "raHours": 20.9667,
    "decDegrees": 44.35,
    "magnitude": 4.0,
-   "notes": "Huge, continent-shaped. Ideal for wide field."
+   "notes": "Huge, continent-shaped. Ideal for wide field.",
+   "sizeArcmin": [
+    120.0,
+    30.0
+   ],
+   "aliases": [
+    "Caldwell 20",
+    "LBN 373"
+   ]
   },
   {
    "id": "IC 1396",
@@ -1062,7 +1936,16 @@
    "raHours": 21.725,
    "decDegrees": 57.5,
    "magnitude": 3.5,
-   "notes": "Enormous faint nebula in Cepheus. Needs dark sky."
+   "notes": "Enormous faint nebula in Cepheus. Needs dark sky.",
+   "sizeArcmin": [
+    14.0,
+    4.0
+   ],
+   "aliases": [
+    "LBN 451",
+    "LBN 452",
+    "MWSC 3539"
+   ]
   },
   {
    "id": "NGC 1499",
@@ -1071,7 +1954,14 @@
    "raHours": 4.025,
    "decDegrees": 36.6,
    "magnitude": 6.0,
-   "notes": "Very wide, low surface brightness. Needs long exposure."
+   "notes": "Very wide, low surface brightness. Needs long exposure.",
+   "sizeArcmin": [
+    160.0,
+    40.0
+   ],
+   "aliases": [
+    "LBN 756"
+   ]
   },
   {
    "id": "NGC 2237",
@@ -1080,7 +1970,14 @@
    "raHours": 6.517,
    "decDegrees": 4.95,
    "magnitude": 9.0,
-   "notes": "Pairs with open cluster NGC 2244 in center."
+   "notes": "Pairs with open cluster NGC 2244 in center.",
+   "sizeArcmin": [
+    80.0,
+    50.0
+   ],
+   "aliases": [
+    "Rosette A"
+   ]
   },
   {
    "id": "NGC 6960",
@@ -1089,7 +1986,18 @@
    "raHours": 20.45,
    "decDegrees": 30.72,
    "magnitude": 7.0,
-   "notes": "Supernova remnant. Eastern half is NGC 6992."
+   "notes": "Supernova remnant. Eastern half is NGC 6992.",
+   "sizeArcmin": [
+    210.0,
+    160.0
+   ],
+   "aliases": [
+    "Veil Nebula",
+    "Filamentary Nebula",
+    "Western Veil",
+    "Caldwell 34",
+    "LBN 191"
+   ]
   },
   {
    "id": "NGC 6992",
@@ -1098,7 +2006,16 @@
    "raHours": 20.9333,
    "decDegrees": 31.72,
    "magnitude": 7.0,
-   "notes": "Brighter arc of the Veil. Pairs with NGC 6960."
+   "notes": "Brighter arc of the Veil. Pairs with NGC 6960.",
+   "sizeArcmin": [
+    60.0,
+    8.0
+   ],
+   "aliases": [
+    "Eastern Veil",
+    "Network Nebula",
+    "Caldwell 33"
+   ]
   },
   {
    "id": "NGC 281",
@@ -1107,7 +2024,15 @@
    "raHours": 0.933,
    "decDegrees": 56.62,
    "magnitude": 7.4,
-   "notes": "Cassiopeia, pacman shape. Autumn target."
+   "notes": "Cassiopeia, pacman shape. Autumn target.",
+   "sizeArcmin": [
+    35.0,
+    30.0
+   ],
+   "aliases": [
+    "IC 0011",
+    "LBN 616"
+   ]
   },
   {
    "id": "NGC 2264",
@@ -1116,7 +2041,15 @@
    "raHours": 6.683,
    "decDegrees": 9.93,
    "magnitude": 4.1,
-   "notes": "Includes Christmas Tree open cluster."
+   "notes": "Includes Christmas Tree open cluster.",
+   "sizeArcmin": [
+    11.4
+   ],
+   "aliases": [
+    "Christmas Tree Cluster",
+    "LBN 911",
+    "MWSC 0954"
+   ]
   },
   {
    "id": "M45",
@@ -1125,7 +2058,14 @@
    "raHours": 3.783,
    "decDegrees": 24.12,
    "magnitude": 1.6,
-   "notes": "THE wide-field target. Reflection nebulosity around stars."
+   "notes": "THE wide-field target. Reflection nebulosity around stars.",
+   "sizeArcmin": [
+    150.0
+   ],
+   "aliases": [
+    "Mel 22",
+    "MWSC 0305"
+   ]
   },
   {
    "id": "M44",
@@ -1134,7 +2074,16 @@
    "raHours": 8.667,
    "decDegrees": 19.67,
    "magnitude": 3.1,
-   "notes": "Large, bright. Best in small scopes / binoculars."
+   "notes": "Large, bright. Best in small scopes / binoculars.",
+   "sizeArcmin": [
+    108.6
+   ],
+   "aliases": [
+    "Beehive",
+    "Praesepe Cluster",
+    "NGC 2632",
+    "MWSC 1527"
+   ]
   },
   {
    "id": "IC 4665",
@@ -1143,7 +2092,13 @@
    "raHours": 17.75,
    "decDegrees": 5.7,
    "magnitude": 4.0,
-   "notes": "Large, loose. Low surface brightness \u2014 needs wide field."
+   "notes": "Large, loose. Low surface brightness \u2014 needs wide field.",
+   "sizeArcmin": [
+    24.6
+   ],
+   "aliases": [
+    "MWSC 2689"
+   ]
   },
   {
    "id": "NGC 869",
@@ -1152,7 +2107,14 @@
    "raHours": 2.2,
    "decDegrees": 57.13,
    "magnitude": 4.3,
-   "notes": "Pairs with NGC 884. Spectacular in wide field."
+   "notes": "Pairs with NGC 884. Spectacular in wide field.",
+   "sizeArcmin": [
+    14.4
+   ],
+   "aliases": [
+    "h Persei Cluster",
+    "MWSC 0175"
+   ]
   },
   {
    "id": "NGC 884",
@@ -1161,7 +2123,14 @@
    "raHours": 2.233,
    "decDegrees": 57.15,
    "magnitude": 4.4,
-   "notes": "Companion to NGC 869, same FOV."
+   "notes": "Companion to NGC 869, same FOV.",
+   "sizeArcmin": [
+    10.5
+   ],
+   "aliases": [
+    "chi Persei Cluster",
+    "MWSC 0184"
+   ]
   },
   {
    "id": "M41",
@@ -1170,7 +2139,14 @@
    "raHours": 6.772,
    "decDegrees": -20.76,
    "magnitude": 4.5,
-   "notes": "Bright, easy. Below Sirius."
+   "notes": "Bright, easy. Below Sirius.",
+   "sizeArcmin": [
+    12.0
+   ],
+   "aliases": [
+    "NGC 2287",
+    "MWSC 0978"
+   ]
   },
   {
    "id": "M35",
@@ -1179,7 +2155,14 @@
    "raHours": 6.133,
    "decDegrees": 24.33,
    "magnitude": 5.1,
-   "notes": "Rich. Small cluster NGC 2158 nearby in FOV."
+   "notes": "Rich. Small cluster NGC 2158 nearby in FOV.",
+   "sizeArcmin": [
+    24.0
+   ],
+   "aliases": [
+    "NGC 2168",
+    "MWSC 0754"
+   ]
   },
   {
    "id": "M37",
@@ -1188,7 +2171,14 @@
    "raHours": 5.867,
    "decDegrees": 32.55,
    "magnitude": 5.6,
-   "notes": "Richest of the Auriga trio. ~500 stars."
+   "notes": "Richest of the Auriga trio. ~500 stars.",
+   "sizeArcmin": [
+    11.4
+   ],
+   "aliases": [
+    "NGC 2099",
+    "MWSC 0689"
+   ]
   },
   {
    "id": "M36",
@@ -1197,7 +2187,14 @@
    "raHours": 5.533,
    "decDegrees": 34.13,
    "magnitude": 6.0,
-   "notes": "Auriga trio member."
+   "notes": "Auriga trio member.",
+   "sizeArcmin": [
+    7.2
+   ],
+   "aliases": [
+    "NGC 1960",
+    "MWSC 0594"
+   ]
   },
   {
    "id": "M38",
@@ -1206,7 +2203,14 @@
    "raHours": 5.417,
    "decDegrees": 35.83,
    "magnitude": 6.4,
-   "notes": "Auriga trio member. Cross-shaped."
+   "notes": "Auriga trio member. Cross-shaped.",
+   "sizeArcmin": [
+    9.6
+   ],
+   "aliases": [
+    "NGC 1912",
+    "MWSC 0557"
+   ]
   },
   {
    "id": "M46",
@@ -1215,7 +2219,14 @@
    "raHours": 7.683,
    "decDegrees": -14.8,
    "magnitude": 6.1,
-   "notes": "Contains planetary NGC 2438 in foreground."
+   "notes": "Contains planetary NGC 2438 in foreground.",
+   "sizeArcmin": [
+    21.0
+   ],
+   "aliases": [
+    "NGC 2437",
+    "MWSC 1313"
+   ]
   },
   {
    "id": "M47",
@@ -1224,7 +2235,15 @@
    "raHours": 7.6,
    "decDegrees": -14.48,
    "magnitude": 4.4,
-   "notes": "Bright, pairs with M46 in same wide FOV."
+   "notes": "Bright, pairs with M46 in same wide FOV.",
+   "sizeArcmin": [
+    19.8
+   ],
+   "aliases": [
+    "NGC 2422",
+    "NGC 2478",
+    "MWSC 1278"
+   ]
   },
   {
    "id": "M48",
@@ -1233,7 +2252,14 @@
    "raHours": 8.217,
    "decDegrees": -5.75,
    "magnitude": 5.5,
-   "notes": "Large, triangular shape."
+   "notes": "Large, triangular shape.",
+   "sizeArcmin": [
+    28.2
+   ],
+   "aliases": [
+    "NGC 2548",
+    "MWSC 1454"
+   ]
   },
   {
    "id": "M39",
@@ -1242,7 +2268,14 @@
    "raHours": 21.517,
    "decDegrees": 48.43,
    "magnitude": 4.6,
-   "notes": "Large, loose. Summer target near Deneb."
+   "notes": "Large, loose. Summer target near Deneb.",
+   "sizeArcmin": [
+    19.5
+   ],
+   "aliases": [
+    "NGC 7092",
+    "MWSC 3521"
+   ]
   },
   {
    "id": "M34",
@@ -1251,7 +2284,14 @@
    "raHours": 2.7,
    "decDegrees": 42.76,
    "magnitude": 5.5,
-   "notes": "~100 stars. Autumn target."
+   "notes": "~100 stars. Autumn target.",
+   "sizeArcmin": [
+    22.5
+   ],
+   "aliases": [
+    "NGC 1039",
+    "MWSC 0223"
+   ]
   },
   {
    "id": "M67",
@@ -1260,7 +2300,14 @@
    "raHours": 8.833,
    "decDegrees": 11.8,
    "magnitude": 6.9,
-   "notes": "One of oldest known clusters. ~4 billion years."
+   "notes": "One of oldest known clusters. ~4 billion years.",
+   "sizeArcmin": [
+    33.0
+   ],
+   "aliases": [
+    "NGC 2682",
+    "MWSC 1585"
+   ]
   },
   {
    "id": "NGC 457",
@@ -1269,7 +2316,15 @@
    "raHours": 1.283,
    "decDegrees": 58.3,
    "magnitude": 6.4,
-   "notes": "Cassiopeia. Two bright \"eyes\" + body shape."
+   "notes": "Cassiopeia. Two bright \"eyes\" + body shape.",
+   "sizeArcmin": [
+    7.8
+   ],
+   "aliases": [
+    "Owl Cluster",
+    "Caldwell 13",
+    "MWSC 0114"
+   ]
   },
   {
    "id": "NGC 2244",
@@ -1278,7 +2333,15 @@
    "raHours": 6.517,
    "decDegrees": 4.95,
    "magnitude": 4.8,
-   "notes": "Open cluster at center of Rosette Nebula."
+   "notes": "Open cluster at center of Rosette Nebula.",
+   "sizeArcmin": [
+    9.3
+   ],
+   "aliases": [
+    "NGC 2239",
+    "Caldwell 50",
+    "MWSC 0896"
+   ]
   },
   {
    "id": "Cr 399",
@@ -1287,7 +2350,15 @@
    "raHours": 19.55,
    "decDegrees": 20.17,
    "magnitude": 3.6,
-   "notes": "Asterism, not true cluster. Perfect wide-field shape."
+   "notes": "Asterism, not true cluster. Perfect wide-field shape.",
+   "sizeArcmin": [
+    70.0
+   ],
+   "aliases": [
+    "Brocchi's Cluster",
+    "Al Sufi's Cluster",
+    "Coathanger Asterism"
+   ]
   },
   {
    "id": "Stock 2",
@@ -1305,7 +2376,14 @@
    "raHours": 18.6,
    "decDegrees": -23.9,
    "magnitude": 5.1,
-   "notes": "One of best globulars. Large and bright."
+   "notes": "One of best globulars. Large and bright.",
+   "sizeArcmin": [
+    12.6
+   ],
+   "aliases": [
+    "NGC 6656",
+    "MWSC 2961"
+   ]
   },
   {
    "id": "M4",
@@ -1314,7 +2392,14 @@
    "raHours": 16.39,
    "decDegrees": -26.52,
    "magnitude": 5.9,
-   "notes": "Loose, easy to resolve. Near Antares."
+   "notes": "Loose, easy to resolve. Near Antares.",
+   "sizeArcmin": [
+    28.2
+   ],
+   "aliases": [
+    "NGC 6121",
+    "MWSC 2396"
+   ]
   },
   {
    "id": "M13",
@@ -1323,7 +2408,15 @@
    "raHours": 16.69,
    "decDegrees": 36.46,
    "magnitude": 5.8,
-   "notes": "Best northern globular. Summer target."
+   "notes": "Best northern globular. Summer target.",
+   "sizeArcmin": [
+    16.5
+   ],
+   "aliases": [
+    "Hercules Globular Cluster",
+    "NGC 6205",
+    "MWSC 2445"
+   ]
   },
   {
    "id": "M5",
@@ -1332,7 +2425,14 @@
    "raHours": 15.3,
    "decDegrees": 2.08,
    "magnitude": 5.7,
-   "notes": "Among finest globulars. Spring/summer."
+   "notes": "Among finest globulars. Spring/summer.",
+   "sizeArcmin": [
+    15.0
+   ],
+   "aliases": [
+    "NGC 5904",
+    "MWSC 2286"
+   ]
   },
   {
    "id": "M3",
@@ -1341,7 +2441,14 @@
    "raHours": 13.7,
    "decDegrees": 28.38,
    "magnitude": 6.2,
-   "notes": "Rich, ~500,000 stars. Spring target."
+   "notes": "Rich, ~500,000 stars. Spring target.",
+   "sizeArcmin": [
+    16.2
+   ],
+   "aliases": [
+    "NGC 5272",
+    "MWSC 2152"
+   ]
   },
   {
    "id": "M2",
@@ -1350,7 +2457,14 @@
    "raHours": 21.55,
    "decDegrees": -0.82,
    "magnitude": 6.5,
-   "notes": "Dense, slightly oval. Autumn target."
+   "notes": "Dense, slightly oval. Autumn target.",
+   "sizeArcmin": [
+    8.4
+   ],
+   "aliases": [
+    "NGC 7089",
+    "MWSC 3526"
+   ]
   }
  ],
  "watchlist": [

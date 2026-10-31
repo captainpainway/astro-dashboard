@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
 import TargetTable from '../src/components/TargetTable.vue'
 
@@ -13,6 +14,11 @@ const targets = [
     window: { start: night.startLocal, end: night.endLocal },
     altAtBest: 88, azAtBest: 330, moonInterference: 0.7, notes: 'globular' },
 ]
+
+// Expanded rows ask Wikipedia for a summary; keep tests offline.
+const wikiFetch = vi.fn(() => Promise.resolve({ ok: false, status: 404, json: () => Promise.resolve({}) }))
+beforeEach(() => vi.stubGlobal('fetch', wikiFetch))
+afterEach(() => vi.unstubAllGlobals())
 
 describe('TargetTable', () => {
   it('renders one row per target sorted by score desc', () => {
@@ -101,5 +107,56 @@ describe('TargetTable', () => {
     expect(rows).toHaveLength(2) // only the positive-score targets
     expect(w.text()).not.toContain('Zero Score Target')
     expect(w.text()).not.toContain('Negative Score Target')
+  })
+})
+
+describe('TargetTable expanded row (Stellarium-style details)', () => {
+  const loc = { name: 'Big Bend National Park, TX', latitude: 29.33, longitude: -103.21, elevationM: 1111,
+                timezone: 'America/Chicago' }
+  const lagoon = { id: 'M8', name: 'Lagoon Nebula', targetClass: 'nebula', score: 70, maxAlt: 36,
+    bestTime: '2026-10-31T19:00:00-05:00', window: { start: '2026-10-31T19:00:00-05:00', end: '2026-10-31T21:30:00-05:00' },
+    altAtBest: 36, azAtBest: 200, moonInterference: 0.2, notes: 'Lagoon nebula',
+    raHours: 18.0606, decDegrees: -24.3806, magnitude: 6, objectType: 'emission_nebula',
+    sizeArcmin: [45, 30], aliases: ['NGC 6523', 'LBN 25'] }
+  const nightOct = { startLocal: '2026-10-31T19:00:00-05:00', endLocal: '2026-11-01T06:00:00-05:00' }
+
+  async function open(fetchImpl, target = lagoon) {
+    if (fetchImpl) vi.stubGlobal('fetch', fetchImpl)
+    const w = mount(TargetTable, { props: { targets: [target], night: nightOct, location: loc, sortKey: 'score' } })
+    await w.find('tr.data-row').trigger('click')
+    await flushPromises()
+    return w
+  }
+
+  it('shows type, constellation, magnitude, size, coordinates and rise/transit/set', async () => {
+    const text = (await open()).find('.target-detail').text()
+    expect(text).toContain('emission nebula in Sagittarius')
+    expect(text).toContain('6.0')
+    expect(text).toContain('45′ × 30′')
+    expect(text).toMatch(/18h 03m 38\.2s\s+−24° 22′ 50″/)
+    for (const label of ['az / alt', 'hour angle', 'RA / Dec (J2000)', 'RA / Dec (of date)', 'rise · transit · set'])
+      expect(text).toContain(label)
+  })
+
+  it('lists the catalogue id first among the other names', async () => {
+    const names = (await open()).findAll('.td-alias').map((a) => a.text())
+    expect(names).toEqual(['M8', 'NGC 6523', 'LBN 25'])
+  })
+
+  it('shows the Wikipedia summary, image and link when there is an article', async () => {
+    const fetch = vi.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({
+      type: 'standard', title: 'Lagoon Nebula', extract: 'The Lagoon Nebula is a giant emission nebula.',
+      thumbnail: { source: 'https://upload.wikimedia.org/lagoon.jpg' },
+      content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Lagoon_Nebula' } } }) }))
+    // Summaries are cached per title for the session, so use one the other tests haven't asked for
+    const w = await open(fetch, { ...lagoon, id: 'M17' })
+    expect(fetch.mock.calls[0][0]).toContain('/page/summary/Messier_17')
+    expect(w.find('.td-extract').text()).toBe('The Lagoon Nebula is a giant emission nebula.')
+    expect(w.find('.td-thumb').attributes('src')).toBe('https://upload.wikimedia.org/lagoon.jpg')
+    expect(w.find('.td-more a').attributes('href')).toBe('https://en.wikipedia.org/wiki/Lagoon_Nebula')
+  })
+
+  it('leaves the summary out when Wikipedia has none', async () => {
+    expect((await open()).find('.td-wiki').exists()).toBe(false)
   })
 })
