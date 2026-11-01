@@ -7,6 +7,7 @@ import { useOutlook } from './composables/useOutlook'
 import { useSkyView } from './composables/useSkyView'
 import { DEMO_LOCATION, useLocation } from './composables/useLocation'
 import AppHeader from './components/AppHeader.vue'
+import AppFooter from './components/AppFooter.vue'
 import AppDock from './components/AppDock.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
@@ -201,6 +202,7 @@ watch(location, () => { pickerOpen.value = false; clearWeatherCache(); reloadAll
                     :twilight="forecast.data.value?.twilight ?? null"
                     :loading="forecast.loading.value" />
     </template>
+    <AppFooter v-if="view !== 'sky'" />
   </main>
   </div>
 </template>

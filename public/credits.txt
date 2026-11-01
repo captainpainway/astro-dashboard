@@ -1,0 +1,68 @@
+astro dashboard: credits and third-party notices
+
+The app's own code is MIT licensed (see LICENSE in the repository). The data,
+images and libraries below belong to their authors and keep their own terms.
+
+
+STAR AND CONSTELLATION DATA  (src/engine/sky.json)
+--------------------------------------------------
+Star positions and magnitudes, constellation lines, constellation names and
+star names come from d3-celestial (https://github.com/ofrohn/d3-celestial),
+which draws its stars from the XHIP catalogue. d3-celestial is distributed
+under the BSD 3-Clause licence:
+
+Copyright (c) 2015, Olaf Frohn
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+MOON TEXTURE  (src/assets/moon-2k.jpg)
+--------------------------------------
+NASA Scientific Visualization Studio, CGI Moon Kit. LROC colour map built from
+Lunar Reconnaissance Orbiter data. NASA media are generally not copyrighted.
+https://svs.gsfc.nasa.gov/4720
+
+
+BACKGROUND IMAGE  (src/assets/webb-background.webp)
+---------------------------------------------------
+James Webb Space Telescope image. Credit: NASA, ESA, CSA, STScI.
+https://webbtelescope.org
+
+
+LUNAR FEATURES  (src/engine/lunar.json)
+---------------------------------------
+Feature names and coordinates are from the USGS / IAU Gazetteer of Planetary
+Nomenclature, Moon. https://planetarynames.wr.usgs.gov
+
+
+WIKIPEDIA SUMMARIES  (src/engine/wikiSummaries.json)
+----------------------------------------------------
+The short descriptions of targets and lunar features are extracts of Wikipedia
+articles, fetched by scripts/fetch-wiki-summaries.mjs and bundled with the app.
+Text is available under the Creative Commons Attribution-ShareAlike 4.0 licence
+(https://creativecommons.org/licenses/by-sa/4.0/). Each summary links to its
+article, where the authors are listed. Article photos are loaded from Wikimedia
+at view time and carry their own licences, shown on each file's Wikimedia page.
+
+
+LIVE DATA
+---------
+Weather: National Weather Service API, https://api.weather.gov (US government
+data). Place search: Open-Meteo Geocoding API, https://open-meteo.com
+(data from GeoNames, CC BY 4.0).
+
+
+LIBRARIES
+---------
+Vue (MIT), astronomy-engine by Don Cross (MIT), Vite (MIT), Vitest (MIT).
+GSAP is used under the GreenSock Standard "no charge" licence,
+https://gsap.com/standard-license
