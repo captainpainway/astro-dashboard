@@ -57,7 +57,8 @@ const seed = computed(() => terrainSeed(props.location))
 const dark = computed(() => darkness(frame.value))
 
 // Overlay: everything is placed in stage px by the same camera the shaders use.
-const pos = (p) => ({ left: `${p.x}px`, top: `${p.y}px` })
+const pos = (p) => ({ left: `${p.x}px`, top: `${p.y}px` }) // tooltips: GSAP owns their transform
+const at = (p) => ({ '--x': `${p.x}px`, '--y': `${p.y}px` }) // per-frame markers move by transform, without layout
 const positioned = computed(() => props.targets.flatMap((t) => {
   const v = targetHorizon(t, frame.value)
   return v ? [{ ...t, ...altAzOf(v), v }] : []
@@ -118,7 +119,7 @@ const moonDisc = computed(() => {
 })
 const ringStyle = (r) => {
   const [a, b = a] = r.instruments.map((i) => INSTRUMENTS[i]?.color ?? '#fff')
-  return { ...pos(r.p), '--ring-a': a, '--ring-b': b }
+  return { ...at(r.p), '--ring-a': a, '--ring-b': b }
 }
 const ringLabel = (r) => `${r.name}, ${r.targetClass}, ${Math.round(r.alt)}° up, ${compass(r.az)}`
 const ringHover = ref(null)
@@ -246,17 +247,17 @@ onBeforeUnmount(() => {
        @pointerup="onPointerUp" @pointercancel="onPointerUp">
     <SkyCanvas :frame="frame" :cam="cam" :seed="seed" :layers="layers" @failed="emit('failed')" />
     <template v-if="layers.names">
-      <span v-for="n in labels" :key="n.name" class="sky-name" :style="pos(n.p)" aria-hidden="true">{{ n.name }}</span>
+      <span v-for="n in labels" :key="n.name" class="sky-name" :style="at(n.p)" aria-hidden="true">{{ n.name }}</span>
     </template>
-    <span v-for="(s, i) in starLabels" :key="i" class="sky-star-name" :style="pos(s.p)" aria-hidden="true">{{ s.name }}</span>
-    <span v-for="o in dsos" :key="o.id" class="sky-dso" :style="pos(o.p)" aria-hidden="true"
+    <span v-for="(s, i) in starLabels" :key="i" class="sky-star-name" :style="at(s.p)" aria-hidden="true">{{ s.name }}</span>
+    <span v-for="o in dsos" :key="o.id" class="sky-dso" :style="at(o.p)" aria-hidden="true"
           @mouseenter="dsoTip = o.id" @mouseleave="dsoTip = null" @click="dsoTip = dsoTip === o.id ? null : o.id">
       <span v-if="view.zoom >= 2" class="sky-dso-name">{{ o.name }}</span>
     </span>
-    <span v-for="c in compassMarks" :key="c.az" class="sky-compass" :style="pos(c.p)" aria-hidden="true">{{ c.label }}</span>
+    <span v-for="c in compassMarks" :key="c.az" class="sky-compass" :style="at(c.p)" aria-hidden="true">{{ c.label }}</span>
     <template v-if="layers.planets">
-      <span v-for="pl in planets" :key="pl.id" class="sky-planet" :style="pos(pl.p)" aria-hidden="true">{{ pl.id }}</span>
-      <svg v-if="moonDisc" class="sky-moon" :style="pos(moonDisc.p)" viewBox="-10 -10 20 20" aria-hidden="true">
+      <span v-for="pl in planets" :key="pl.id" class="sky-planet" :style="at(pl.p)" aria-hidden="true">{{ pl.id }}</span>
+      <svg v-if="moonDisc" class="sky-moon" :style="at(moonDisc.p)" viewBox="-10 -10 20 20" aria-hidden="true">
         <circle r="9" class="sky-moon-dark" />
         <path :d="moonDisc.path" :transform="`rotate(${moonDisc.angle})`" class="sky-moon-lit" />
       </svg>
@@ -266,7 +267,7 @@ onBeforeUnmount(() => {
               :class="{ active: r.id === shownId, dim: emphasis && !emphasis.has(r.id) }" :style="ringStyle(r)"
               :aria-label="ringLabel(r)" @mouseenter="ringHover = r.id" @mouseleave="ringHover = null"
               @focus="ringHover = r.id" @blur="ringHover = null" @click="emit('update:selectedId', r.id)" />
-      <button v-for="r in edges" :key="`edge-${r.id}`" class="sky-edge" :style="pos(r.edge)" :aria-label="`Turn to ${r.name}`"
+      <button v-for="r in edges" :key="`edge-${r.id}`" class="sky-edge" :style="at(r.edge)" :aria-label="`Turn to ${r.name}`"
               @click="sky.turnTo(r)">{{ r.edge.arrow }} {{ r.name }}</button>
     </template>
     <Transition :css="false" @enter="tipIn" @leave="tipOut">
@@ -290,7 +291,7 @@ onBeforeUnmount(() => {
         </span>
       </span>
     </Transition>
-    <span v-if="pick" class="sky-pick" :style="pos(pick.p)" aria-hidden="true" />
+    <span v-if="pick" class="sky-pick" :style="at(pick.p)" aria-hidden="true" />
     <Transition :css="false" @enter="tipIn" @leave="tipOut">
       <span v-if="pick && !selected && !dso" :key="`pick-${pick.kind}-${pick.id}`" class="moon-tip sky-tip" role="tooltip"
             :style="pos(pick.p)">

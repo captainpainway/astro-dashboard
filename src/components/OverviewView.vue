@@ -66,26 +66,28 @@ const topLunar = computed(() => {
     <!-- Conditions: the hero — "is tonight worth it?" -->
     <article v-if="tonight" class="panel ov-card tile-hero card-conditions">
       <h2>tonight's conditions</h2>
-      <template v-if="conditions">
-        <span class="rating ov-hero-rating" :class="ratingStyle(conditions.rating).css">
-          {{ ratingStyle(conditions.rating).label }} night
+      <!-- While the weather loads, the same layout with placeholders, so the tile keeps its height -->
+      <template v-if="conditions || tonightLoading">
+        <span class="rating ov-hero-rating" :class="conditions ? ratingStyle(conditions.rating).css : 'rating-none'">
+          {{ conditions ? `${ratingStyle(conditions.rating).label} night` : 'loading…' }}
         </span>
         <dl class="ov-stats">
-          <div><dt>cloud avg</dt><dd class="ov-stat-value">{{ Math.round(conditions.cloudCoverAvg ?? 0) }}%</dd></div>
-          <div><dt>temp</dt><dd class="ov-stat-value">{{ conditions.temperatureF != null ? Math.round(conditions.temperatureF) : '—' }}°F</dd></div>
+          <div><dt>cloud avg</dt><dd class="ov-stat-value">{{ conditions ? Math.round(conditions.cloudCoverAvg ?? 0) : '—' }}%</dd></div>
+          <div><dt>temp</dt><dd class="ov-stat-value">{{ conditions?.temperatureF != null ? Math.round(conditions.temperatureF) : '—' }}°F</dd></div>
           <div>
             <dt>wind avg</dt>
-            <dd class="ov-stat-value">{{ conditions.windMphAvg != null ? Math.round(conditions.windMphAvg) : '—' }} mph</dd>
+            <dd class="ov-stat-value">{{ conditions?.windMphAvg != null ? Math.round(conditions.windMphAvg) : '—' }} mph</dd>
           </div>
         </dl>
-        <p v-if="current" class="ov-now muted small">
+        <p v-if="current || tonightLoading" class="ov-now muted small">
           <span class="ov-now-label">now</span>
-          {{ current.description ?? '—' }}, {{ current.cloudCover ?? '—' }}% cloud — {{ current.station }}
+          <template v-if="current">{{ current.description ?? '—' }}, {{ current.cloudCover ?? '—' }}% cloud — {{ current.station }}</template>
+          <template v-else>loading…</template>
         </p>
       </template>
       <p v-else class="muted small">conditions unavailable</p>
     </article>
-    <article v-else-if="tonightLoading" class="panel ov-card tile-hero card-loading">
+    <article v-else-if="tonightLoading" class="panel ov-card tile-hero card-conditions card-loading">
       <p class="muted">loading tonight…</p>
     </article>
 
@@ -121,6 +123,9 @@ const topLunar = computed(() => {
         <template v-if="bestWindow.skyCover != null"> · {{ bestWindow.skyCover }}% cloud</template>
       </p>
     </article>
+    <article v-else-if="forecastLoading" class="panel ov-card tile-sm card-best card-loading">
+      <p class="muted">loading best hour…</p>
+    </article>
 
     <!-- Lunar highlight -->
     <article v-if="lunar" class="panel ov-card tile-sm card-lunar">
@@ -135,7 +140,7 @@ const topLunar = computed(() => {
       </template>
       <p v-else class="muted small">{{ lunarEmpty(lunar.moon) }}</p>
     </article>
-    <article v-else-if="lunarLoading" class="panel ov-card tile-sm card-loading">
+    <article v-else-if="lunarLoading" class="panel ov-card tile-sm card-lunar card-loading">
       <p class="muted">loading lunar…</p>
     </article>
 
@@ -156,7 +161,7 @@ const topLunar = computed(() => {
         </div>
       </div>
     </article>
-    <article v-else-if="forecastLoading" class="panel ov-card tile-strip card-loading">
+    <article v-else-if="forecastLoading" class="panel ov-card tile-strip card-hourly card-loading">
       <p class="muted">loading hourly…</p>
     </article>
   </section>

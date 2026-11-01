@@ -129,7 +129,12 @@ describe('OverviewView', () => {
                tonightLoading: true, forecastLoading: true, lunarLoading: true },
     })
     const placeholders = w.findAll('.card-loading')
-    expect(placeholders).toHaveLength(3) // one per data source (tonight, forecast, lunar)
+    // tonight, lunar, and the forecast's two tiles (best hour, hourly), each in its loaded tile's place
+    expect(placeholders.map((p) => p.classes().find((c) => c.startsWith('tile-'))))
+      .toEqual(['tile-hero', 'tile-sm', 'tile-sm', 'tile-strip'])
+    // the card class sets the phone layout's order; without it a placeholder sorts first, then jumps away
+    expect(placeholders.map((p) => p.classes().find((c) => c.startsWith('card-') && c !== 'card-loading')))
+      .toEqual(['card-conditions', 'card-best', 'card-lunar', 'card-hourly'])
   })
 
   it('renders hourly strip with time, emoji, temp, cloud per hour', () => {
@@ -283,6 +288,9 @@ const mountSky = async (props = {}) => {
 }
 const ringLabels = (w) => w.findAll('.sky-ring').map((b) => b.attributes('aria-label'))
 const edgeLabels = (w) => w.findAll('.sky-edge').map((b) => b.attributes('aria-label')).sort()
+// Where a sky marker sits on the stage: markers move by --x/--y (a transform), not left/top
+const xy = (el) => ({ x: parseFloat(el.element.style.getPropertyValue('--x')),
+                      y: parseFloat(el.element.style.getPropertyValue('--y')) })
 const timeText = (w) => w.find('.sky-time').text()
 const atChips = (w) => w.findAll('.hour-chip').map((c) => c.classes().includes('at'))
 const near = (a, b, tol) => expect(Math.abs(a - b)).toBeLessThan(tol)
@@ -418,7 +426,7 @@ describe('SkyPanorama overlay and time', () => {
     const w = await mountSky({ tonight: { ...skyTonight, instruments: { ...skyTonight.instruments, dwarf_mini: [crab] } } })
     for (let i = 0; i < 18; i++) await w.find('.sky-stage').trigger('keydown', { key: 'ArrowLeft' }) // face away
     const chips = w.findAll('.sky-edge').map((b) =>
-      ({ x: parseFloat(b.element.style.left), y: parseFloat(b.element.style.top), w: 7 * b.text().length + 20 }))
+      ({ ...xy(b), w: 7 * b.text().length + 20 }))
     expect(edgeLabels(w)).toContain('Turn to Pleiades')
     for (const [i, a] of chips.entries()) {
       for (const b of chips.slice(i + 1)) expect(Math.abs(a.x - b.x) >= (a.w + b.w) / 2 || Math.abs(a.y - b.y) >= 24).toBe(true)
@@ -431,7 +439,7 @@ describe('SkyPanorama overlay and time', () => {
     const w = await mountSky()
     for (let i = 0; i < 36; i++) {
       for (const r of w.findAll('.sky-ring')) {
-        const [x, y] = [parseFloat(r.element.style.left), parseFloat(r.element.style.top)]
+        const { x, y } = xy(r)
         expect(x >= 12 && x <= 988 && y >= 12 && y <= 373, `${x},${y}`).toBe(true) // jsdom tile is 1000 × 385
       }
       await w.find('.sky-stage').trigger('keydown', { key: i % 2 ? 'ArrowRight' : 'ArrowUp' })
@@ -440,8 +448,8 @@ describe('SkyPanorama overlay and time', () => {
 
   // How far the Pleiades ring sits from the centre of the 1000 × 385 jsdom tile: it grows as the view zooms in.
   const spread = (w) => {
-    const s = w.find('.sky-ring').element.style
-    return Math.hypot(parseFloat(s.left) - 500, parseFloat(s.top) - 192.5)
+    const { x, y } = xy(w.find('.sky-ring'))
+    return Math.hypot(x - 500, y - 192.5)
   }
 
   it('zooms with the + and − buttons and keys, between the full field and 4×', async () => {
@@ -512,7 +520,7 @@ describe('SkyPanorama overlay and time', () => {
     const stage = w.find('.sky-stage').element
     const pointer = (type, pointerId, clientY) => stage.dispatchEvent(
       Object.assign(new Event(type, { bubbles: true }), { pointerId, pointerType: 'touch', clientX: 400 + 100 * pointerId, clientY }))
-    const top = () => parseFloat(w.find('.sky-ring').element.style.top)
+    const top = () => xy(w.find('.sky-ring')).y
     const before = top()
     pointer('pointerdown', 1, 100)
     await flushPromises()
@@ -536,7 +544,7 @@ describe('SkyPanorama overlay and time', () => {
     at(NIGHT)
     media({ reduce: true })
     const w = await mountSky()
-    const x = () => parseFloat(w.find('.sky-ring').element.style.left)
+    const x = () => xy(w.find('.sky-ring')).x
     const before = x()
     await w.find('.sky-stage').trigger('keydown', { key: 'ArrowRight' })
     expect(x()).toBeLessThan(before)

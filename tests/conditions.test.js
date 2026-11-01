@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { buildForecast, summarizeHours } from '../src/engine/forecast'
 import { clearWeatherCache } from '../src/engine/nws'
 import { buildOutlook } from '../src/engine/outlook'
-import { buildTonight } from '../src/engine/tonight'
+import { buildTonight, planTonight } from '../src/engine/tonight'
 import { TARGET_CLASSES, generatePlan, halfHourGrid } from '../src/engine/scoring'
 import { BIG_BEND, expectPlan, expectRow, expectTwilight, nwsFetch } from './parity'
 import forecastWant from './fixtures/forecast-expected.json'
@@ -164,6 +164,18 @@ describe('buildTonight', () => {
     expect(got.weather.summary.rating).toBeTruthy()
     const grid = halfHourGrid(new Date(got.night.startUtc), new Date(got.night.endUtc))
     expect(got.instruments).toEqual(generatePlan(got.location, grid, TARGET_CLASSES))
+  })
+
+  it('plans the same night without the network, with no weather yet', async () => {
+    const full = await buildTonight(BIG_BEND, {}, NOW)
+    const fetch = vi.fn()
+    vi.stubGlobal('fetch', fetch)
+    for (const [plan, want] of [[planTonight(BIG_BEND, {}, NOW), full],
+                                [planTonight(BIG_BEND, { at: '22:30' }, NOW), await buildTonight(BIG_BEND, { at: '22:30' }, NOW)]]) {
+      expect(plan).toEqual({ ...want, weather: null, generatedAt: null })
+    }
+    expect(fetch).not.toHaveBeenCalled()
+    expect(() => planTonight(BIG_BEND, { at: '25:00' }, NOW)).toThrow("Invalid time '25:00'")
   })
 
   it('reports best times and visible windows on the half hour', async () => {

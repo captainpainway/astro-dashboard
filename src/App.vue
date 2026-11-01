@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, nextTick, onMounted, ref, watch } from 'vue'
 import { useTonight } from './composables/useTonight'
 import { useForecast } from './composables/useForecast'
 import { useLunar } from './composables/useLunar'
@@ -11,17 +11,19 @@ import AppDock from './components/AppDock.vue'
 import WeatherPanel from './components/WeatherPanel.vue'
 import ErrorsBanner from './components/ErrorsBanner.vue'
 import ControlsBar from './components/ControlsBar.vue'
-import TargetTable from './components/TargetTable.vue'
-import ForecastView from './components/ForecastView.vue'
-import LunarView from './components/LunarView.vue'
 import OverviewView from './components/OverviewView.vue'
-import OutlookView from './components/OutlookView.vue'
-import SkyPage from './components/SkyPage.vue'
 import NightTimes from './components/NightTimes.vue'
 import { clearWeatherCache } from './api'
 import { bestDarkHour } from './engine/forecast'
 import LocationPicker from './components/LocationPicker.vue'
 import { isDisplayable } from './format'
+
+// The views behind the dock load when first opened, so the home page's script stays small.
+const TargetTable = defineAsyncComponent(() => import('./components/TargetTable.vue'))
+const ForecastView = defineAsyncComponent(() => import('./components/ForecastView.vue'))
+const LunarView = defineAsyncComponent(() => import('./components/LunarView.vue'))
+const OutlookView = defineAsyncComponent(() => import('./components/OutlookView.vue'))
+const SkyPage = defineAsyncComponent(() => import('./components/SkyPage.vue'))
 
 const { location, error: locationError, resolving, setCoordinates, locateMe, reset } = useLocation()
 const isDemo = computed(() => location.value === DEMO_LOCATION)

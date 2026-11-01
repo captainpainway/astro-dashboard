@@ -1,12 +1,15 @@
 import { buildForecast } from './engine/forecast'
 import { buildOutlook } from './engine/outlook'
 import { buildLunar } from './engine/lunar'
-import { buildTonight } from './engine/tonight'
+import { buildTonight, planTonight } from './engine/tonight'
 
 export { clearWeatherCache } from './engine/nws'
 
 /** Tonight's ranked plan (or the sky at `at`), computed in the browser for `location`. */
 export const fetchTonight = ({ at, include, location } = {}) => buildTonight(location, { at, include })
+
+/** The same plan with `weather: null`, computed at once without the network. */
+export const tonightPlan = ({ at, include, location } = {}) => planTonight(location, { at, include })
 
 /** Hourly conditions for one night, computed in the browser for `location`. */
 export const fetchForecast = ({ date, location } = {}) => buildForecast(location, { date })

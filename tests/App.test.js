@@ -5,10 +5,12 @@ import { DEMO_LOCATION } from '../src/composables/useLocation'
 import points from './fixtures/nws-points.json'
 
 // Tonight, forecast, outlook and lunar are computed in the browser; stub them at the api boundary.
-const engine = vi.hoisted(() => ({ tonight: vi.fn(), forecast: vi.fn(), outlook: vi.fn(), lunar: vi.fn(), clear: vi.fn() }))
+const engine = vi.hoisted(() => ({ tonight: vi.fn(), plan: vi.fn(() => null), forecast: vi.fn(), outlook: vi.fn(),
+                                  lunar: vi.fn(), clear: vi.fn() }))
 vi.mock('../src/api', async (importOriginal) => ({
   ...(await importOriginal()),
   fetchTonight: (opts) => engine.tonight(opts),
+  tonightPlan: (opts) => engine.plan(opts), // null unless a test shows the plan before the weather
   fetchForecast: (opts) => engine.forecast(opts),
   fetchOutlook: (opts) => engine.outlook(opts),
   fetchLunar: (opts) => engine.lunar(opts),
@@ -154,12 +156,13 @@ async function mountOnTonightView(fixture = windowFixture) {
   const w = mount(App)
   await flushPromises()
   await w.findAll('.view-switch button').find(b => b.text() === 'tonight').trigger('click')
-  await flushPromises()
+  await settle()
   return w
 }
 
 beforeEach(() => {
   engine.tonight.mockReset().mockResolvedValue(windowFixture)
+  engine.plan.mockReset().mockReturnValue(null)
   engine.forecast.mockReset().mockResolvedValue(forecastFixture)
   engine.outlook.mockReset().mockResolvedValue(outlookFixture)
   engine.lunar.mockReset().mockResolvedValue(lunarFixture)
@@ -184,6 +187,8 @@ const stubGl = () => {
 }
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
 const dock = (w, label) => w.findAll('.view-switch button').find((b) => b.text() === label)
+// Views behind the dock load on first open (App.vue); wait for their import before looking.
+const settle = async () => { await vi.dynamicImportSettled(); await flushPromises() }
 
 describe('App integration', () => {
   it('home view renders overview cards from all three data sources', async () => {
@@ -197,6 +202,22 @@ describe('App integration', () => {
     expect(engine.tonight).toHaveBeenCalledWith({ at: null, include: null, location: DEMO_LOCATION })
     expect(engine.forecast).toHaveBeenCalledWith({ date: undefined, location: DEMO_LOCATION })
     expect(engine.lunar).toHaveBeenCalledWith({ location: DEMO_LOCATION })
+  })
+
+  it('home view shows the plan before the weather arrives, then the conditions', async () => {
+    let finish
+    engine.tonight.mockReturnValue(new Promise((resolve) => { finish = resolve }))
+    engine.forecast.mockReturnValue(new Promise(() => {})) // its hourly rows would fill the conditions too
+    engine.plan.mockReturnValue({ ...windowFixture, weather: null, generatedAt: null })
+    const w = mount(App)
+    await flushPromises()
+    expect(engine.plan).toHaveBeenCalledWith({ at: null, include: null, location: DEMO_LOCATION })
+    expect(w.find('.card-picks').text()).toContain('SS Cyg')
+    expect(w.find('.card-conditions .ov-hero-rating').text()).toBe('loading…') // the loaded layout, so nothing shifts
+    expect(w.find('.card-conditions .ov-now').text()).toContain('loading…')
+    finish(windowFixture)
+    await flushPromises()
+    expect(w.find('.card-conditions').text()).toContain('Mostly cloudy')
   })
 
   it('home header shows the observing location instead of the observing window', async () => {
@@ -297,7 +318,7 @@ describe('App integration', () => {
     // not loaded on mount
     expect(engine.outlook).not.toHaveBeenCalled()
     await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
-    await flushPromises()
+    await settle()
     expect(engine.outlook).toHaveBeenCalledWith({ nights: undefined, location: DEMO_LOCATION })
     const panels = w.findAll('.outlook-night')
     expect(panels).toHaveLength(2)
@@ -314,7 +335,7 @@ describe('App integration', () => {
     const w = mount(App)
     await flushPromises()
     await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
-    await flushPromises()
+    await settle()
     // refresh button still triggers an outlook reload
     engine.outlook.mockClear()
     await w.find('.refresh').trigger('click')
@@ -346,7 +367,7 @@ describe('App integration', () => {
   it('forecast view: shows the night-times card and marks daylight hours', async () => {
     const w = await mountHome()
     await w.findAll('.view-switch button').find(b => b.text() === 'hourly').trigger('click')
-    await flushPromises()
+    await settle()
     expect(w.find('.tw-card').exists()).toBe(true)
     expect(w.find('.tw-card').text()).toContain('7:27 PM')
     // The fixture's only hour is after dark, so no daylight notice.
@@ -364,7 +385,7 @@ describe('App integration', () => {
     const w = mount(App)
     await flushPromises()
     await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
-    await flushPromises()
+    await settle()
     // Only night 1 carries twilight in the fixture (night 2 is beyond the data).
     expect(w.findAll('.outlook-night .tw-card')).toHaveLength(1)
     const row = w.findAll('.outlook-night')[0]
@@ -378,7 +399,7 @@ describe('App integration', () => {
     const w = mount(App)
     await flushPromises()
     await w.findAll('.view-switch button').find(b => b.text() === 'lunar').trigger('click')
-    await flushPromises()
+    await settle()
     expect(w.findAll('.lunar tr.data-row')).toHaveLength(2)
     expect(w.find('.lunar').text()).toContain('First Quarter (46% illuminated)')
     await w.findAll('.lunar .chips button').find(b => b.text().startsWith('binoculars')).trigger('click')
@@ -399,7 +420,7 @@ describe('App integration', () => {
     expect(engine.lunar).toHaveBeenCalledTimes(1)
     expect(engine.outlook).not.toHaveBeenCalled() // never opened, so no 12-hour forecast fetch
     await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
-    await flushPromises()
+    await settle()
     expect(engine.outlook).toHaveBeenCalledTimes(1) // first visit loads it
     await w.find('.refresh').trigger('click')
     await flushPromises()
@@ -450,7 +471,7 @@ describe('App integration', () => {
   it('reloads the outlook for a new location once it has been opened', async () => {
     const w = await mountHome()
     await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
-    await flushPromises()
+    await settle()
     engine.outlook.mockClear()
     await w.findAll('.view-switch button').find(b => b.text() === 'home').trigger('click')
     await w.find('.location-change').trigger('click')
@@ -473,7 +494,7 @@ describe('App integration', () => {
   it('sky page: opens from the dock with the location header, and explains when WebGL is missing', async () => {
     const w = await mountHome()
     await dock(w, 'sky').trigger('click')
-    await flushPromises()
+    await settle()
     expect(w.find('.sky-page').exists()).toBe(true)
     expect(w.find('.sky-page').text()).toContain('WebGL is unavailable')
     expect(w.find('.app-header').text()).toContain('Big Bend National Park, TX')
@@ -494,7 +515,7 @@ describe('App integration', () => {
     expect(page.find('.sky-time').text()).toBe(shown)
     expect(page.find('[aria-label="zoom out"]').attributes('disabled')).toBeUndefined()
     await dock(w, 'home').trigger('click')
-    await flushPromises()
+    await settle()
     expect(w.find('.sky-tile .sky-time').text()).toBe(shown)
   })
 })

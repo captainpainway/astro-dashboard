@@ -1,5 +1,5 @@
 import { ref, shallowRef } from 'vue'
-import { fetchTonight } from '../api'
+import { fetchTonight, tonightPlan } from '../api'
 
 /** `location`: ref to the observing location (see useLocation). */
 export function useTonight(location) {
@@ -11,6 +11,8 @@ export function useTonight(location) {
     loading.value = true
     error.value = null
     try {
+      // The plan needs no network: on first load show it at once (weather: null), then the full result.
+      if (!data.value) data.value = tonightPlan({ at, include, location: location.value })
       data.value = await fetchTonight({ at, include, location: location.value })
     } catch (e) {
       error.value = e.message

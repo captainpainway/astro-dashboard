@@ -106,20 +106,45 @@ async function currentConditions(props, sky, now) {
   }
 }
 
-/** Client-side equivalent of astro-cli GET /tonight: ranked plan for tonight, or the sky at `at` (HH:MM). */
-export async function buildTonight(location, { at, include } = {}, now = new Date()) {
-  const tz = location.timezone
+/** The night (or instant `at`, HH:MM) to rank and the classes to rank, after checking the options. */
+function nightOf(location, { at, include } = {}, now) {
   if (at != null && !AT_RE.test(at)) throw new Error(`Invalid time '${at}'. Use HH:MM.`)
   const bad = (include ?? []).filter((c) => !TARGET_CLASSES.includes(c))
   if (bad.length) throw new Error(`Unknown target class(es) ${JSON.stringify(bad)}; choose from ${JSON.stringify(TARGET_CLASSES)}`)
-
   let instant = null
   if (at != null) {
     const [h, m] = at.split(':').map(Number)
-    instant = nextOccurrence(now, h, m, tz)
+    instant = nextOccurrence(now, h, m, location.timezone)
   }
   const { start, end } = instant ? { start: instant, end: instant } : darkWindow(location, now)
+  return { instant, start, end, classes: include?.length ? include : TARGET_CLASSES }
+}
 
+/** The /tonight response for `night`; `weather` is null until the forecast is in. */
+function assemble(loc, { instant, start, end, classes }, weather, { generatedAt = null, errors = [] } = {}) {
+  const tz = loc.timezone
+  const instruments = generatePlan(loc, instant ? [instant] : halfHourGrid(start, end), classes)
+  const twilight = twilightEvents(loc, localDate(start, tz))
+  const common = { generatedAt, location: loc, twilight, instruments, errors }
+  if (instant) {
+    return { ...common, mode: 'instant', at: { local: toLocalIso(instant, tz), utc: toLocalIso(instant, 'UTC'), timezone: tz },
+             weather }
+  }
+  return { ...common, mode: 'window',
+           night: { startLocal: toLocalIso(start, tz), endLocal: toLocalIso(end, tz),
+                    startUtc: toLocalIso(start, 'UTC'), endUtc: toLocalIso(end, 'UTC'), timezone: tz },
+           weather }
+}
+
+/** Tonight's ranked plan with no weather (and no network), shown while buildTonight waits on the forecast. */
+export function planTonight(location, options = {}, now = new Date()) {
+  return assemble(location, nightOf(location, options, now), null)
+}
+
+/** Client-side equivalent of astro-cli GET /tonight: ranked plan for tonight, or the sky at `at` (HH:MM). */
+export async function buildTonight(location, options = {}, now = new Date()) {
+  const night = nightOf(location, options, now)
+  const { instant, start, end } = night
   const errors = []
   const fail = (e) => errors.push(`weather: ${e.message}`)
   let hourly = null
@@ -138,18 +163,9 @@ export async function buildTonight(location, { at, include } = {}, now = new Dat
   }
 
   const elevationM = location.elevationM ?? (grid?.elevationM == null ? null : Math.round(grid.elevationM))
-  const loc = { ...location, elevationM }
-  const instruments = generatePlan(loc, instant ? [instant] : halfHourGrid(start, end), include?.length ? include : TARGET_CLASSES)
-  const twilight = twilightEvents(loc, localDate(start, tz))
   const sky = grid?.skyCover
-  const common = { generatedAt: weatherFetchedAt(), location: loc, twilight, instruments, errors: [...new Set(errors)] }
-  if (instant) {
-    return { ...common, mode: 'instant',
-             at: { local: toLocalIso(instant, tz), utc: toLocalIso(instant, 'UTC'), timezone: tz },
-             weather: { current, atTime: hourly && weatherAtTime(hourly, sky, instant.getTime()) } }
-  }
-  return { ...common, mode: 'window',
-           night: { startLocal: toLocalIso(start, tz), endLocal: toLocalIso(end, tz),
-                    startUtc: toLocalIso(start, 'UTC'), endUtc: toLocalIso(end, 'UTC'), timezone: tz },
-           weather: { summary: hourly && summarizeNight(hourly, sky, start.getTime(), end.getTime()), current } }
+  const weather = instant ? { current, atTime: hourly && weatherAtTime(hourly, sky, instant.getTime()) }
+    : { summary: hourly && summarizeNight(hourly, sky, start.getTime(), end.getTime()), current }
+  return assemble({ ...location, elevationM }, night, weather,
+                  { generatedAt: weatherFetchedAt(), errors: [...new Set(errors)] })
 }
