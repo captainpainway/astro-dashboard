@@ -8,7 +8,13 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 20 20'%3E%3Cpath d='M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z' fill='%237aa2ff'/%3E%3C/svg%3E" />
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <!-- Static copy of the home header (AppHeader.vue), painted before the script has loaded; Vue replaces it -->
+      <div class="shell"><main class="page page-wide"><header class="app-header"><div class="header-row">
+        <div><h1>Astronomer's Dashboard</h1><p class="muted location">&nbsp;</p></div>
+        <p class="muted small generated">&nbsp;</p>
+      </div></header></main></div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
