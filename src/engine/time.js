@@ -13,19 +13,32 @@ function wallParts(date, tz) {
   return Object.fromEntries(f.formatToParts(date).map((p) => [p.type, p.value]))
 }
 
+// Intl is slow (~0.1 ms a call) and plans format thousands of times. Offsets change only at DST transitions, which fall
+// on 15-minute UTC boundaries, so one lookup per zone and 15-minute block is exact.
+// ponytail: never evicted; a session touches a few thousand blocks at most
+const BLOCK = 15 * 60_000
+const offsets = new Map()
+
 /** UTC offset of `tz` at `date`, in minutes (e.g. -300 for CDT). */
 function offsetMinutes(date, tz) {
-  const p = wallParts(date, tz)
-  const wall = Date.UTC(+p.year, p.month - 1, +p.day, +p.hour, +p.minute, +p.second)
-  return Math.round((wall - Math.floor(date.getTime() / 1000) * 1000) / 60_000)
+  const key = `${tz}|${Math.floor(date.getTime() / BLOCK)}`
+  let off = offsets.get(key)
+  if (off === undefined) {
+    const p = wallParts(date, tz)
+    const wall = Date.UTC(+p.year, p.month - 1, +p.day, +p.hour, +p.minute, +p.second)
+    off = Math.round((wall - Math.floor(date.getTime() / 1000) * 1000) / 60_000)
+    offsets.set(key, off)
+  }
+  return off
 }
 
 /** ISO 8601 in `tz` with its offset, to the second: "2026-10-03T19:00:00-05:00". */
 export function toLocalIso(date, tz) {
-  const p = wallParts(date, tz)
   const off = offsetMinutes(date, tz)
+  const w = new Date(Math.floor(date.getTime() / 1000) * 1000 + off * 60_000) // the wall clock, read in UTC
   const a = Math.abs(off)
-  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}` +
+  return `${w.getUTCFullYear()}-${pad(w.getUTCMonth() + 1)}-${pad(w.getUTCDate())}` +
+         `T${pad(w.getUTCHours())}:${pad(w.getUTCMinutes())}:${pad(w.getUTCSeconds())}` +
          `${off < 0 ? '-' : '+'}${pad(Math.floor(a / 60))}:${pad(a % 60)}`
 }
 

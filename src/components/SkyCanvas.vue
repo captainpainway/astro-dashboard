@@ -234,15 +234,20 @@ const schedule = () => { if (progs && !queued) queued = requestAnimationFrame(()
 watch(() => [props.frame, props.cam, props.seed, props.layers], schedule)
 
 const fail = () => emit('failed')
+let setupTimer = 0
 onMounted(() => {
   if (typeof WebGLRenderingContext === 'undefined') return fail()
   gl = canvas.value.getContext('webgl', { antialias: true })
   if (!gl) return fail()
   canvas.value.addEventListener('webglcontextlost', fail)
-  try { setup() } catch { progs = null; return fail() }
-  schedule()
+  // Compiling shaders and filling the star buffers is a heavy step: run it as its own task, after the page's first one.
+  setupTimer = setTimeout(() => {
+    try { setup() } catch { progs = null; return fail() }
+    schedule()
+  })
 })
 onBeforeUnmount(() => {
+  clearTimeout(setupTimer)
   cancelAnimationFrame(queued)
   canvas.value?.removeEventListener('webglcontextlost', fail)
 })

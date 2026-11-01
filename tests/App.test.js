@@ -172,10 +172,16 @@ beforeEach(() => {
   vi.stubGlobal('fetch', vi.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(points) })))
 })
 
+// Views behind the dock load on first open, and startup's data jobs run a task apart (App.vue): wait for both.
+async function settle() {
+  await vi.dynamicImportSettled()
+  for (let i = 0; i < 4; i++) await flushPromises()
+}
+
 /** Mount the app on the home view with every data source wired. */
 async function mountHome() {
   const w = mount(App)
-  await flushPromises()
+  await settle()
   return w
 }
 
@@ -187,13 +193,11 @@ const stubGl = () => {
 }
 afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
 const dock = (w, label) => w.findAll('.view-switch button').find((b) => b.text() === label)
-// Views behind the dock load on first open (App.vue); wait for their import before looking.
-const settle = async () => { await vi.dynamicImportSettled(); await flushPromises() }
 
 describe('App integration', () => {
   it('home view renders overview cards from all three data sources', async () => {
     const w = mount(App)
-    await flushPromises()
+    await settle()
     expect(w.find('.card-conditions').exists()).toBe(true)
     expect(w.find('.card-hourly').exists()).toBe(true)
     expect(w.find('.card-lunar').exists()).toBe(true)
@@ -333,18 +337,18 @@ describe('App integration', () => {
 
   it('outlook view: refresh refetches, errors surface inline, banner shows errors[]', async () => {
     const w = mount(App)
-    await flushPromises()
+    await settle()
     await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
     await settle()
     // refresh button still triggers an outlook reload
     engine.outlook.mockClear()
     await w.find('.refresh').trigger('click')
-    await flushPromises()
+    await settle()
     expect(engine.outlook).toHaveBeenCalled()
     // a failed refresh shows the inline error, keeps rendered nights
     engine.outlook.mockRejectedValue(new Error('Failed to fetch'))
     await w.find('.refresh').trigger('click')
-    await flushPromises()
+    await settle()
     expect(w.text()).toContain('forecast failed:')
     expect(w.findAll('.outlook-night')).toHaveLength(2)
   })
@@ -410,10 +414,10 @@ describe('App integration', () => {
 
   it('refresh clears the weather cache and reloads what is on screen; outlook only once it has been opened', async () => {
     const w = mount(App)
-    await flushPromises()
+    await settle()
     for (const m of [engine.tonight, engine.forecast, engine.outlook, engine.lunar]) m.mockClear()
     await w.find('.refresh').trigger('click')
-    await flushPromises()
+    await settle()
     expect(engine.clear).toHaveBeenCalledWith(true)
     expect(engine.tonight).toHaveBeenCalledTimes(1)
     expect(engine.forecast).toHaveBeenCalledTimes(1)
@@ -423,7 +427,7 @@ describe('App integration', () => {
     await settle()
     expect(engine.outlook).toHaveBeenCalledTimes(1) // first visit loads it
     await w.find('.refresh').trigger('click')
-    await flushPromises()
+    await settle()
     expect(engine.outlook).toHaveBeenCalledTimes(2) // now it is on screen, so refresh reloads it
   })
 
@@ -439,7 +443,7 @@ describe('App integration', () => {
   const typeCoords = async (w, text) => {
     await w.find('input[aria-label="latitude and longitude"]').setValue(text)
     await w.find('form.lp-coords').trigger('submit')
-    await flushPromises()
+    await settle()
   }
 
   it('home header "change" opens the location picker', async () => {

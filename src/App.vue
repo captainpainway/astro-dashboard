@@ -95,14 +95,20 @@ const instrumentLabels = {
   dwarf_mini: 'Dwarf Mini',
 }
 
-/** Reload everything on screen: tonight, forecast, lunar, and the outlook once it has been opened. */
-function reloadAll() {
-  return Promise.all([
-    load(requestParams.value),
-    forecast.load(),
-    lunar.load(),
-    outlook.loaded.value ? outlook.load() : null, // the 12-hour forecast is only fetched once the outlook was opened
-  ])
+// Let the browser paint and handle input before the next job: each job's computing runs as its own short task
+// instead of one long one that blocks the page (Lighthouse's Total Blocking Time).
+const nextTask = () => new Promise((resolve) => setTimeout(resolve))
+
+/** Reload everything on screen: tonight (first, so its plan is in the first paint), forecast, lunar, and the outlook once it has been opened. */
+async function reloadAll() {
+  const jobs = [() => load(requestParams.value), () => forecast.load(), () => lunar.load()]
+  if (outlook.loaded.value) jobs.push(() => outlook.load()) // the 12-hour forecast is only fetched once the outlook was opened
+  const running = []
+  for (const [i, job] of jobs.entries()) {
+    if (i) await nextTask()
+    running.push(job())
+  }
+  return Promise.all(running)
 }
 /** Refresh button: drop cached weather (and the browser's copy), then reload. */
 async function refresh() {
