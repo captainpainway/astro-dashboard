@@ -418,16 +418,18 @@ describe('App integration', () => {
     for (const m of [engine.tonight, engine.forecast, engine.outlook, engine.lunar]) m.mockClear()
     await w.find('.refresh').trigger('click')
     await settle()
+    // reloadAll yields a timer tick between jobs, which settle() does not wait for, so poll instead of racing it.
+    await vi.waitFor(() => expect(engine.lunar).toHaveBeenCalledTimes(1))
     expect(engine.clear).toHaveBeenCalledWith(true)
     expect(engine.tonight).toHaveBeenCalledTimes(1)
     expect(engine.forecast).toHaveBeenCalledTimes(1)
-    expect(engine.lunar).toHaveBeenCalledTimes(1)
     expect(engine.outlook).not.toHaveBeenCalled() // never opened, so no 12-hour forecast fetch
     await w.findAll('.view-switch button').find(b => b.text() === 'forecast').trigger('click')
     await settle()
     expect(engine.outlook).toHaveBeenCalledTimes(1) // first visit loads it
     await w.find('.refresh').trigger('click')
     await settle()
+    await vi.waitFor(() => expect(engine.outlook).toHaveBeenCalledTimes(2))
     expect(engine.outlook).toHaveBeenCalledTimes(2) // now it is on screen, so refresh reloads it
   })
 
