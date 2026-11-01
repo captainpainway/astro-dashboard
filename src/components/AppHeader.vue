@@ -26,9 +26,10 @@ defineProps({
           <template v-if="day(night.endLocal) !== day(night.startLocal)">{{ fmtDate(day(night.endLocal)) }} · </template>{{ fmtTime(night.endLocal) }}
         </p>
       </div>
-      <!-- Always rendered, blank until the weather is in, so the page below doesn't move when it arrives -->
-      <p class="muted small generated">
-        <template v-if="generatedAt">Generated @ {{ fmtDateTime(generatedAt) }}</template><template v-else>&nbsp;</template>
+      <!-- Until the weather is in, an invisible stand-in as wide as the real line: it wraps (or not) the same way, so
+           nothing below moves when the time arrives -->
+      <p class="muted small generated" :class="{ pending: !generatedAt }">
+        Generated @ {{ generatedAt ? fmtDateTime(generatedAt) : 'Sep 30, 12:00 PM' }}
       </p>
     </div>
   </header>
