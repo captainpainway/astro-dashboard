@@ -385,6 +385,19 @@ a:hover { text-decoration: underline; }
 .dock-label { font-size: 0.68rem; letter-spacing: 0.02em; }
 .refresh.spinning .dock-icon { animation: dock-spin 1s linear infinite; }
 @keyframes dock-spin { to { transform: rotate(360deg); } }
+.dock-tools { display: flex; flex-direction: column; gap: 0.35rem; }
+.red-mode-defs { position: absolute; }
+
+/* Red mode (AppDock.vue): the whole page, WebGL and photos included, in red only. brightness() is the dimming knob.
+   Ratings become a brightness scale (--lvl), since their colors would all come out the same red. */
+html.red-mode { filter: url(#red-mode) brightness(.6); scrollbar-color: #400 #100; } /* the filter skips the scrollbar */
+.red-mode :is(.rating-ideal, .rating-great, .rc-ideal, .rc-great) { --lvl: 1; }
+.red-mode :is(.rating-good, .rc-good) { --lvl: .7; }
+.red-mode :is(.rating-fair, .rc-fair) { --lvl: .45; }
+.red-mode :is(.rating-poor, .rating-bad, .rc-poor, .rc-bad) { --lvl: .2; }
+.red-mode .rating { color: rgb(255 255 255 / calc(.4 + .6 * var(--lvl, .2))); background: rgb(255 255 255 / calc(.2 * var(--lvl, .2))); }
+.red-mode .hour-chip { background: rgb(255 255 255 / calc(.15 * var(--lvl, .2))); outline: 1px solid rgb(255 255 255 / calc(.6 * var(--lvl, .2))); }
+.red-mode .outlook-strip span { background: rgb(255 255 255 / calc(.9 * var(--lvl, .2))); }
 
 /* Home bento (OverviewView.vue) — tile size follows importance and content */
 .bento { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.1fr; grid-auto-rows: minmax(150px, auto);
@@ -669,7 +682,8 @@ a:hover { text-decoration: underline; }
     border-right: none; border-top: 1px solid var(--glass-edge); box-shadow: 0 -8px 32px rgba(0, 0, 0, .25); }
   .dock-items { flex-direction: row; flex: 1; justify-content: space-around; gap: 0; }
   .dock .dock-item { flex: 1; padding: 0.4rem 0; }
-  .dock .refresh { flex: 0 0 56px; }
+  .dock-tools { flex-direction: row; gap: 0; }
+  .dock .dock-tools .dock-item { flex: 0 0 48px; }
   .dock-indicator::before { left: 25%; right: 25%; top: -0.4rem; bottom: auto; width: auto; height: 3px;
     border-radius: 0 0 3px 3px; }
   .bento { grid-template-columns: 1fr; gap: 12px; }
