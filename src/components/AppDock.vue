@@ -11,6 +11,7 @@ export const ITEMS = [
 </script>
 
 <script setup>
+import { ref } from 'vue'
 /**
  * Left-side navigation dock (bottom tab bar on narrow screens).
  * Icons are aria-hidden SVGs so each button's text is exactly its label.
@@ -22,6 +23,14 @@ defineProps({
 const emit = defineEmits(['update:modelValue', 'refresh'])
 
 const REFRESH = 'M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7'
+const EYE = 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z'
+
+// Red mode for night vision: off on every page load on purpose; the refresh button doesn't reload the page.
+const red = ref(false)
+function toggleRed() {
+  red.value = !red.value
+  document.documentElement.classList.toggle('red-mode', red.value)
+}
 </script>
 
 <template>
@@ -36,10 +45,22 @@ const REFRESH = 'M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7'
         <span class="dock-label">{{ it.label }}</span>
       </button>
     </div>
+    <div class="dock-tools">
+    <button class="red-toggle dock-item" :class="{ active: red }" :aria-pressed="red" title="red mode" @click="toggleRed">
+      <svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><path :d="EYE" /></svg>
+      <span class="dock-label">red</span>
+    </button>
     <button class="refresh dock-item" :class="{ spinning: loading }" :disabled="loading"
             :title="loading ? 'loading…' : 'refresh'" @click="emit('refresh')">
       <svg class="dock-icon" viewBox="0 0 24 24" aria-hidden="true"><path :d="REFRESH" /></svg>
       <span class="dock-label">{{ loading ? 'loading' : 'refresh' }}</span>
     </button>
+    </div>
+    <!-- html.red-mode's filter (style.css): each pixel's brightness goes to red, green and blue go to zero -->
+    <svg width="0" height="0" class="red-mode-defs" aria-hidden="true">
+      <filter id="red-mode" color-interpolation-filters="sRGB">
+        <feColorMatrix values=".2126 .7152 .0722 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+      </filter>
+    </svg>
   </nav>
 </template>

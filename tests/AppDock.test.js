@@ -42,4 +42,15 @@ describe('AppDock', () => {
     expect(w.find('.refresh').attributes('disabled')).toBeDefined()
     expect(w.find('.refresh').classes()).toContain('spinning')
   })
+
+  it('red toggle turns red mode on and off for the whole page', async () => {
+    const w = mount(AppDock, { props: { modelValue: 'home' } })
+    const btn = w.find('.red-toggle')
+    expect(btn.attributes('aria-pressed')).toBe('false')
+    await btn.trigger('click')
+    expect(document.documentElement.classList.contains('red-mode')).toBe(true)
+    expect(btn.attributes('aria-pressed')).toBe('true')
+    await btn.trigger('click')
+    expect(document.documentElement.classList.contains('red-mode')).toBe(false)
+  })
 })
